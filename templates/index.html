@@ -15,12 +15,14 @@
         <div id="loading-spinner" style="display:none;">
             <div class="spinner"></div>
           </div>
-        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados do CNPJ | {{full_name}}</h1>
+        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
 
         <!-- Alterando o método para GET para que os dados sejam enviados na URL -->
-        <form action="/home" method="GET" class="mb-6">
-            <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="border rounded py-2 px-4 w-full" value="{{ termo_busca or '' }}">
-            <button type="submit" class="custom-button mt-4">Buscar</button>
+        <form action="/home" method="GET" class="form-container mb-6">
+            <div class="input-container">
+                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa py-3 px-4" value="{{ termo_busca or '' }}">
+                <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
+            </div>
         </form>
         <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas Empresas</button>
         {% if dados_cnpj %}
@@ -45,16 +47,22 @@
                         <p><strong>Porte:</strong> {{ empresa.porte }}</p>
                         {% if empresa.socios %}
                         <p class="socios"><strong>Sócios:</strong></p>
+                        <hr class="linha">
                         <ul class="ul_socios">
                             {% for socio in empresa.socios %}
-                            <hr class="linha">
-                            <li><strong>Nome:</strong> {{ socio.nome }} <br>
-                                <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
-                                <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
-                                <strong>Data de Entrada:</strong> {{ socio.data_entrada }}</li>
+                                <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                                    <strong>Nome:</strong> {{ socio.nome }} <br>
+                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
+                                    <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
+                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
+                                </li>
+                                <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                             {% endfor %}
                         </ul>
-                        <hr class="linha">
+
+                        {% if empresa.socios|length > 3 %}
+                            <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
+                        {% endif %}
                         {% endif %}
                     </div>
 

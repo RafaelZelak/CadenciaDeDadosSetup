@@ -77,3 +77,20 @@ document.querySelectorAll('.ver-mais').forEach(button => {
     });
 });
 
+document.querySelectorAll('.ver-mais-socios').forEach(button => {
+    button.addEventListener('click', function() {
+        const socioExtras = this.previousElementSibling.querySelectorAll('.socio-extra');
+
+        // Alternar a exibição dos sócios extras
+        socioExtras.forEach(socio => {
+            socio.classList.toggle('hidden');
+        });
+
+        // Alterar o texto do botão
+        if (this.textContent === 'Ver mais sócios') {
+            this.textContent = 'Ver menos sócios';
+        } else {
+            this.textContent = 'Ver mais sócios';
+        }
+    });
+});

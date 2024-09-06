@@ -85,3 +85,55 @@ padding: 20px;
 .detalhes-empresa{
     padding-top: 19px;
 }
+
+.form-container {
+    width: 100%;
+}
+
+.input-container {
+    display: flex;
+    align-items: center; /* Alinha o botão e o input verticalmente */
+    width: 100%;
+    position: relative; /* Necessário para o espaçamento do botão */
+}
+
+.pesquisa {
+    flex: 1; /* Faz o input ocupar todo o espaço disponível */
+    padding-right: 50px; /* Espaço para o botão */
+    box-sizing: border-box; /* Inclui o padding na largura total */
+    color: #0a192f;
+    font-size: 22pt;
+    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    text-align: center;
+    background-color: #e9eeffc9;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: .3s;
+}
+
+.pesquisa:hover{
+    background-color: #e9eeff;
+}
+
+.pesquisa:active{
+    outline: none;
+}
+
+.buscar {
+    position: relative; /* Mantém o botão no fluxo do layout */
+    width: 50px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -50px; /* Move o botão para a esquerda para sobrepor o input */
+    padding: 0; /* Remove qualquer padding extra */
+}
+
+.buscar img {
+    width: 60px; /* Ajuste conforme necessário */
+    height: 60px; /* Ajuste conforme necessário */
+    margin-left: -30px;
+}
