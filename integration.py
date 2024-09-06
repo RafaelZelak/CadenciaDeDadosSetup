@@ -28,20 +28,24 @@ def obter_detalhes_cnpj(cnpj):
     response = requests.get(url)
     if response.status_code == 200:
         dados = response.json()
+        socios = [
+            {
+                "nome": socio.get("nome_socio", ""),
+                "faixa_etaria": socio.get("faixa_etaria", ""),
+                "qualificacao": socio.get("qualificacao_socio", ""),
+                "data_entrada": socio.get("data_entrada_sociedade", "")
+            }
+            for socio in dados.get("qsa", [])
+            if socio.get("nome_socio")  # Garante que sócios válidos sejam incluídos
+        ]
+
+        # Retorna dados com verificação para evitar None
         return {
             "email": dados.get("email", ""),
             "telefone_1": dados.get("ddd_telefone_1", ""),
             "telefone_2": dados.get("ddd_telefone_2", ""),
             "porte": dados.get("porte", ""),
-            "socios": [
-                {
-                    "nome": socio.get("nome_socio", ""),
-                    "faixa_etaria": socio.get("faixa_etaria", ""),
-                    "qualificacao": socio.get("qualificacao_socio", ""),
-                    "data_entrada": socio.get("data_entrada_sociedade", "")
-                }
-                for socio in dados.get("qsa", [])
-            ],
+            "socios": socios,
             "logradouro": dados.get("logradouro", ""),
             "municipio": dados.get("municipio", ""),
             "uf": dados.get("uf", ""),
@@ -51,7 +55,7 @@ def obter_detalhes_cnpj(cnpj):
         }
     else:
         print(f"Erro ao buscar detalhes do CNPJ: {response.status_code}, {response.text}")
-        return None
+        return {}
 
 # Função para enviar os dados ao CRM do Bitrix24
 def enviar_dados_bitrix(empresas):
@@ -61,6 +65,13 @@ def enviar_dados_bitrix(empresas):
             f"Nome: {socio['nome']} (Qualificação: {socio['qualificacao']}, Faixa Etária: {socio['faixa_etaria']}, Data de Entrada: {socio['data_entrada']})"
             for socio in empresa.get('socios', [])
         ])
+
+        # Filtra telefones válidos
+        telefones = []
+        if empresa.get('telefone_1'):
+            telefones.append({"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"})
+        if empresa.get('telefone_2'):
+            telefones.append({"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"})
 
         payload = {
             "fields": {
@@ -74,15 +85,13 @@ def enviar_dados_bitrix(empresas):
                 "ADDRESS_REGION": empresa.get('uf', ''),
                 "ADDRESS_POSTAL_CODE": empresa.get('cep', ''),
                 "UF": empresa.get('uf', ''),
-                "PHONE": [
-                    {"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"} if empresa.get('telefone_1') else None,
-                    {"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"} if empresa.get('telefone_2') else None
-                ],
+                "PHONE": telefones,  # Usa apenas os telefones válidos
                 "EMAIL": [{"VALUE": empresa.get('email', ''), "VALUE_TYPE": "WORK"}],
                 "COMMENTS": f"Porte: {empresa.get('porte', '')}\nSócios:\n{socio_details}"
             },
             "params": {"REGISTER_SONET_EVENT": "Y"}
         }
+
         response = requests.post(bitrix_url, json=payload)
         if response.status_code == 200:
             print(f"Lead criado com sucesso: {response.json()}")

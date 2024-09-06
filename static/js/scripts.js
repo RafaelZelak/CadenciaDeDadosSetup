@@ -1,3 +1,26 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form'); // Formulário de busca
+    const spinner = document.getElementById('loading-spinner');
+    const paginationLinks = document.querySelectorAll('.pagination a'); // Links de paginação
+
+    // Mostra o spinner ao submeter o formulário
+    form.addEventListener('submit', function() {
+        spinner.style.display = 'block'; // Exibe o spinner
+    });
+
+    // Mostra o spinner ao clicar nos links de paginação
+    paginationLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            spinner.style.display = 'block'; // Exibe o spinner ao clicar no link
+        });
+    });
+
+    // Esconde o spinner após o carregamento da página
+    window.addEventListener('load', function() {
+        spinner.style.display = 'none'; // Oculta o spinner após a página ser carregada
+    });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const togglePassword = document.querySelector('#toggle-password');
     const passwordField = document.querySelector('#password');
@@ -45,3 +68,12 @@ document.addEventListener('keydown', function(event) {
         isImageStyle = !isImageStyle;
     }
 });
+
+document.querySelectorAll('.ver-mais').forEach(button => {
+    button.addEventListener('click', function() {
+        const detalhes = this.previousElementSibling;
+        detalhes.classList.toggle('hidden');
+        this.textContent = detalhes.classList.contains('hidden') ? 'Ver mais' : 'Ver menos';
+    });
+});
+
