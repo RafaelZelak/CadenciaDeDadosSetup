@@ -24,9 +24,9 @@
                 <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
             </div>
         </form>
-        <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas Empresas</button>
+        <button id="enviarTodasEmpresas" class="global-send-button text-center">Enviar Todas as Empresas para o Bitrix24</button>
         {% if dados_cnpj %}
-        <h2 class="text-2xl font-bold mb-4">Resultados</h2>
+        <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
         <ul>
             {% for empresa in dados_cnpj %}
             <li class="mb-4 dadosEmpresa flex justify-between items-start">
@@ -62,6 +62,7 @@
 
                         {% if empresa.socios|length > 3 %}
                             <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
+                            <hr class="linha">
                         {% endif %}
                         {% endif %}
                     </div>

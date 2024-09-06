@@ -105,7 +105,7 @@ padding: 20px;
     font-size: 22pt;
     font-family: "Arial Rounded MT Bold", Arial, sans-serif;
     text-align: center;
-    background-color: #e9eeffc9;
+    background-color: #e9eeff;
     border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: .3s;
@@ -117,6 +117,7 @@ padding: 20px;
 
 .pesquisa:active{
     outline: none;
+    background-color: #e9eeff;
 }
 
 .buscar {
@@ -136,4 +137,13 @@ padding: 20px;
     width: 60px; /* Ajuste conforme necessário */
     height: 60px; /* Ajuste conforme necessário */
     margin-left: -30px;
+}
+
+.result-title{
+    font-size: 24pt;
+    padding-bottom: 30px;
+}
+
+.global-send-button{
+    margin-left: 20px;
 }
