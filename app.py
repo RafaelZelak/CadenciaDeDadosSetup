@@ -88,48 +88,14 @@ def home():
 
     return render_template('index.html', full_name=full_name, dados_cnpj=dados_cnpj, termo_busca=termo_busca, page=page)
 @app.route('/enviar', methods=['POST'])
-def enviar():
-    empresas = []
+def enviar_varias_empresas():
+    # Receber os dados de várias empresas
+    empresas = request.get_json()
 
-    # Receber os dados do formulário
-    razao_social_list = request.form.getlist('razao_social[]')
-    cnpj_list = request.form.getlist('cnpj[]')
+    # Enviar os dados dessas empresas para o Bitrix24
+    integration.enviar_dados_bitrix(empresas)
 
-    for i in range(len(razao_social_list)):
-        cnpj = cnpj_list[i]
-        # Obter dados enriquecidos
-        dados_enriquecidos = integration.obter_detalhes_cnpj(cnpj)
-
-        empresa = {
-            "razao_social": razao_social_list[i],
-            "cnpj": cnpj_list[i]
-        }
-
-        if dados_enriquecidos:
-            empresa.update({
-                "nome_fantasia": dados_enriquecidos.get('nome_fantasia', ''),
-                "logradouro": dados_enriquecidos.get('logradouro', ''),
-                "numero": dados_enriquecidos.get('numero', ''),
-                "complemento": dados_enriquecidos.get('complemento', ''),
-                "bairro": dados_enriquecidos.get('bairro', ''),
-                "municipio": dados_enriquecidos.get('municipio', ''),
-                "uf": dados_enriquecidos.get('uf', ''),
-                "cep": dados_enriquecidos.get('cep', ''),
-                "email": dados_enriquecidos.get('email', ''),
-                "telefone_1": dados_enriquecidos.get('telefone_1', 'Não disponível'),
-                "telefone_2": dados_enriquecidos.get('telefone_2', 'Não disponível'),
-                "porte": dados_enriquecidos.get('porte', ''),
-                "socios": dados_enriquecidos.get('socios', [])
-            })
-
-        empresas.append(empresa)
-
-    # Enviar todas as empresas para o Bitrix24
-    if empresas:
-        integration.enviar_dados_bitrix(empresas)
-
-    return jsonify({"success": True, "message": "Todas as empresas foram enviadas com sucesso"})
-
+    return jsonify({"success": True, "message": "Empresas enviadas com sucesso"})
 @app.route('/enviar_empresa', methods=['POST'])
 def enviar_empresa():
     # Obter os dados da empresa

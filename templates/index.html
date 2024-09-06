@@ -22,33 +22,7 @@
             <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="border rounded py-2 px-4 w-full" value="{{ termo_busca or '' }}">
             <button type="submit" class="custom-button mt-4">Buscar</button>
         </form>
-        <form id="enviarTodasEmpresasForm" method="POST" action="/enviar">
-            <input type="hidden" name="termo_busca" value="{{ termo_busca }}">
-
-            {% for empresa in dados_cnpj %}
-            <input type="hidden" name="razao_social[]" value="{{ empresa.razao_social }}">
-            <input type="hidden" name="nome_fantasia[]" value="{{ empresa.nome_fantasia }}">
-            <input type="hidden" name="logradouro[]" value="{{ empresa.logradouro }}">
-            <input type="hidden" name="municipio[]" value="{{ empresa.municipio }}">
-            <input type="hidden" name="uf[]" value="{{ empresa.uf }}">
-            <input type="hidden" name="cep[]" value="{{ empresa.cep }}">
-            <input type="hidden" name="email[]" value="{{ empresa.email }}">
-            <input type="hidden" name="telefone_1[]" value="{{ empresa.telefone_1 }}">
-            <input type="hidden" name="telefone_2[]" value="{{ empresa.telefone_2 }}">
-            <input type="hidden" name="porte[]" value="{{ empresa.porte }}">
-
-            {% if empresa.socios %}
-                {% for socio in empresa.socios %}
-                <input type="hidden" name="socio_nome_{{ loop.index }}[]" value="{{ socio.nome }}">
-                <input type="hidden" name="socio_faixa_etaria_{{ loop.index }}[]" value="{{ socio.faixa_etaria }}">
-                <input type="hidden" name="socio_qualificacao_{{ loop.index }}[]" value="{{ socio.qualificacao }}">
-                <input type="hidden" name="socio_data_entrada_{{ loop.index }}[]" value="{{ socio.data_entrada }}">
-                {% endfor %}
-            {% endif %}
-            {% endfor %}
-
-            <button type="submit" id="enviarTodasEmpresasButton" class="custom-button">Enviar Todas as Empresas para Bitrix24</button>
-        </form>
+        <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas Empresas</button>
         {% if dados_cnpj %}
         <h2 class="text-2xl font-bold mb-4">Resultados</h2>
         <ul>
@@ -154,18 +128,53 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const enviarTodasEmpresasButton = document.getElementById('enviarTodasEmpresasButton');
+    const forms = document.querySelectorAll('.enviar-empresa-form');
 
-    enviarTodasEmpresasButton.addEventListener('click', function (event) {
-        event.preventDefault();
+    // Adiciona o listener para o botão de envio de todas as empresas
+    const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
 
-        // Criar os dados para enviar
-        const formData = new FormData(document.getElementById('enviarTodasEmpresasForm'));
+    enviarTodasButton.addEventListener('click', function () {
+        const empresas = [];
 
-        // Enviar a requisição via Fetch API
+        // Captura os dados de todas as empresas renderizadas
+        forms.forEach(form => {
+            const formData = new FormData(form);
+            let sociosData = formData.get('socios');
+
+            // Verificar se o campo de sócios tem conteúdo
+            let socios = [];
+            if (sociosData) {
+                try {
+                    socios = JSON.parse(sociosData);  // Tentamos fazer o parse do JSON
+                } catch (e) {
+                    console.error('Erro ao fazer parse dos sócios:', e);
+                }
+            }
+
+            const empresa = {
+                "razao_social": formData.get('razao_social'),
+                "nome_fantasia": formData.get('nome_fantasia'),
+                "logradouro": formData.get('logradouro'),
+                "municipio": formData.get('municipio'),
+                "uf": formData.get('uf'),
+                "cep": formData.get('cep'),
+                "telefone_1": formData.get('telefone_1'),
+                "telefone_2": formData.get('telefone_2'),
+                "email": formData.get('email'),
+                "porte": formData.get('porte'),
+                "socios": socios  // Usar os sócios já parseados ou um array vazio
+            };
+
+            empresas.push(empresa);
+        });
+
+        // Faz a requisição para enviar todas as empresas
         fetch('/enviar', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(empresas)
         })
         .then(response => response.json())
         .then(data => {
@@ -180,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
     </script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
