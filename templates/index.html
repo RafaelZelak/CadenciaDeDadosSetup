@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Softphone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body class="custom-body">
+    <div class="custom-container">
+        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados do CNPJ | {{full_name}}</h1>
+
+        <!-- Alterando o método para GET para que os dados sejam enviados na URL -->
+        <form action="/home" method="GET" class="mb-6">
+            <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="border rounded py-2 px-4 w-full" value="{{ termo_busca or '' }}">
+            <button type="submit" class="custom-button mt-4">Buscar</button>
+        </form>
+        <form id="enviarTodasEmpresasForm" method="POST">
+            <input type="hidden" name="termo_busca" value="{{ termo_busca }}">
+            {% for empresa in dados_cnpj %}
+            <input type="hidden" name="razao_social[]" value="{{ empresa.razao_social }}">
+            <input type="hidden" name="nome_fantasia[]" value="{{ empresa.nome_fantasia }}">
+            <input type="hidden" name="logradouro[]" value="{{ empresa.logradouro }}">
+            <input type="hidden" name="municipio[]" value="{{ empresa.municipio }}">
+            <input type="hidden" name="uf[]" value="{{ empresa.uf }}">
+            <input type="hidden" name="cep[]" value="{{ empresa.cep }}">
+            {% endfor %}
+            <button type="button" id="enviarTodasEmpresasButton" class="custom-button">Enviar Todas as Empresas para Bitrix24</button>
+        </form>
+        {% if dados_cnpj %}
+        <h2 class="text-2xl font-bold mb-4">Resultados</h2>
+        <ul>
+            {% for empresa in dados_cnpj %}
+            <li class="mb-4 dadosEmpresa flex justify-between items-start">
+                <div>
+                    <p><strong>Razão Social:</strong> {{ empresa.razao_social }}</p>
+                    <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
+                    <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
+                    <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
+                    <p><strong>Estado:</strong> {{ empresa.uf }}</p>
+                    <p><strong>CEP:</strong> {{ empresa.cep }}</p>
+                    <p><strong>Email:</strong> {{ empresa.email }}</p>
+                    <p><strong>Telefone:</strong> {{ empresa.telefone_1 }}</p>
+                    <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
+                    <p><strong>Porte:</strong> {{ empresa.porte }}</p>
+                    {% if empresa.socios %}
+                    <p><strong>Sócios:</strong></p>
+                    <ul>
+                        {% for socio in empresa.socios %}
+                        <li>
+                            Nome: {{ socio.nome }}, Faixa Etária: {{ socio.faixa_etaria }}, Qualificação: {{ socio.qualificacao }}, Data de Entrada: {{ socio.data_entrada }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Formulário para enviar dados individuais da empresa -->
+                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form" method="POST">
+                    <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
+                    <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
+                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
+                    <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
+                    <input type="hidden" name="uf" value="{{ empresa.uf }}">
+                    <input type="hidden" name="cep" value="{{ empresa.cep }}">
+                    <input type="hidden" name="email" value="{{ empresa.email }}">
+                    <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
+                    <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
+                    <input type="hidden" name="porte" value="{{ empresa.porte }}">
+
+                    <!-- Campos para sócios -->
+                    {% for socio in empresa.socios %}
+                    <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
+                    <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
+                    <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
+                    <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
+                    {% endfor %}
+
+                    <button type="submit" class="custom-button ml-4">Enviar Empresa para Bitrix24</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+
+        <!-- Navegação de Páginas -->
+        <div class="pagination">
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="custom-button" {% if page == 1 %}disabled{% endif %}>Página Anterior</a>
+            <span>Página {{ page }}</span>
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="custom-button">Próxima Página</a>
+        </div>
+        {% elif error %}
+        <p class="text-red-500">{{ error }}</p>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('logout') }}" method="POST" class="exit">
+        <button type="submit" class="custom-button">
+            Exit
+        </button>
+    </form>
+    <script>
+<!-- Certifique-se de que o FormData está enviando os dados corretamente -->
+document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('.enviar-empresa-form');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();  // Previne o comportamento padrão de recarregar a página
+
+            // Pegar os dados do formulário
+            const formData = new FormData(this);
+
+            // Fazer a requisição com Fetch API
+            fetch('/enviar_empresa', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Empresa enviada com sucesso!');
+                } else {
+                    alert('Erro ao enviar a empresa.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const enviarTodasEmpresasButton = document.getElementById('enviarTodasEmpresasButton');
+
+    enviarTodasEmpresasButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Criar os dados para enviar
+        const formData = new FormData(document.getElementById('enviarTodasEmpresasForm'));
+
+        // Enviar a requisição via Fetch API
+        fetch('/enviar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Todas as empresas foram enviadas com sucesso!');
+            } else {
+                alert('Erro ao enviar as empresas.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    });
+});
+
+    </script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Flask
+ldap3
+cloudscraper
+requests

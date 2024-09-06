@@ -1,0 +1,26 @@
+.custom-body {
+    background-color: #0a192f; /* Dark Blue Background */
+    color: #ccd6f6; /* Light Blue Text */
+}
+.custom-container {
+    background-color: #112240; /* Darker Blue Background */
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+.custom-button {
+    background-color: #64ffda; /* Light Blue Button */
+    color: #0a192f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.custom-button:hover {
+    background-color: #52cbb1;
+}
+.dadosEmpresa{
+background-color: #15294b;
+padding: 20px;
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-lg login" style="min-height: 400px; display: flex; flex-direction: column; justify-content: center;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="alert-container" class="fixed top-0 left-0 w-full p-4">
+                    {% for category, message in messages %}
+                        <div class="text-center text-sm py-2 px-4 rounded-lg {{ 'bg-green-600' if category == 'success' else 'bg-red-600' }} alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <h1 class="text-2xl font-semibold mb-8 text-center">Setup Tecnologia</h1>
+        <form method="POST" action="/" class="space-y-6">
+            <div>
+                <label for="username" class="block text-sm font-medium">Usuário</label>
+                <input type="text" id="username" name="username" autocomplete="username" class="mt-1 block w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white" required>
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium">Senha</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" autocomplete="current-password" class="mt-1 block w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white pr-10" required>
+                    <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <svg id="eye-icon" class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-4.413 0-8 3.587-8 8s3.587 8 8 8 8-3.587 8-8-3.587-8-8-8zm0 10.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0-7.5a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">Login</button>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
