@@ -39,7 +39,7 @@
     color: #0a192f;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 1rem;
     cursor: pointer;
 }
 .custom-button:hover {
@@ -146,4 +146,80 @@ padding: 20px;
 
 .global-send-button{
     margin-left: 20px;
+}
+
+.inline-icon {
+    width: 24px;  /* Ajuste conforme necessário */
+    height: 24px;
+    vertical-align: middle;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Espaçamento entre os elementos */
+    margin-top: 20px;
+}
+
+.pagination-link {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaçamento entre o texto e o ícone */
+    text-decoration: none;
+    color: #fff; /* Ou a cor desejada */
+}
+
+.pagination-link[disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.inline-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.pagination-container span {
+    font-size: 1.2em;
+    color: #fff; /* Altere conforme o seu tema */
+}
+
+.checkmark-btn {
+    background-color: #64ffda; /* Light Blue Button */
+    color: #0a192f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 2.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkmark-btn.loading {
+    width: 50px;
+    height: 50px;
+    border-radius: 100px;
+    justify-content: center;
+    padding: 0;
+    text-indent: -9999px; /* Hide the text */
+}
+
+.checkmark-btn.loading img {
+    display: none;
+}
+
+.checkmark-btn.loading::before {
+    content: '';
+    background-image: url('/static/img/checkmark.svg'); /* Caminho manual */
+    background-size: cover;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

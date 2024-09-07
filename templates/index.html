@@ -29,11 +29,11 @@
         <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
         <ul>
             {% for empresa in dados_cnpj %}
-            <li class="mb-4 dadosEmpresa flex justify-between items-start">
+            <li class="mb-4 dadosEmpresa flex justify-between items-center">
                 <div class="empresa-info">
                     <!-- Nome da empresa sempre visível -->
                     <p class="font-bold">{{ empresa.razao_social }}</p>
-
+            
                     <!-- Detalhes da empresa que serão colapsados -->
                     <div class="detalhes-empresa hidden">
                         <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
@@ -59,20 +59,20 @@
                                 <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                             {% endfor %}
                         </ul>
-
+            
                         {% if empresa.socios|length > 3 %}
                             <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
                             <hr class="linha">
                         {% endif %}
                         {% endif %}
                     </div>
-
+            
                     <!-- Botão para expandir/colapsar detalhes -->
                     <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
                 </div>
-
-                <!-- Formulário de envio para o Bitrix24 sempre visível -->
-                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form ml-4" method="POST">
+            
+                <!-- Formulário de envio para o Bitrix24 sempre visível, centralizado verticalmente -->
+                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
                     <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
                     <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
                     <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
@@ -84,17 +84,24 @@
                     <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
                     <input type="hidden" name="porte" value="{{ empresa.porte }}">
                     <input type="hidden" name="socios" value="{{ empresa.socios|tojson }}">
-                    <button type="submit" class="custom-button ml-4">Enviar para Bitrix24</button>
+                    <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
+                        <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
+                    </button>
                 </form>
             </li>
+            
             {% endfor %}
         </ul>
 
         <!-- Navegação de Páginas -->
-        <div class="pagination">
-            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="custom-button" {% if page == 1 %}disabled{% endif %}>Página Anterior</a>
+        <div class="pagination-container">
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
+                <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
+            </a>
             <span>Página {{ page }}</span>
-            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="custom-button">Próxima Página</a>
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link">
+                <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
+            </a>
         </div>
         {% elif error %}
         <p class="text-red-500">{{ error }}</p>
@@ -107,31 +114,42 @@
     </form>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll('.enviar-empresa-form');
+    const buttons = document.querySelectorAll('.checkmark-btn');
 
-    forms.forEach(form => {
-        form.addEventListener('submit', function (event) {
-            event.preventDefault();  // Previne o comportamento padrão de recarregar a página
+    buttons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            // Adiciona a classe loading para ativar a animação
+            button.classList.add('loading');
+            // Adiciona disabled ao botão
+            button.disabled = true;
 
-            // Pegar os dados do formulário
-            const formData = new FormData(this);
+            // Encontrar o formulário pai e enviá-lo
+            const form = button.closest('form');
+            if (form) {
+                const formData = new FormData(form);
 
-            // Fazer a requisição com Fetch API
-            fetch('/enviar_empresa', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Empresa enviada com sucesso!');
-                } else {
-                    alert('Erro ao enviar a empresa.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
+                fetch('/enviar_empresa', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Empresa enviada com sucesso!');
+                    } else {
+                        alert('Erro ao enviar a empresa.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                })
+                .finally(() => {
+                    // Remover a classe loading e habilitar o botão novamente
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                });
+            }
         });
     });
 });
