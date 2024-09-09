@@ -69,15 +69,15 @@ def home():
 
     full_name = session.get('full_name', 'Usuário')
 
-    # Pegar os parâmetros da URL (GET)
     termo_busca = request.args.get('termo_busca', '')
-    page = int(request.args.get('page', 1))  # Pegar a página da URL, por padrão a 1
+    estado = request.args.get('estado', '')
+    cidade = request.args.get('cidade', '')
+    page = int(request.args.get('page', 1))
 
     dados_cnpj = []
     if termo_busca:
-        dados_cnpj = integration.obter_dados_cnpj(termo_busca, page)
+        dados_cnpj = integration.obter_dados_cnpj(termo_busca, estado, cidade, page)
         if dados_cnpj:
-            # Obter detalhes enriquecidos para cada CNPJ
             for empresa in dados_cnpj:
                 cnpj = empresa.get('cnpj')
                 detalhes = integration.obter_detalhes_cnpj(cnpj)
@@ -86,7 +86,8 @@ def home():
         else:
             flash('Nenhum dado encontrado para o termo informado.', 'error')
 
-    return render_template('index.html', full_name=full_name, dados_cnpj=dados_cnpj, termo_busca=termo_busca, page=page)
+    return render_template('index.html', full_name=full_name, dados_cnpj=dados_cnpj, termo_busca=termo_busca, estado=estado, cidade=cidade, page=page)
+
 @app.route('/enviar', methods=['POST'])
 def enviar_varias_empresas():
     # Receber os dados de várias empresas

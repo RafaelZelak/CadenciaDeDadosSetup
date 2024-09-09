@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Softphone</title>
+    <title>LeadGen</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
 
     </style>
@@ -17,14 +18,31 @@
           </div>
         <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
 
-        <!-- Alterando o método para GET para que os dados sejam enviados na URL -->
-        <form action="/home" method="GET" class="form-container mb-6">
+        <form action="/home" method="GET" class="form-container">
             <div class="input-container">
-                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa py-3 px-4" value="{{ termo_busca or '' }}">
+                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
                 <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
             </div>
+
+            <div class="estado-cidade-button-container">
+                <div class="estado-cidade-container">
+                    <label class="title-filter">Filtros:</label>
+                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado">
+                    <datalist id="estados">
+                        <!-- Estados preenchidos dinamicamente via JavaScript -->
+                    </datalist>
+                    <p class="title-filter">e</p>
+                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade">
+                    <datalist id="cidades">
+                        <!-- Cidades preenchidas dinamicamente via JavaScript -->
+                    </datalist>
+                </div>
+
+                <!-- Botão no lado esquerdo -->
+                <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
+            </div>
         </form>
-        <button id="enviarTodasEmpresas" class="global-send-button text-center">Enviar Todas as Empresas para o Bitrix24</button>
+
         {% if dados_cnpj %}
         <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
         <ul>
@@ -33,7 +51,7 @@
                 <div class="empresa-info">
                     <!-- Nome da empresa sempre visível -->
                     <p class="font-bold">{{ empresa.razao_social }}</p>
-            
+
                     <!-- Detalhes da empresa que serão colapsados -->
                     <div class="detalhes-empresa hidden">
                         <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
@@ -59,18 +77,18 @@
                                 <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                             {% endfor %}
                         </ul>
-            
+
                         {% if empresa.socios|length > 3 %}
                             <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
                             <hr class="linha">
                         {% endif %}
                         {% endif %}
                     </div>
-            
+
                     <!-- Botão para expandir/colapsar detalhes -->
                     <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
                 </div>
-            
+
                 <!-- Formulário de envio para o Bitrix24 sempre visível, centralizado verticalmente -->
                 <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
                     <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
@@ -83,13 +101,21 @@
                     <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
                     <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
                     <input type="hidden" name="porte" value="{{ empresa.porte }}">
-                    <input type="hidden" name="socios" value="{{ empresa.socios|tojson }}">
+
+                    <!-- Loop para sócios -->
+                    {% for socio in empresa.socios %}
+                        <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
+                        <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
+                        <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
+                        <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
+                    {% endfor %}
+
                     <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
                         <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
                     </button>
                 </form>
             </li>
-            
+
             {% endfor %}
         </ul>
 

@@ -2,19 +2,27 @@ import cloudscraper
 import requests
 
 # Função para obter os dados do CNPJ na Casa dos Dados
-def obter_dados_cnpj(termo, page=1):
+def obter_dados_cnpj(termo, estado='', cidade='', page=1):
     scraper = cloudscraper.create_scraper()
     url = "https://api.casadosdados.com.br/v2/public/cnpj/search"
     data = {
         "query": {
             "termo": [termo],
+            "uf": [estado] if estado else [],
+            "municipio": [cidade] if cidade else [],
             "situacao_cadastral": "ATIVA"
         },
         "extras": {
-            "com_contato_telefonico": True
+            "excluir_mei": True,
+            "com_email": True,
+            "com_contato_telefonico": True,
+            "somente_fixo": False,
+            "somente_celular": False,
+            "somente_matriz": True
         },
         "page": page
     }
+
     response = scraper.post(url, json=data)
     if response.status_code == 200:
         return response.json().get('data', {}).get('cnpj', [])
@@ -61,10 +69,23 @@ def obter_detalhes_cnpj(cnpj):
 def enviar_dados_bitrix(empresas):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"
     for empresa in empresas:
-        socio_details = "\n".join([
-            f"Nome: {socio['nome']} (Qualificação: {socio['qualificacao']}, Faixa Etária: {socio['faixa_etaria']}, Data de Entrada: {socio['data_entrada']})"
+        # Formatando detalhes dos sócios com mais espaçamento
+        socio_details = "\n\n".join([
+            f"Nome: {socio['nome']}\n"
+            f"Qualificação: {socio['qualificacao']}\n"
+            f"Faixa Etária: {socio['faixa_etaria']}\n"
+            f"Data de Entrada: {socio['data_entrada']}"
             for socio in empresa.get('socios', [])
         ])
+
+        # Formatando o endereço
+        logradouro = empresa.get('logradouro', '')
+        municipio = empresa.get('municipio', '')
+        uf = empresa.get('uf', '')
+        cep = empresa.get('cep', '')
+
+        # Padronizando o endereço no formato desejado
+        endereco_padronizado = f"{logradouro} - {municipio} {uf} - {cep[:5]}-{cep[5:]}"
 
         # Filtra telefones válidos
         telefones = []
@@ -75,19 +96,22 @@ def enviar_dados_bitrix(empresas):
 
         payload = {
             "fields": {
-                "TITLE": empresa.get('razao_social', ''),
+                "TITLE": f"Via Automação - {empresa.get('razao_social', '')}",
                 "NAME": empresa.get('nome_fantasia', ''),
                 "STATUS_ID": "NEW",
                 "CURRENCY_ID": "BRL",
                 "OPPORTUNITY": "0",
-                "ADDRESS": empresa.get('logradouro', ''),
-                "ADDRESS_CITY": empresa.get('municipio', ''),
-                "ADDRESS_REGION": empresa.get('uf', ''),
-                "ADDRESS_POSTAL_CODE": empresa.get('cep', ''),
-                "UF": empresa.get('uf', ''),
-                "PHONE": telefones,  # Usa apenas os telefones válidos
+                "ADDRESS": endereco_padronizado,  # Usando endereço padronizado
+                "ADDRESS_CITY": municipio,
+                "ADDRESS_REGION": uf,
+                "ADDRESS_POSTAL_CODE": cep,
+                "UF": uf,
+                "PHONE": telefones,
                 "EMAIL": [{"VALUE": empresa.get('email', ''), "VALUE_TYPE": "WORK"}],
-                "COMMENTS": f"Porte: {empresa.get('porte', '')}\nSócios:\n{socio_details}"
+                "COMMENTS": (
+                    f"Porte: {empresa.get('porte', '')}\n\n"
+                    f"Sócios:\n\n{socio_details}"
+                )
             },
             "params": {"REGISTER_SONET_EVENT": "Y"}
         }

@@ -95,3 +95,36 @@ document.querySelectorAll('.ver-mais-socios').forEach(button => {
     });
 });
 
+// Populando os estados com auto-completar
+fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+    .then(response => response.json())
+    .then(estados => {
+        const estadoDatalist = document.getElementById('estados');
+        estados.forEach(estado => {
+            const option = document.createElement('option');
+            option.value = estado.sigla;
+            option.textContent = estado.nome;
+            estadoDatalist.appendChild(option);
+        });
+    });
+
+// Auto-completar e preenchimento dinâmico das cidades
+document.getElementById('estado').addEventListener('input', function() {
+    const estadoSigla = this.value.toUpperCase();
+    const cidadeDatalist = document.getElementById('cidades');
+
+    // Limpa as cidades anteriores
+    cidadeDatalist.innerHTML = '';
+
+    if (estadoSigla) {
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`)
+            .then(response => response.json())
+            .then(cidades => {
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.nome;
+                    cidadeDatalist.appendChild(option);
+                });
+            });
+    }
+});

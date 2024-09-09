@@ -88,19 +88,24 @@ padding: 20px;
 
 .form-container {
     width: 100%;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaçamento entre os elementos */
 }
 
 .input-container {
     display: flex;
-    align-items: center; /* Alinha o botão e o input verticalmente */
+    align-items: center;
     width: 100%;
-    position: relative; /* Necessário para o espaçamento do botão */
+    position: relative;
 }
 
 .pesquisa {
-    flex: 1; /* Faz o input ocupar todo o espaço disponível */
+    width: 100%;
+    padding: 10px 0px 10px 0px;
     padding-right: 50px; /* Espaço para o botão */
-    box-sizing: border-box; /* Inclui o padding na largura total */
+    box-sizing: border-box;
     color: #0a192f;
     font-size: 22pt;
     font-family: "Arial Rounded MT Bold", Arial, sans-serif;
@@ -111,17 +116,14 @@ padding: 20px;
     transition: .3s;
 }
 
-.pesquisa:hover{
+.pesquisa:hover, .pesquisa:active {
     background-color: #e9eeff;
-}
-
-.pesquisa:active{
     outline: none;
-    background-color: #e9eeff;
 }
 
 .buscar {
-    position: relative; /* Mantém o botão no fluxo do layout */
+    position: absolute;
+    right: 10px; /* Alinha o botão no lado direito */
     width: 50px;
     height: 50px;
     border: none;
@@ -129,16 +131,58 @@ padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: -50px; /* Move o botão para a esquerda para sobrepor o input */
-    padding: 0; /* Remove qualquer padding extra */
+    padding: 0;
 }
 
 .buscar img {
-    width: 60px; /* Ajuste conforme necessário */
-    height: 60px; /* Ajuste conforme necessário */
-    margin-left: -30px;
+    margin-top: 12px;
+    width: 60px;
+    height: 60px;
 }
 
+.estado-cidade-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.estado-cidade-container {
+    display: flex;
+    gap: 20px; /* Espaçamento entre os campos de estado e cidade */
+    flex: 1; /* Permite que o contêiner ocupe o máximo de espaço */
+}
+
+.estado, .cidade {
+    width: 170px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #15284a;
+    color: #ffffff;
+    font-size: 11pt;
+    outline: none;
+}
+
+.global-send-button {
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 11pt;
+    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.global-send-button:hover {
+    background-color: #112240;
+}
+
+.title-filter{
+    font-size: 12pt;
+    margin-top: 6px;
+}
 .result-title{
     font-size: 24pt;
     padding-bottom: 30px;
