@@ -62,6 +62,9 @@ def login():
 
     return render_template('login.html')
 
+from flask import Flask, request, session, redirect, url_for, render_template, flash, jsonify
+import integration  # Certifique-se de que este módulo está corretamente importado
+
 @app.route('/home', methods=['GET'])
 def home():
     if not session.get('logged_in'):
@@ -88,6 +91,7 @@ def home():
 
     return render_template('index.html', full_name=full_name, dados_cnpj=dados_cnpj, termo_busca=termo_busca, estado=estado, cidade=cidade, page=page)
 
+
 @app.route('/enviar', methods=['POST'])
 def enviar_varias_empresas():
     # Receber os dados de várias empresas
@@ -99,7 +103,6 @@ def enviar_varias_empresas():
     return jsonify({"success": True, "message": "Empresas enviadas com sucesso"})
 @app.route('/enviar_empresa', methods=['POST'])
 def enviar_empresa():
-    # Obter os dados da empresa
     empresa = {
         "razao_social": request.form.get('razao_social'),
         "nome_fantasia": request.form.get('nome_fantasia'),
@@ -111,6 +114,7 @@ def enviar_empresa():
         "telefone_2": request.form.get('telefone_2'),
         "email": request.form.get('email'),
         "porte": request.form.get('porte'),
+        "cnpj": request.form.get('cnpj'),
         "socios": [
             {
                 "nome": nome_socio,
@@ -127,10 +131,17 @@ def enviar_empresa():
         ]
     }
 
-    # Enviar os dados dessa empresa específica para o Bitrix24
-    integration.enviar_dados_bitrix([empresa])
+    # Verifica se o lead já existe no Bitrix24
+    lead_existente = integration.verificar_lead_existente_por_titulo(f"Via Automação - {empresa['razao_social']} - CNPJ: {empresa['cnpj']}")
 
-    return jsonify({"success": True, "message": "Empresa enviada com sucesso"})
+    if lead_existente:
+        lead_id = lead_existente[0]['ID']
+        lead_link = f"https://setup.bitrix24.com.br/crm/lead/show/{lead_id}/"
+        return jsonify({"success": True, "lead_existente": True, "lead_link": lead_link})
+    else:
+        # Cria o lead se não existir
+        integration.enviar_dados_bitrix([empresa])
+        return jsonify({"success": True, "lead_existente": False})
 
 @app.route('/logout', methods=['POST'])
 def logout():

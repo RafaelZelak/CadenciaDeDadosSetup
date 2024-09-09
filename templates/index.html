@@ -11,238 +11,245 @@
 
     </style>
 </head>
-<body class="custom-body">
-    <div class="custom-container">
-        <div id="loading-spinner" style="display:none;">
-            <div class="spinner"></div>
-          </div>
-        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
-
-        <form action="/home" method="GET" class="form-container" id="searchForm">
-            <div class="input-container">
-                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
-                <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
+    <body class="custom-body">
+        <div class="custom-container">
+            <div id="loading-spinner" style="display:none;">
+                <div class="spinner"></div>
             </div>
+            <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
 
-            <div class="estado-cidade-button-container">
-                <div class="estado-cidade-container">
-                    <label class="title-filter">Filtros:</label>
-                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
-                    <datalist id="estados">
-                        <!-- Estados preenchidos dinamicamente via JavaScript -->
-                    </datalist>
-                    <p class="title-filter">e</p>
-                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
-                    <datalist id="cidades">
-                        <!-- Cidades preenchidas dinamicamente via JavaScript -->
-                    </datalist>
+            <form action="/home" method="GET" class="form-container" id="searchForm">
+                <div class="input-container">
+                    <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
+                    <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
                 </div>
 
-                <!-- Botão no lado esquerdo -->
-                <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
-            </div>
-        </form>
-
-        {% if dados_cnpj %}
-        <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
-        <ul>
-            {% for empresa in dados_cnpj %}
-            <li class="mb-4 dadosEmpresa flex justify-between items-center">
-                <div class="empresa-info">
-                    <!-- Nome da empresa sempre visível -->
-                    <p class="font-bold">{{ empresa.razao_social }}</p>
-
-                    <!-- Detalhes da empresa que serão colapsados -->
-                    <div class="detalhes-empresa hidden">
-                        <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
-                        <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
-                        <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
-                        <p><strong>Estado:</strong> {{ empresa.uf }}</p>
-                        <p><strong>CEP:</strong> {{ empresa.cep }}</p>
-                        <p><strong>Email:</strong> {{ empresa.email }}</p>
-                        <p><strong>Telefone:</strong> {{ empresa.telefone_1 }}</p>
-                        <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
-                        <p><strong>Porte:</strong> {{ empresa.porte }}</p>
-                        {% if empresa.socios %}
-                        <p class="socios"><strong>Sócios:</strong></p>
-                        <hr class="linha">
-                        <ul class="ul_socios">
-                            {% for socio in empresa.socios %}
-                                <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
-                                    <strong>Nome:</strong> {{ socio.nome }} <br>
-                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
-                                    <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
-                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
-                                </li>
-                                <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
-                            {% endfor %}
-                        </ul>
-
-                        {% if empresa.socios|length > 3 %}
-                            <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
-                            <hr class="linha">
-                        {% endif %}
-                        {% endif %}
+                <div class="estado-cidade-button-container">
+                    <div class="estado-cidade-container">
+                        <label class="title-filter">Filtros:</label>
+                        <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
+                        <datalist id="estados">
+                            <!-- Estados preenchidos dinamicamente via JavaScript -->
+                        </datalist>
+                        <p class="title-filter">e</p>
+                        <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
+                        <datalist id="cidades">
+                            <!-- Cidades preenchidas dinamicamente via JavaScript -->
+                        </datalist>
                     </div>
 
-                    <!-- Botão para expandir/colapsar detalhes -->
-                    <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
+                    <!-- Botão no lado esquerdo -->
+                    <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
                 </div>
+            </form>
 
-                <!-- Formulário de envio para o Bitrix24 sempre visível, centralizado verticalmente -->
-                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
-                    <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
-                    <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
-                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
-                    <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
-                    <input type="hidden" name="uf" value="{{ empresa.uf }}">
-                    <input type="hidden" name="cep" value="{{ empresa.cep }}">
-                    <input type="hidden" name="email" value="{{ empresa.email }}">
-                    <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
-                    <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
-                    <input type="hidden" name="porte" value="{{ empresa.porte }}">
+            {% if dados_cnpj %}
+            <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
+            <ul>
+                {% for empresa in dados_cnpj %}
+                <li class="mb-4 dadosEmpresa flex justify-between items-center">
+                    <div class="empresa-info">
+                        <!-- Nome da empresa sempre visível -->
+                        <p class="font-bold">{{ empresa.razao_social }}</p>
 
-                    <!-- Loop para sócios -->
-                    {% for socio in empresa.socios %}
-                        <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
-                        <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
-                        <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
-                        <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
-                    {% endfor %}
+                        <!-- Adicionando CNPJ -->
+                        <p class="font-semibold">CNPJ: {{ empresa.cnpj }}</p>
 
-                    <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
-                        <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
-                    </button>
-                </form>
-            </li>
+                        <!-- Detalhes da empresa que serão colapsados -->
+                        <div class="detalhes-empresa hidden">
+                            <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
+                            <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
+                            <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
+                            <p><strong>Estado:</strong> {{ empresa.uf }}</p>
+                            <p><strong>CEP:</strong> {{ empresa.cep }}</p>
+                            <p><strong>Email:</strong> {{ empresa.email }}</p>
+                            <p><strong>Telefone:</strong> {{ empresa.telefone_1 }}</p>
+                            <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
+                            <p><strong>Porte:</strong> {{ empresa.porte }}</p>
+                            {% if empresa.socios %}
+                            <p class="socios"><strong>Sócios:</strong></p>
+                            <hr class="linha">
+                            <ul class="ul_socios">
+                                {% for socio in empresa.socios %}
+                                    <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                                        <strong>Nome:</strong> {{ socio.nome }} <br>
+                                        <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
+                                        <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
+                                        <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
+                                    </li>
+                                    <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                                {% endfor %}
+                            </ul>
 
-            {% endfor %}
-        </ul>
+                            {% if empresa.socios|length > 3 %}
+                                <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
+                                <hr class="linha">
+                            {% endif %}
+                            {% endif %}
+                        </div>
 
-        <!-- Navegação de Páginas -->
-        <div class="pagination-container">
-            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
-                <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
-            </a>
-            <span>Página {{ page }}</span>
-            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link">
-                <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
-            </a>
+                        <!-- Botão para expandir/colapsar detalhes -->
+                        <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
+                    </div>
+
+                    <!-- Formulário de envio para o Bitrix24 sempre visível, centralizado verticalmente -->
+                    <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
+                        <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
+                        <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
+                        <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
+                        <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
+                        <input type="hidden" name="uf" value="{{ empresa.uf }}">
+                        <input type="hidden" name="cep" value="{{ empresa.cep }}">
+                        <input type="hidden" name="email" value="{{ empresa.email }}">
+                        <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
+                        <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
+                        <input type="hidden" name="porte" value="{{ empresa.porte }}">
+                        <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}"> <!-- Adicionando CNPJ -->
+
+                        <!-- Loop para sócios -->
+                        {% for socio in empresa.socios %}
+                            <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
+                            <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
+                            <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
+                            <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
+                        {% endfor %}
+
+                        <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
+                            <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
+                        </button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Navegação de Páginas -->
+            <div class="pagination-container">
+                <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
+                    <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
+                </a>
+                <span>Página {{ page }}</span>
+                <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link">
+                    <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
+                </a>
+            </div>
+            {% elif error %}
+            <p class="text-red-500">{{ error }}</p>
+            {% endif %}
         </div>
-        {% elif error %}
-        <p class="text-red-500">{{ error }}</p>
-        {% endif %}
-    </div>
-    <form action="{{ url_for('logout') }}" method="POST" class="exit">
-        <button type="submit" class="custom-button">
-            Exit
-        </button>
-    </form>
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.checkmark-btn');
+        <form action="{{ url_for('logout') }}" method="POST" class="exit">
+            <button type="submit" class="custom-button">
+                Exit
+            </button>
+        </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const buttons = document.querySelectorAll('.checkmark-btn');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            // Adiciona a classe loading para ativar a animação
-            button.classList.add('loading');
-            // Adiciona disabled ao botão
-            button.disabled = true;
+                buttons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        // Adiciona a classe loading para ativar a animação
+                        button.classList.add('loading');
+                        button.disabled = true;
 
-            // Encontrar o formulário pai e enviá-lo
-            const form = button.closest('form');
-            if (form) {
-                const formData = new FormData(form);
+                        // Encontrar o formulário pai e enviá-lo
+                        const form = button.closest('form');
+                        if (form) {
+                            const formData = new FormData(form);
 
-                fetch('/enviar_empresa', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Empresa enviada com sucesso!');
-                    } else {
-                        alert('Erro ao enviar a empresa.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                })
-                .finally(() => {
-                    // Remover a classe loading e habilitar o botão novamente
-                    button.classList.remove('loading');
-                    button.disabled = false;
+                            fetch('/enviar_empresa', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    if (data.lead_existente) {
+                                        // Abre o link do lead existente em uma nova aba
+                                        window.open(data.lead_link, '_blank');
+                                    } else {
+
+                                    }
+                                } else {
+
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro:', error);
+                            })
+                            .finally(() => {
+                                // Remover a classe loading e habilitar o botão novamente
+                                button.classList.remove('loading');
+                                button.disabled = false;
+                            });
+                        }
+                    });
                 });
-            }
-        });
-    });
-});
+            });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll('.enviar-empresa-form');
+            document.addEventListener('DOMContentLoaded', function () {
+                const forms = document.querySelectorAll('.enviar-empresa-form');
 
-    // Adiciona o listener para o botão de envio de todas as empresas
-    const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
+                // Adiciona o listener para o botão de envio de todas as empresas
+                const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
 
-    enviarTodasButton.addEventListener('click', function () {
-        const empresas = [];
+                enviarTodasButton.addEventListener('click', function () {
+                    const empresas = [];
 
-        // Captura os dados de todas as empresas renderizadas
-        forms.forEach(form => {
-            const formData = new FormData(form);
-            let sociosData = formData.get('socios');
+                    // Captura os dados de todas as empresas renderizadas
+                    forms.forEach(form => {
+                        const formData = new FormData(form);
+                        let sociosData = formData.get('socios');
 
-            // Verificar se o campo de sócios tem conteúdo
-            let socios = [];
-            if (sociosData) {
-                try {
-                    socios = JSON.parse(sociosData);  // Tentamos fazer o parse do JSON
-                } catch (e) {
-                    console.error('Erro ao fazer parse dos sócios:', e);
-                }
-            }
+                        // Verificar se o campo de sócios tem conteúdo
+                        let socios = [];
+                        if (sociosData) {
+                            try {
+                                socios = JSON.parse(sociosData);  // Tentamos fazer o parse do JSON
+                            } catch (e) {
+                                console.error('Erro ao fazer parse dos sócios:', e);
+                            }
+                        }
 
-            const empresa = {
-                "razao_social": formData.get('razao_social'),
-                "nome_fantasia": formData.get('nome_fantasia'),
-                "logradouro": formData.get('logradouro'),
-                "municipio": formData.get('municipio'),
-                "uf": formData.get('uf'),
-                "cep": formData.get('cep'),
-                "telefone_1": formData.get('telefone_1'),
-                "telefone_2": formData.get('telefone_2'),
-                "email": formData.get('email'),
-                "porte": formData.get('porte'),
-                "socios": socios  // Usar os sócios já parseados ou um array vazio
-            };
+                        const empresa = {
+                            "razao_social": formData.get('razao_social'),
+                            "nome_fantasia": formData.get('nome_fantasia'),
+                            "logradouro": formData.get('logradouro'),
+                            "municipio": formData.get('municipio'),
+                            "uf": formData.get('uf'),
+                            "cep": formData.get('cep'),
+                            "telefone_1": formData.get('telefone_1'),
+                            "telefone_2": formData.get('telefone_2'),
+                            "email": formData.get('email'),
+                            "porte": formData.get('porte'),
+                            "socios": socios  // Usar os sócios já parseados ou um array vazio
+                        };
 
-            empresas.push(empresa);
-        });
+                        empresas.push(empresa);
+                    });
 
-        // Faz a requisição para enviar todas as empresas
-        fetch('/enviar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(empresas)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Todas as empresas foram enviadas com sucesso!');
-            } else {
-                alert('Erro ao enviar as empresas.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
-    });
-});
-    </script>
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-</body>
+                    // Faz a requisição para enviar todas as empresas
+                    fetch('/enviar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(empresas)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Todas as empresas foram enviadas com sucesso!');
+                        } else {
+                            alert('Erro ao enviar as empresas.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                    });
+                });
+            });
+        </script>
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    </body>
 </html>

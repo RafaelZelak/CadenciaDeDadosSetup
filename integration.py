@@ -65,59 +65,87 @@ def obter_detalhes_cnpj(cnpj):
         print(f"Erro ao buscar detalhes do CNPJ: {response.status_code}, {response.text}")
         return {}
 
-# Função para enviar os dados ao CRM do Bitrix24
+def verificar_lead_existente_por_titulo(titulo):
+    bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.list.json"
+
+    filtros = {
+        "filter": {
+            "TITLE": titulo
+        },
+        "select": ["ID", "TITLE", "STATUS_ID"]
+    }
+
+    response = requests.post(bitrix_url, json=filtros)
+
+    if response.status_code == 200:
+        leads = response.json().get('result', [])
+        return leads if leads else None
+    else:
+        print(f"Erro ao verificar lead: {response.status_code}, {response.text}")
+        return None
+
+# Função para enviar leads ao Bitrix, verificando duplicatas primeiro
 def enviar_dados_bitrix(empresas):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"
     for empresa in empresas:
-        # Formatando detalhes dos sócios com mais espaçamento
-        socio_details = "\n\n".join([
-            f"Nome: {socio['nome']}\n"
-            f"Qualificação: {socio['qualificacao']}\n"
-            f"Faixa Etária: {socio['faixa_etaria']}\n"
-            f"Data de Entrada: {socio['data_entrada']}"
-            for socio in empresa.get('socios', [])
-        ])
+        cnpj = empresa.get('cnpj', 'Desconhecido')
+        titulo = f"Via Automação - {empresa.get('razao_social', '')} - CNPJ: {cnpj}"
 
-        # Formatando o endereço
-        logradouro = empresa.get('logradouro', '')
-        municipio = empresa.get('municipio', '')
-        uf = empresa.get('uf', '')
-        cep = empresa.get('cep', '')
+        # Verifica se o lead já existe
+        lead_existente = verificar_lead_existente_por_titulo(titulo)
 
-        # Padronizando o endereço no formato desejado
-        endereco_padronizado = f"{logradouro} - {municipio} {uf} - {cep[:5]}-{cep[5:]}"
-
-        # Filtra telefones válidos
-        telefones = []
-        if empresa.get('telefone_1'):
-            telefones.append({"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"})
-        if empresa.get('telefone_2'):
-            telefones.append({"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"})
-
-        payload = {
-            "fields": {
-                "TITLE": f"Via Automação - {empresa.get('razao_social', '')}",
-                "NAME": empresa.get('nome_fantasia', ''),
-                "STATUS_ID": "NEW",
-                "CURRENCY_ID": "BRL",
-                "OPPORTUNITY": "0",
-                "ADDRESS": endereco_padronizado,  # Usando endereço padronizado
-                "ADDRESS_CITY": municipio,
-                "ADDRESS_REGION": uf,
-                "ADDRESS_POSTAL_CODE": cep,
-                "UF": uf,
-                "PHONE": telefones,
-                "EMAIL": [{"VALUE": empresa.get('email', ''), "VALUE_TYPE": "WORK"}],
-                "COMMENTS": (
-                    f"Porte: {empresa.get('porte', '')}\n\n"
-                    f"Sócios:\n\n{socio_details}"
-                )
-            },
-            "params": {"REGISTER_SONET_EVENT": "Y"}
-        }
-
-        response = requests.post(bitrix_url, json=payload)
-        if response.status_code == 200:
-            print(f"Lead criado com sucesso: {response.json()}")
+        if lead_existente:
+            lead_id = lead_existente[0]['ID']
+            lead_link = f"https://setup.bitrix24.com.br/crm/lead/show/{lead_id}/"
+            print(f"Lead já existe: {lead_id}, {lead_existente[0]['TITLE']}. Acesse o lead aqui: {lead_link}")
+            continue  # Pula a criação do lead
         else:
-            print(f"Erro ao criar lead: {response.status_code}, {response.text}")
+            # Código para criar um novo lead
+            socio_details = "\n\n".join([
+                f"Nome: {socio['nome']}\n"
+                f"Qualificação: {socio['qualificacao']}\n"
+                f"Faixa Etária: {socio['faixa_etaria']}\n"
+                f"Data de Entrada: {socio['data_entrada']}"
+                for socio in empresa.get('socios', [])
+            ])
+
+            logradouro = empresa.get('logradouro', '')
+            municipio = empresa.get('municipio', '')
+            uf = empresa.get('uf', '')
+            cep = empresa.get('cep', '')
+
+            endereco_padronizado = f"{logradouro} - {municipio} {uf} - {cep[:5]}-{cep[5:]}"
+
+            telefones = []
+            if empresa.get('telefone_1'):
+                telefones.append({"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"})
+            if empresa.get('telefone_2'):
+                telefones.append({"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"})
+
+            payload = {
+                "fields": {
+                    "TITLE": titulo,
+                    "NAME": empresa.get('nome_fantasia', ''),
+                    "STATUS_ID": "NEW",
+                    "CURRENCY_ID": "BRL",
+                    "OPPORTUNITY": "0",
+                    "ADDRESS": endereco_padronizado,
+                    "ADDRESS_CITY": municipio,
+                    "ADDRESS_REGION": uf,
+                    "ADDRESS_POSTAL_CODE": cep,
+                    "UF": uf,
+                    "PHONE": telefones,
+                    "EMAIL": [{"VALUE": empresa.get('email', ''), "VALUE_TYPE": "WORK"}],
+                    "COMMENTS": (
+                        f"Porte: {empresa.get('porte', '')}\n\n"
+                        f"Sócios:\n\n{socio_details}"
+                    )
+                },
+                "params": {"REGISTER_SONET_EVENT": "Y"}
+            }
+
+            response = requests.post(bitrix_url, json=payload)
+            if response.status_code == 200:
+                print(f"Lead criado com sucesso: {response.json()}")
+            else:
+                print(f"Erro ao criar lead: {response.status_code}, {response.text}")
