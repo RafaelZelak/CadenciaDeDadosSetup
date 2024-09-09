@@ -95,7 +95,7 @@ document.querySelectorAll('.ver-mais-socios').forEach(button => {
     });
 });
 
-// Populando os estados com auto-completar
+// Preencher a lista de estados
 fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
     .then(response => response.json())
     .then(estados => {
@@ -106,9 +106,10 @@ fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
             option.textContent = estado.nome;
             estadoDatalist.appendChild(option);
         });
-    });
+    })
+    .catch(error => console.error('Erro ao carregar estados:', error));
 
-// Auto-completar e preenchimento dinâmico das cidades
+// Atualizar a lista de cidades com base no estado selecionado
 document.getElementById('estado').addEventListener('input', function() {
     const estadoSigla = this.value.toUpperCase();
     const cidadeDatalist = document.getElementById('cidades');
@@ -125,6 +126,36 @@ document.getElementById('estado').addEventListener('input', function() {
                     option.value = cidade.nome;
                     cidadeDatalist.appendChild(option);
                 });
-            });
+            })
+            .catch(error => console.error('Erro ao carregar cidades:', error));
+    }
+});
+
+// Preencher campos do formulário com valores da URL
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const termoBusca = urlParams.get('termo_busca') || '';
+    const estado = urlParams.get('estado') || '';
+    const cidade = urlParams.get('cidade') || '';
+
+    document.querySelector('input[name="termo_busca"]').value = termoBusca;
+    document.querySelector('input[name="estado"]').value = estado;
+    document.querySelector('input[name="cidade"]').value = cidade;
+
+    // Atualiza a lista de cidades com base no estado selecionado
+    if (estado) {
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`)
+            .then(response => response.json())
+            .then(cidades => {
+                const cidadeDatalist = document.getElementById('cidades');
+                cidadeDatalist.innerHTML = ''; // Limpa as cidades anteriores
+
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.nome;
+                    cidadeDatalist.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar cidades:', error));
     }
 });

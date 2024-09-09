@@ -18,7 +18,7 @@
           </div>
         <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
 
-        <form action="/home" method="GET" class="form-container">
+        <form action="/home" method="GET" class="form-container" id="searchForm">
             <div class="input-container">
                 <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
                 <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
@@ -27,12 +27,12 @@
             <div class="estado-cidade-button-container">
                 <div class="estado-cidade-container">
                     <label class="title-filter">Filtros:</label>
-                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado">
+                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
                     <datalist id="estados">
                         <!-- Estados preenchidos dinamicamente via JavaScript -->
                     </datalist>
                     <p class="title-filter">e</p>
-                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade">
+                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
                     <datalist id="cidades">
                         <!-- Cidades preenchidas dinamicamente via JavaScript -->
                     </datalist>

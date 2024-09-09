@@ -1,3 +1,20 @@
+::-webkit-scrollbar {
+    width: 8px;
+  }
+
+::-webkit-scrollbar-track {
+    background: #0a182e
+  }
+
+::-webkit-scrollbar-thumb {
+    background: #18305a;
+    border-radius: 4px;
+  }
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1d3a5f;
+  }
+
 .spinner {
     border: 8px solid #546788; /* Cor clara do spinner */
     border-top: 8px solid #23395a; /* Cor escura do spinner */
@@ -135,7 +152,6 @@ padding: 20px;
 }
 
 .buscar img {
-    margin-top: 12px;
     width: 60px;
     height: 60px;
 }
