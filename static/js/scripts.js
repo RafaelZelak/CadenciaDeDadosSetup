@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form'); // Formulário de busca
     const spinner = document.getElementById('loading-spinner');
-    const paginationLinks = document.querySelectorAll('.pagination a'); // Links de paginação
+
+    // Captura todos os links de paginação
+    const paginationLinks = document.querySelectorAll('.pagination a, .pagination-container a'); // Inclui a nova div de paginação
+
+    // Captura o botão de "Enviar Todas as Empresas"
+    const enviarTodasEmpresasBtn = document.getElementById('enviarTodasEmpresas');
 
     // Mostra o spinner ao submeter o formulário
     form.addEventListener('submit', function() {
@@ -15,11 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Mostra o spinner ao clicar no botão "Enviar Todas as Empresas"
+    enviarTodasEmpresasBtn.addEventListener('click', function() {
+        spinner.style.display = 'block'; // Exibe o spinner
+    });
+
+    // Mostra o spinner ao recarregar ou sair da página
+    window.addEventListener('beforeunload', function() {
+        spinner.style.display = 'block'; // Exibe o spinner ao recarregar a página
+    });
+
     // Esconde o spinner após o carregamento da página
     window.addEventListener('load', function() {
         spinner.style.display = 'none'; // Oculta o spinner após a página ser carregada
     });
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const togglePassword = document.querySelector('#toggle-password');

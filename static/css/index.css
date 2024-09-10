@@ -65,6 +65,7 @@
 .dadosEmpresa{
 background-color: #15294b;
 padding: 20px;
+border-radius: 10px;
 }
 
 .info-box {
@@ -282,4 +283,29 @@ padding: 20px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.exit {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin: 10px; /* opcional, para criar um espaçamento da borda */
+}
+
+.exit-button {
+    background-color: #ff121260; /* Exemplo de cor */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: .5s;
+}
+
+.exit-button:hover{
+    background-color: #ff1212d3;
+}
+
+.custom-button:hover {
+    background-color: #0a192f;
 }
