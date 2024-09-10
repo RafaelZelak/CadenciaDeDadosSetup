@@ -132,6 +132,7 @@ border-radius: 10px;
     border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: .3s;
+    outline: none;
 }
 
 .pesquisa:hover, .pesquisa:active {

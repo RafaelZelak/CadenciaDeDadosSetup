@@ -1,0 +1,51 @@
+2024-09-10 10:58:26,602 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.16.252:5000
+2024-09-10 10:58:26,602 - INFO - [33mPress CTRL+C to quit[0m
+2024-09-10 10:58:26,603 - INFO -  * Restarting with stat
+2024-09-10 10:58:27,180 - WARNING -  * Debugger is active!
+2024-09-10 10:58:27,185 - INFO -  * Debugger PIN: 120-759-032
+2024-09-10 10:58:27,467 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:27,471 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:27] "GET /home?termo_busca=+HEALTHMED+SERVICOS+MEDICOS+LTDA&estado=&cidade=Curitiba HTTP/1.1" 200 -
+2024-09-10 10:58:27,586 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:27] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:27,614 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:27] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:27,622 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:27] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:27,628 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:27] "GET /static/img/logo_ico.png HTTP/1.1" 200 -
+2024-09-10 10:58:29,493 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:29,493 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:29] "GET /home?termo_busca=+HEALTHMED+SERVICOS+MEDICOS+LTDA&estado=&cidade=Curitiba HTTP/1.1" 200 -
+2024-09-10 10:58:29,493 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:29] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:29,509 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:29] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:29,509 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:29] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:30,706 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:30,706 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:30] "GET /home?termo_busca=+HEALTHMED+SERVICOS+MEDICOS+LTDA&estado=&cidade=Curitiba HTTP/1.1" 200 -
+2024-09-10 10:58:30,732 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:30] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:30,732 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:30] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:30,733 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:30] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:31,554 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:31,554 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:31] "GET /home?termo_busca=+HEALTHMED+SERVICOS+MEDICOS+LTDA&estado=&cidade=Curitiba HTTP/1.1" 200 -
+2024-09-10 10:58:31,570 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:31] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:31,570 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:31] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:31,570 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:31] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:32,310 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:32,310 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:32] "GET /home?termo_busca=+HEALTHMED+SERVICOS+MEDICOS+LTDA&estado=&cidade=Curitiba HTTP/1.1" 200 -
+2024-09-10 10:58:32,334 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:32] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:32,335 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:32] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:32,336 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:32] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:37,522 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:37,523 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:37] "GET /home?termo_busca=médico&estado=&cidade= HTTP/1.1" 200 -
+2024-09-10 10:58:37,538 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:37] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:37,539 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:37] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:37,540 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:37] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:39,101 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:39,101 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /home?termo_busca=médico&estado=&cidade= HTTP/1.1" 200 -
+2024-09-10 10:58:39,123 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:39,123 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:39,123 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:39,724 - ERROR - Erro HTTP ao buscar dados do CNPJ: 400 Client Error: Bad Request for url: https://api.casadosdados.com.br/v2/public/cnpj/search
+2024-09-10 10:58:39,724 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /home?termo_busca=médico&estado=&cidade= HTTP/1.1" 200 -
+2024-09-10 10:58:39,743 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/css/index.css HTTP/1.1" 200 -
+2024-09-10 10:58:39,744 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/img/search.svg HTTP/1.1" 200 -
+2024-09-10 10:58:39,746 - INFO - 127.0.0.1 - - [10/Sep/2024 10:58:39] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2024-09-10 10:58:42,457 - INFO -  * Detected change in 'c:\\Users\\rafael.zelak\\Desktop\\CadenciaDeDadosSetup\\integration.py', reloading
+2024-09-10 10:58:42,501 - INFO -  * Restarting with stat
