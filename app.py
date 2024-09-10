@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, request, session, redirect, url_for, render_template, flash, jsonify
 from ldap3 import Server, Connection, ALL_ATTRIBUTES, SUBTREE
 import integration
 
@@ -62,9 +62,6 @@ def login():
 
     return render_template('login.html')
 
-from flask import Flask, request, session, redirect, url_for, render_template, flash, jsonify
-import integration  # Certifique-se de que este módulo está corretamente importado
-
 @app.route('/home', methods=['GET'])
 def home():
     if not session.get('logged_in'):
@@ -78,28 +75,39 @@ def home():
     page = int(request.args.get('page', 1))
 
     dados_cnpj = []
+    tem_mais_paginas = False
+
     if termo_busca:
         dados_cnpj = integration.obter_dados_cnpj(termo_busca, estado, cidade, page)
+
         if dados_cnpj:
             for empresa in dados_cnpj:
                 cnpj = empresa.get('cnpj')
                 detalhes = integration.obter_detalhes_cnpj(cnpj)
                 if detalhes:
                     empresa.update(detalhes)
+
+            proxima_pagina = integration.obter_dados_cnpj(termo_busca, estado, cidade, page + 1)
+            tem_mais_paginas = bool(proxima_pagina)  # True se houver mais páginas de resultados
         else:
             flash('Nenhum dado encontrado para o termo informado.', 'error')
 
-    return render_template('index.html', full_name=full_name, dados_cnpj=dados_cnpj, termo_busca=termo_busca, estado=estado, cidade=cidade, page=page)
-
+    return render_template(
+        'index.html',
+        full_name=full_name,
+        dados_cnpj=dados_cnpj,
+        termo_busca=termo_busca,
+        estado=estado,
+        cidade=cidade,
+        page=page,
+        tem_mais_paginas=tem_mais_paginas
+    )
 
 @app.route('/enviar', methods=['POST'])
 def enviar_varias_empresas():
-    # Receber os dados de várias empresas
     empresas = request.get_json()
 
-    # Loop para enviar os dados dessas empresas para o Bitrix24
     for empresa in empresas:
-        # Verificar se há sócios e formatar corretamente
         socio_details = "\n\n".join([
             f"Nome: {socio['nome']}\n"
             f"Qualificação: {socio['qualificacao']}\n"
@@ -108,7 +116,6 @@ def enviar_varias_empresas():
             for socio in empresa.get('socios', [])
         ])
 
-        # Insira os dados no campo correto
         empresa['socios_formatados'] = socio_details if socio_details else 'Nenhum sócio registrado'
 
     integration.enviar_dados_bitrix(empresas)
@@ -145,7 +152,6 @@ def enviar_empresa():
         ]
     }
 
-    # Verifica se o lead já existe no Bitrix24
     lead_existente = integration.verificar_lead_existente_por_titulo(f"Via Automação - {empresa['razao_social']} - CNPJ: {empresa['cnpj']}")
 
     if lead_existente:

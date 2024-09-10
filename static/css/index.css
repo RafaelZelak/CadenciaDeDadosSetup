@@ -16,9 +16,9 @@
   }
 
 .spinner {
-    border: 8px solid #546788; /* Cor clara do spinner */
-    border-top: 8px solid #23395a; /* Cor escura do spinner */
-    border-radius: 50%; /* Arredonda as bordas do spinner */
+    border: 8px solid #546788;
+    border-top: 8px solid #23395a;
+    border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 2s linear infinite;
@@ -41,18 +41,18 @@
 }
 
 .custom-body {
-    background-color: #0a192f; /* Dark Blue Background */
-    color: #ccd6f6; /* Light Blue Text */
+    background-color: #0a192f;
+    color: #ccd6f6;
 }
 .custom-container {
-    background-color: #112240; /* Darker Blue Background */
+    background-color: #112240;
     border-radius: 8px;
     padding: 20px;
     max-width: 1000px;
     margin: auto;
 }
 .custom-button {
-    background-color: #64ffda; /* Light Blue Button */
+    background-color: #64ffda;
     color: #0a192f;
     border: none;
     padding: 10px 20px;
@@ -109,7 +109,7 @@ border-radius: 10px;
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espaçamento entre os elementos */
+    gap: 20px;
 }
 
 .input-container {
@@ -122,7 +122,7 @@ border-radius: 10px;
 .pesquisa {
     width: 100%;
     padding: 10px 0px 10px 0px;
-    padding-right: 50px; /* Espaço para o botão */
+    padding-right: 50px;
     box-sizing: border-box;
     color: #0a192f;
     font-size: 22pt;
@@ -141,7 +141,7 @@ border-radius: 10px;
 
 .buscar {
     position: absolute;
-    right: 10px; /* Alinha o botão no lado direito */
+    right: 10px;
     width: 50px;
     height: 50px;
     border: none;
@@ -166,8 +166,8 @@ border-radius: 10px;
 
 .estado-cidade-container {
     display: flex;
-    gap: 20px; /* Espaçamento entre os campos de estado e cidade */
-    flex: 1; /* Permite que o contêiner ocupe o máximo de espaço */
+    gap: 20px;
+    flex: 1;
 }
 
 .estado, .cidade {
@@ -210,7 +210,7 @@ border-radius: 10px;
 }
 
 .inline-icon {
-    width: 24px;  /* Ajuste conforme necessário */
+    width: 24px;
     height: 24px;
     vertical-align: middle;
 }
@@ -219,16 +219,16 @@ border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* Espaçamento entre os elementos */
+    gap: 20px;
     margin-top: 20px;
 }
 
 .pagination-link {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaçamento entre o texto e o ícone */
+    gap: 8px;
     text-decoration: none;
-    color: #fff; /* Ou a cor desejada */
+    color: #fff;
 }
 
 .pagination-link[disabled] {
@@ -243,11 +243,11 @@ border-radius: 10px;
 
 .pagination-container span {
     font-size: 1.2em;
-    color: #fff; /* Altere conforme o seu tema */
+    color: #fff;
 }
 
 .checkmark-btn {
-    background-color: #64ffda; /* Light Blue Button */
+    background-color: #64ffda;
     color: #0a192f;
     border: none;
     padding: 10px 20px;
@@ -266,7 +266,7 @@ border-radius: 10px;
     border-radius: 100px;
     justify-content: center;
     padding: 0;
-    text-indent: -9999px; /* Hide the text */
+    text-indent: -9999px;
 }
 
 .checkmark-btn.loading img {
@@ -275,7 +275,7 @@ border-radius: 10px;
 
 .checkmark-btn.loading::before {
     content: '';
-    background-image: url('/static/img/checkmark.svg'); /* Caminho manual */
+    background-image: url('/static/img/checkmark.svg');
     background-size: cover;
     width: 24px;
     height: 24px;
@@ -289,11 +289,11 @@ border-radius: 10px;
     position: fixed;
     bottom: 0;
     left: 0;
-    margin: 10px; /* opcional, para criar um espaçamento da borda */
+    margin: 10px;
 }
 
 .exit-button {
-    background-color: #ff121260; /* Exemplo de cor */
+    background-color: #ff121260;
     color: white;
     border: none;
     padding: 10px 20px;

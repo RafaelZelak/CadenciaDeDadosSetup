@@ -44,10 +44,9 @@ def obter_detalhes_cnpj(cnpj):
                 "data_entrada": socio.get("data_entrada_sociedade", "")
             }
             for socio in dados.get("qsa", [])
-            if socio.get("nome_socio")  # Garante que sócios válidos sejam incluídos
+            if socio.get("nome_socio")
         ]
 
-        # Retorna dados com verificação para evitar None
         return {
             "email": dados.get("email", ""),
             "telefone_1": dados.get("ddd_telefone_1", ""),
@@ -91,16 +90,14 @@ def enviar_dados_bitrix(empresas):
         cnpj = empresa.get('cnpj', 'Desconhecido')
         titulo = f"Via Automação - {empresa.get('razao_social', '')} - CNPJ: {cnpj}"
 
-        # Verifica se o lead já existe
         lead_existente = verificar_lead_existente_por_titulo(titulo)
 
         if lead_existente:
             lead_id = lead_existente[0]['ID']
             lead_link = f"https://setup.bitrix24.com.br/crm/lead/show/{lead_id}/"
             print(f"Lead já existe: {lead_id}, {lead_existente[0]['TITLE']}. Acesse o lead aqui: {lead_link}")
-            continue  # Pula a criação do lead
+            continue
         else:
-            # Código para criar um novo lead
             socio_details = "\n\n".join([
                 f"Nome: {socio['nome']}\n"
                 f"Qualificação: {socio['qualificacao']}\n"

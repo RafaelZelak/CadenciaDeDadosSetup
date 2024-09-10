@@ -29,16 +29,15 @@
                         <label class="title-filter">Filtros:</label>
                         <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
                         <datalist id="estados">
-                            <!-- Estados preenchidos dinamicamente via JavaScript -->
+
                         </datalist>
                         <p class="title-filter">e</p>
                         <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
                         <datalist id="cidades">
-                            <!-- Cidades preenchidas dinamicamente via JavaScript -->
+
                         </datalist>
                     </div>
 
-                    <!-- Botão no lado esquerdo -->
                     <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
                 </div>
             </form>
@@ -49,13 +48,11 @@
                 {% for empresa in dados_cnpj %}
                 <li class="mb-4 dadosEmpresa flex justify-between items-center">
                     <div class="empresa-info">
-                        <!-- Nome da empresa sempre visível -->
+
                         <p class="font-bold">{{ empresa.razao_social }}</p>
 
-                        <!-- Adicionando CNPJ -->
                         <p class="font-semibold">CNPJ: {{ empresa.cnpj }}</p>
 
-                        <!-- Detalhes da empresa que serão colapsados -->
                         <div class="detalhes-empresa hidden">
                             <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
                             <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
@@ -63,7 +60,7 @@
                             <p><strong>Estado:</strong> {{ empresa.uf }}</p>
                             <p><strong>CEP:</strong> {{ empresa.cep }}</p>
                             <p><strong>Email:</strong> {{ empresa.email }}</p>
-                            <p><strong>Telefone:</strong> {{ empresa.telefone_1 }}</p>
+                            <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 }}</p>
                             <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
                             <p><strong>Porte:</strong> {{ empresa.porte }}</p>
                             {% if empresa.socios %}
@@ -88,11 +85,9 @@
                             {% endif %}
                         </div>
 
-                        <!-- Botão para expandir/colapsar detalhes -->
                         <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
                     </div>
 
-                    <!-- Formulário de envio para o Bitrix24 sempre visível, centralizado verticalmente -->
                     <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
                         <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
                         <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
@@ -104,9 +99,8 @@
                         <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
                         <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
                         <input type="hidden" name="porte" value="{{ empresa.porte }}">
-                        <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}"> <!-- Adicionando CNPJ -->
+                        <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}">
 
-                        <!-- Loop para sócios -->
                         {% for socio in empresa.socios %}
                             <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
                             <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
@@ -122,16 +116,18 @@
                 {% endfor %}
             </ul>
 
-            <!-- Navegação de Páginas -->
             <div class="pagination-container">
                 <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
                     <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
                 </a>
+
                 <span>Página {{ page }}</span>
-                <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link">
+
+                <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link" {% if not tem_mais_paginas %}disabled{% endif %}>
                     <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
                 </a>
             </div>
+
             {% elif error %}
             <p class="text-red-500">{{ error }}</p>
             {% endif %}
@@ -148,11 +144,9 @@
                 buttons.forEach(button => {
                     button.addEventListener('click', function (e) {
                         e.preventDefault();
-                        // Adiciona a classe loading para ativar a animação
                         button.classList.add('loading');
                         button.disabled = true;
 
-                        // Encontrar o formulário pai e enviá-lo
                         const form = button.closest('form');
                         if (form) {
                             const formData = new FormData(form);
@@ -165,7 +159,6 @@
                             .then(data => {
                                 if (data.success) {
                                     if (data.lead_existente) {
-                                        // Abre o link do lead existente em uma nova aba
                                         window.open(data.lead_link, '_blank');
                                     } else {
 
@@ -178,7 +171,6 @@
                                 console.error('Erro:', error);
                             })
                             .finally(() => {
-                                // Remover a classe loading e habilitar o botão novamente
                                 button.classList.remove('loading');
                                 button.disabled = false;
                             });
@@ -190,24 +182,20 @@
             document.addEventListener('DOMContentLoaded', function () {
     const forms = document.querySelectorAll('.enviar-empresa-form');
 
-    // Adiciona o listener para o botão de envio de todas as empresas
     const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
 
     enviarTodasButton.addEventListener('click', function () {
         const empresas = [];
 
-        // Captura os dados de todas as empresas renderizadas
         forms.forEach(form => {
             const formData = new FormData(form);
 
-            // Captura e monta os dados de sócios corretamente
             const socios = [];
             const socios_nome = formData.getAll('socios_nome[]');
             const socios_faixa_etaria = formData.getAll('socios_faixa_etaria[]');
             const socios_qualificacao = formData.getAll('socios_qualificacao[]');
             const socios_data_entrada = formData.getAll('socios_data_entrada[]');
 
-            // Iterar sobre os nomes e verificar se as informações dos sócios estão completas
             for (let i = 0; i < socios_nome.length; i++) {
                 if (socios_nome[i] && socios_faixa_etaria[i] && socios_qualificacao[i] && socios_data_entrada[i]) {
                     socios.push({
@@ -219,7 +207,6 @@
                 }
             }
 
-            // Captura os dados da empresa, garantindo que o CNPJ esteja presente
             const empresa = {
                 "razao_social": formData.get('razao_social'),
                 "nome_fantasia": formData.get('nome_fantasia'),
@@ -231,14 +218,13 @@
                 "telefone_2": formData.get('telefone_2'),
                 "email": formData.get('email'),
                 "porte": formData.get('porte'),
-                "cnpj": formData.get('cnpj'), // Captura correta do CNPJ
-                "socios": socios // Usar os sócios já formatados
+                "cnpj": formData.get('cnpj'),
+                "socios": socios
             };
 
             empresas.push(empresa);
         });
 
-        // Faz a requisição para enviar todas as empresas
         fetch('/enviar', {
             method: 'POST',
             headers: {
