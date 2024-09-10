@@ -166,12 +166,12 @@ border-radius: 10px;
 
 .estado-cidade-container {
     display: flex;
-    gap: 20px;
+    gap: 12px;
     flex: 1;
 }
 
 .estado, .cidade {
-    width: 170px;
+    width: 150px;
     height: 40px;
     padding: 10px;
     border-radius: 10px;
@@ -179,6 +179,7 @@ border-radius: 10px;
     color: #ffffff;
     font-size: 11pt;
     outline: none;
+    text-align: center;
 }
 
 .global-send-button {
