@@ -97,10 +97,24 @@ def enviar_varias_empresas():
     # Receber os dados de várias empresas
     empresas = request.get_json()
 
-    # Enviar os dados dessas empresas para o Bitrix24
+    # Loop para enviar os dados dessas empresas para o Bitrix24
+    for empresa in empresas:
+        # Verificar se há sócios e formatar corretamente
+        socio_details = "\n\n".join([
+            f"Nome: {socio['nome']}\n"
+            f"Qualificação: {socio['qualificacao']}\n"
+            f"Faixa Etária: {socio['faixa_etaria']}\n"
+            f"Data de Entrada: {socio['data_entrada']}"
+            for socio in empresa.get('socios', [])
+        ])
+
+        # Insira os dados no campo correto
+        empresa['socios_formatados'] = socio_details if socio_details else 'Nenhum sócio registrado'
+
     integration.enviar_dados_bitrix(empresas)
 
     return jsonify({"success": True, "message": "Empresas enviadas com sucesso"})
+
 @app.route('/enviar_empresa', methods=['POST'])
 def enviar_empresa():
     empresa = {

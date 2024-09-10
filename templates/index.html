@@ -188,67 +188,77 @@
             });
 
             document.addEventListener('DOMContentLoaded', function () {
-                const forms = document.querySelectorAll('.enviar-empresa-form');
+    const forms = document.querySelectorAll('.enviar-empresa-form');
 
-                // Adiciona o listener para o botão de envio de todas as empresas
-                const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
+    // Adiciona o listener para o botão de envio de todas as empresas
+    const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
 
-                enviarTodasButton.addEventListener('click', function () {
-                    const empresas = [];
+    enviarTodasButton.addEventListener('click', function () {
+        const empresas = [];
 
-                    // Captura os dados de todas as empresas renderizadas
-                    forms.forEach(form => {
-                        const formData = new FormData(form);
-                        let sociosData = formData.get('socios');
+        // Captura os dados de todas as empresas renderizadas
+        forms.forEach(form => {
+            const formData = new FormData(form);
 
-                        // Verificar se o campo de sócios tem conteúdo
-                        let socios = [];
-                        if (sociosData) {
-                            try {
-                                socios = JSON.parse(sociosData);  // Tentamos fazer o parse do JSON
-                            } catch (e) {
-                                console.error('Erro ao fazer parse dos sócios:', e);
-                            }
-                        }
+            // Captura e monta os dados de sócios corretamente
+            const socios = [];
+            const socios_nome = formData.getAll('socios_nome[]');
+            const socios_faixa_etaria = formData.getAll('socios_faixa_etaria[]');
+            const socios_qualificacao = formData.getAll('socios_qualificacao[]');
+            const socios_data_entrada = formData.getAll('socios_data_entrada[]');
 
-                        const empresa = {
-                            "razao_social": formData.get('razao_social'),
-                            "nome_fantasia": formData.get('nome_fantasia'),
-                            "logradouro": formData.get('logradouro'),
-                            "municipio": formData.get('municipio'),
-                            "uf": formData.get('uf'),
-                            "cep": formData.get('cep'),
-                            "telefone_1": formData.get('telefone_1'),
-                            "telefone_2": formData.get('telefone_2'),
-                            "email": formData.get('email'),
-                            "porte": formData.get('porte'),
-                            "socios": socios  // Usar os sócios já parseados ou um array vazio
-                        };
-
-                        empresas.push(empresa);
+            // Iterar sobre os nomes e verificar se as informações dos sócios estão completas
+            for (let i = 0; i < socios_nome.length; i++) {
+                if (socios_nome[i] && socios_faixa_etaria[i] && socios_qualificacao[i] && socios_data_entrada[i]) {
+                    socios.push({
+                        nome: socios_nome[i],
+                        faixa_etaria: socios_faixa_etaria[i],
+                        qualificacao: socios_qualificacao[i],
+                        data_entrada: socios_data_entrada[i]
                     });
+                }
+            }
 
-                    // Faz a requisição para enviar todas as empresas
-                    fetch('/enviar', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(empresas)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Todas as empresas foram enviadas com sucesso!');
-                        } else {
-                            alert('Erro ao enviar as empresas.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro:', error);
-                    });
-                });
-            });
+            // Captura os dados da empresa, garantindo que o CNPJ esteja presente
+            const empresa = {
+                "razao_social": formData.get('razao_social'),
+                "nome_fantasia": formData.get('nome_fantasia'),
+                "logradouro": formData.get('logradouro'),
+                "municipio": formData.get('municipio'),
+                "uf": formData.get('uf'),
+                "cep": formData.get('cep'),
+                "telefone_1": formData.get('telefone_1'),
+                "telefone_2": formData.get('telefone_2'),
+                "email": formData.get('email'),
+                "porte": formData.get('porte'),
+                "cnpj": formData.get('cnpj'), // Captura correta do CNPJ
+                "socios": socios // Usar os sócios já formatados
+            };
+
+            empresas.push(empresa);
+        });
+
+        // Faz a requisição para enviar todas as empresas
+        fetch('/enviar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(empresas)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Todas as empresas foram enviadas com sucesso!');
+            } else {
+                alert('Erro ao enviar as empresas.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    });
+});
         </script>
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </body>
