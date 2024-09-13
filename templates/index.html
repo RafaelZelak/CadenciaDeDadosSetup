@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeadGen</title>
+    <title>LeadGen - Busca de Dados de Empresas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -12,241 +12,229 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 </head>
-    <body class="custom-body">
-        <div class="custom-container">
-            <div id="loading-spinner" style="display:none;">
-                <div class="spinner"></div>
-            </div>
-            <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
-
-            <form action="/home" method="GET" class="form-container" id="searchForm">
-                <div class="input-container">
-                    <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
-                    <button type="submit" class="buscar"><img src="static/img/search.svg" alt="Buscar"></button>
-                </div>
-
-                <div class="estado-cidade-button-container">
-                    <div class="estado-cidade-container">
-                        <label class="title-filter">Filtros:</label>
-                        <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
-                        <datalist id="estados">
-
-                        </datalist>
-                        <p class="title-filter">e</p>
-                        <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
-                        <datalist id="cidades">
-
-                        </datalist>
-                    </div>
-
-                    <button id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
-                </div>
-            </form>
-
-            {% if dados_cnpj %}
-            <h2 class="result-title font-bold mb-4 text-center ">Resultados</h2>
-            <ul>
-                {% for empresa in dados_cnpj %}
-                <li class="mb-4 dadosEmpresa flex justify-between items-center">
-                    <div class="empresa-info">
-
-                        <p class="font-bold">{{ empresa.razao_social }}</p>
-
-                        <p class="font-semibold">CNPJ: {{ empresa.cnpj }}</p>
-
-                        <div class="detalhes-empresa hidden">
-                            <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
-                            <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
-                            <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
-                            <p><strong>Estado:</strong> {{ empresa.uf }}</p>
-                            <p><strong>CEP:</strong> {{ empresa.cep }}</p>
-                            <p><strong>Email:</strong> {{ empresa.email }}</p>
-                            <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 }}</p>
-                            <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
-                            <p><strong>Porte:</strong> {{ empresa.porte }}</p>
-                            {% if empresa.socios %}
-                            <p class="socios"><strong>Sócios:</strong></p>
-                            <hr class="linha">
-                            <ul class="ul_socios">
-                                {% for socio in empresa.socios %}
-                                    <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
-                                        <strong>Nome:</strong> {{ socio.nome }} <br>
-                                        <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
-                                        <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
-                                        <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
-                                    </li>
-                                    <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
-                                {% endfor %}
-                            </ul>
-
-                            {% if empresa.socios|length > 3 %}
-                                <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
-                                <hr class="linha">
-                            {% endif %}
-                            {% endif %}
-                        </div>
-
-                        <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
-                    </div>
-
-                    <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
-                        <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
-                        <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
-                        <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
-                        <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
-                        <input type="hidden" name="uf" value="{{ empresa.uf }}">
-                        <input type="hidden" name="cep" value="{{ empresa.cep }}">
-                        <input type="hidden" name="email" value="{{ empresa.email }}">
-                        <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
-                        <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
-                        <input type="hidden" name="porte" value="{{ empresa.porte }}">
-                        <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}">
-
-                        {% for socio in empresa.socios %}
-                            <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
-                            <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
-                            <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
-                            <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
-                        {% endfor %}
-
-                        <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
-                            <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
-                        </button>
-                    </form>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <div class="pagination-container">
-                <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
-                    <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
-                </a>
-
-                <span>Página {{ page }}</span>
-
-                <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link" {% if not tem_mais_paginas %}disabled{% endif %}>
-                    <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
-                </a>
-            </div>
-
-            {% elif error %}
-            <p class="text-red-500">{{ error }}</p>
-            {% endif %}
+<body class="custom-body">
+    <div class="custom-container">
+        <div id="loading-spinner" style="display:none;">
+            <div class="spinner"></div>
         </div>
-        <form action="{{ url_for('logout') }}" method="POST" class="exit">
-            <button type="submit" class="exit-button">
-                Sair
-            </button>
+        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
+
+        <form action="/home" method="GET" class="form-container" id="searchForm">
+            <div class="input-container">
+                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
+                <button type="submit" class="buscar"><img src="{{ url_for('static', filename='img/search.svg') }}" alt="Buscar"></button>
+            </div>
+
+            <div class="estado-cidade-button-container">
+                <div class="estado-cidade-container">
+                    <label class="title-filter">Filtros:</label>
+                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
+                    <datalist id="estados"></datalist>
+                    <p class="title-filter">e</p>
+                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
+                    <datalist id="cidades"></datalist>
+                </div>
+
+                <button type="button" id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
+            </div>
         </form>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const buttons = document.querySelectorAll('.checkmark-btn');
 
-                buttons.forEach(button => {
-                    button.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        button.classList.add('loading');
-                        button.disabled = true;
+        {% if dados_cnpj %}
+        <h2 class="result-title font-bold mb-4 text-center">Resultados</h2>
+        <ul>
+            {% for empresa in dados_cnpj %}
+            <li class="mb-4 dadosEmpresa flex justify-between items-center">
+                <div class="empresa-info">
+                    <p class="font-bold">{{ empresa.razao_social }}</p>
+                    <p class="font-semibold">CNPJ: {{ empresa.cnpj }}</p>
 
-                        const form = button.closest('form');
-                        if (form) {
-                            const formData = new FormData(form);
+                    <div class="detalhes-empresa hidden">
+                        <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
+                        <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
+                        <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
+                        <p><strong>Estado:</strong> {{ empresa.uf }}</p>
+                        <p><strong>CEP:</strong> {{ empresa.cep }}</p>
+                        <p><strong>Email:</strong> {{ empresa.email }}</p>
+                        <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 }}</p>
+                        <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
+                        <p><strong>Porte:</strong> {{ empresa.porte }}</p>
+                        {% if empresa.socios %}
+                        <p class="socios"><strong>Sócios:</strong></p>
+                        <hr class="linha">
+                        <ul class="ul_socios">
+                            {% for socio in empresa.socios %}
+                                <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                                    <strong>Nome:</strong> {{ socio.nome }} <br>
+                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
+                                    <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
+                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
+                                </li>
+                                <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                            {% endfor %}
+                        </ul>
 
-                            fetch('/enviar_empresa', {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    if (data.lead_existente) {
-                                        window.open(data.lead_link, '_blank');
-                                    } else {
+                        {% if empresa.socios|length > 3 %}
+                            <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
+                            <hr class="linha">
+                        {% endif %}
+                        {% endif %}
+                    </div>
 
-                                    }
-                                } else {
+                    <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
+                </div>
 
+                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
+                    <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
+                    <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
+                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
+                    <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
+                    <input type="hidden" name="uf" value="{{ empresa.uf }}">
+                    <input type="hidden" name="cep" value="{{ empresa.cep }}">
+                    <input type="hidden" name="email" value="{{ empresa.email }}">
+                    <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
+                    <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
+                    <input type="hidden" name="porte" value="{{ empresa.porte }}">
+                    <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}">
+
+                    {% for socio in empresa.socios %}
+                        <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
+                        <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
+                        <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
+                        <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
+                    {% endfor %}
+
+                    <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
+                        <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
+                    </button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagination-container">
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
+                <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
+            </a>
+
+            <span>Página {{ page }}</span>
+
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link" {% if not tem_mais_paginas %}disabled{% endif %}>
+                <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
+            </a>
+        </div>
+
+        {% elif error %}
+        <p class="text-red-500">{{ error }}</p>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('logout') }}" method="POST" class="exit">
+        <button type="submit" class="exit-button">Sair</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.checkmark-btn');
+            const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
+            const forms = document.querySelectorAll('.enviar-empresa-form');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    button.classList.add('loading');
+                    button.disabled = true;
+
+                    const form = button.closest('form');
+                    if (form) {
+                        const formData = new FormData(form);
+
+                        fetch('/enviar_empresa', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                if (data.lead_existente) {
+                                    window.open(data.lead_link, '_blank');
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Erro:', error);
-                            })
-                            .finally(() => {
-                                button.classList.remove('loading');
-                                button.disabled = false;
-                            });
-                        }
-                    });
+                            } else {
+                                alert('Erro ao enviar a empresa.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro:', error);
+                            alert('Erro na requisição.');
+                        })
+                        .finally(() => {
+                            button.classList.remove('loading');
+                            button.disabled = false;
+                        });
+                    }
                 });
             });
 
-            document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll('.enviar-empresa-form');
+            enviarTodasButton.addEventListener('click', function () {
+                const empresas = [];
 
-    const enviarTodasButton = document.getElementById('enviarTodasEmpresas');
+                forms.forEach(form => {
+                    const formData = new FormData(form);
 
-    enviarTodasButton.addEventListener('click', function () {
-        const empresas = [];
+                    const socios = [];
+                    const socios_nome = formData.getAll('socios_nome[]');
+                    const socios_faixa_etaria = formData.getAll('socios_faixa_etaria[]');
+                    const socios_qualificacao = formData.getAll('socios_qualificacao[]');
+                    const socios_data_entrada = formData.getAll('socios_data_entrada[]');
 
-        forms.forEach(form => {
-            const formData = new FormData(form);
+                    for (let i = 0; i < socios_nome.length; i++) {
+                        if (socios_nome[i] && socios_faixa_etaria[i] && socios_qualificacao[i] && socios_data_entrada[i]) {
+                            socios.push({
+                                nome: socios_nome[i],
+                                faixa_etaria: socios_faixa_etaria[i],
+                                qualificacao: socios_qualificacao[i],
+                                data_entrada: socios_data_entrada[i]
+                            });
+                        }
+                    }
 
-            const socios = [];
-            const socios_nome = formData.getAll('socios_nome[]');
-            const socios_faixa_etaria = formData.getAll('socios_faixa_etaria[]');
-            const socios_qualificacao = formData.getAll('socios_qualificacao[]');
-            const socios_data_entrada = formData.getAll('socios_data_entrada[]');
+                    const empresa = {
+                        "razao_social": formData.get('razao_social'),
+                        "nome_fantasia": formData.get('nome_fantasia'),
+                        "logradouro": formData.get('logradouro'),
+                        "municipio": formData.get('municipio'),
+                        "uf": formData.get('uf'),
+                        "cep": formData.get('cep'),
+                        "telefone_1": formData.get('telefone_1'),
+                        "telefone_2": formData.get('telefone_2'),
+                        "email": formData.get('email'),
+                        "porte": formData.get('porte'),
+                        "cnpj": formData.get('cnpj'),
+                        "socios": socios
+                    };
 
-            for (let i = 0; i < socios_nome.length; i++) {
-                if (socios_nome[i] && socios_faixa_etaria[i] && socios_qualificacao[i] && socios_data_entrada[i]) {
-                    socios.push({
-                        nome: socios_nome[i],
-                        faixa_etaria: socios_faixa_etaria[i],
-                        qualificacao: socios_qualificacao[i],
-                        data_entrada: socios_data_entrada[i]
-                    });
-                }
-            }
+                    empresas.push(empresa);
+                });
 
-            const empresa = {
-                "razao_social": formData.get('razao_social'),
-                "nome_fantasia": formData.get('nome_fantasia'),
-                "logradouro": formData.get('logradouro'),
-                "municipio": formData.get('municipio'),
-                "uf": formData.get('uf'),
-                "cep": formData.get('cep'),
-                "telefone_1": formData.get('telefone_1'),
-                "telefone_2": formData.get('telefone_2'),
-                "email": formData.get('email'),
-                "porte": formData.get('porte'),
-                "cnpj": formData.get('cnpj'),
-                "socios": socios
-            };
-
-            empresas.push(empresa);
+                fetch('/enviar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(empresas)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Todas as empresas foram enviadas com sucesso!');
+                    } else {
+                        alert('Erro ao enviar as empresas.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro na requisição.');
+                });
+            });
         });
-
-        fetch('/enviar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(empresas)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Todas as empresas foram enviadas com sucesso!');
-            } else {
-                alert('Erro ao enviar as empresas.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
-    });
-});
-        </script>
-        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-    </body>
+    </script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
 </html>
