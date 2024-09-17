@@ -106,18 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.ver-mais').forEach(button => {
         button.addEventListener('click', function() {
             const detalhes = this.previousElementSibling;
-            detalhes.classList.toggle('hidden');
-            this.textContent = detalhes.classList.contains('hidden') ? 'Ver mais' : 'Ver menos';
+            detalhes.classList.toggle('expanded');
+            this.textContent = detalhes.classList.contains('expanded') ? 'Ver menos' : 'Ver mais';
         });
     });
 
-    // Alternar visibilidade de sócios
     document.querySelectorAll('.ver-mais-socios').forEach(button => {
         button.addEventListener('click', function() {
             const socioExtras = this.previousElementSibling.querySelectorAll('.socio-extra');
 
             socioExtras.forEach(socio => {
-                socio.classList.toggle('hidden');
+                socio.classList.toggle('visible');
             });
 
             if (this.textContent === 'Ver mais sócios') {

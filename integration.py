@@ -76,6 +76,20 @@ def obter_dados_cnpj(termo, estado='', cidade='', page=1):
         print(f"Erro inesperado na requisição ao obter dados do CNPJ: {e}")
         return None
 
+def filtrar_cnpjs_por_palavras_chave(cnpjs, palavras_chave):
+    palavras_chave_lower = [palavra.lower() for palavra in palavras_chave]
+    return [
+        cnpj for cnpj in cnpjs
+        if any(palavra in cnpj.get('razao_social', '').lower() for palavra in palavras_chave_lower)
+    ]
+
+# Exemplo de uso:
+palavras_chave = ["conta", "contabil", "contabilidade", "advo", "advogado", "advocacia", "associ", "associação"]
+termo = "conta"  # Termo inicial para a busca
+cnpjs = obter_dados_cnpj(termo)
+if cnpjs:
+    cnpjs_filtrados = filtrar_cnpjs_por_palavras_chave(cnpjs, palavras_chave)
+
 # Função para obter os dados enriquecidos do CNPJ via BrasilAPI
 def obter_detalhes_cnpj(cnpj):
     url = f"https://brasilapi.com.br/api/cnpj/v1/{cnpj}"
@@ -143,7 +157,6 @@ def verificar_lead_existente_por_titulo(titulo):
     except RequestException as e:
         print(f"Erro inesperado na requisição ao verificar lead no Bitrix: {e}")
         return None
-
 
 def enviar_dados_bitrix(empresas):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"

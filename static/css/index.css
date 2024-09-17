@@ -100,8 +100,27 @@ border-radius: 10px;
     color: #a5b9ee;
 }
 
-.detalhes-empresa{
-    padding-top: 19px;
+.detalhes-empresa {
+    padding-top: 10px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 3.5s ease-out;
+}
+
+.detalhes-empresa.expanded {
+
+    max-height: 3200px;
+}
+
+.socio-extra {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.socio-extra.visible {
+    display: list-item;
+    opacity: 1;
 }
 
 .form-container {
