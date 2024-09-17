@@ -2,6 +2,10 @@ import cloudscraper
 import requests
 import re
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
+import scrap
+import json
+import asyncio
+
 
 # Função auxiliar para validar o CNPJ
 def validar_cnpj(cnpj):
@@ -140,10 +144,24 @@ def verificar_lead_existente_por_titulo(titulo):
         print(f"Erro inesperado na requisição ao verificar lead no Bitrix: {e}")
         return None
 
-# Função para enviar leads ao Bitrix, com validação de dados
+
 def enviar_dados_bitrix(empresas):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"
-    for empresa in empresas:
+
+    # Lista de queries a ser enviada para o scrap.py
+    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
+
+    # Chama a função de scrap e aguarda o resultado de forma síncrona
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    scrap_results = loop.run_until_complete(scrap.process_queries(queries))
+
+    for idx, empresa in enumerate(empresas):
+        # Atualiza os dados da empresa com o resultado do scrap
+        if scrap_results[idx]:
+            scrap_data = json.loads(scrap_results[idx])
+            empresa = atualizar_dados_empresa_com_scrap(empresa, scrap_data)
+
         # Validação dos dados da empresa
         erros = validar_dados_empresa(empresa)
         if erros:
@@ -163,13 +181,12 @@ def enviar_dados_bitrix(empresas):
             print(f"Lead já existe: {lead_id}, {lead_existente[0]['TITLE']}. Acesse o lead aqui: {lead_link}")
             continue
         else:
-            socio_details = "\n\n".join([
-                f"Nome: {socio['nome']}\n"
-                f"Qualificação: {socio['qualificacao']}\n"
-                f"Faixa Etária: {socio['faixa_etaria']}\n"
-                f"Data de Entrada: {socio['data_entrada']}"
-                for socio in empresa.get('socios', [])
-            ])
+            # Montagem dos detalhes dos sócios
+            socio_details = "\n\n".join([f"Nome: {socio['nome']}\n"
+                                         f"Qualificação: {socio['qualificacao']}\n"
+                                         f"Faixa Etária: {socio['faixa_etaria']}\n"
+                                         f"Data de Entrada: {socio['data_entrada']}"
+                                         for socio in empresa.get('socios', [])])
 
             logradouro = empresa.get('logradouro', '')
             municipio = empresa.get('municipio', '')
@@ -183,6 +200,19 @@ def enviar_dados_bitrix(empresas):
                 telefones.append({"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"})
             if empresa.get('telefone_2'):
                 telefones.append({"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"})
+
+            # Formatação do campo de comentários com os dados enriquecidos e sócios
+            comentarios = (
+                f"Nome: {scrap_data.get('knowledge_graph', {}).get('title', 'Não disponível')}\n"
+                f"Rating: {scrap_data.get('knowledge_graph', {}).get('rating', 'Não disponível')} ({scrap_data.get('knowledge_graph', {}).get('review_count', 'Não disponível')})\n"
+                f"Endereço: {scrap_data.get('knowledge_graph', {}).get('address', 'Não disponível')}\n"
+                f"Telefone: {scrap_data.get('consolidated_contact_info', {}).get('phone', 'Não disponível')}\n"
+                f"Email: {scrap_data.get('consolidated_contact_info', {}).get('email', 'Não disponível')}\n\n"
+                f"Redes Sociais: {', '.join(scrap_data.get('consolidated_contact_info', {}).get('social_media_profiles', [])) or 'Não disponível'}\n\n"
+                f"Horários de Funcionamento:\n" +
+                "\n".join([f"{dia}: {horario}" for dia, horario in scrap_data.get('knowledge_graph', {}).get('hours', {}).items()]) +
+                f"\n\nSócios:\n\n{socio_details}\n"
+            )
 
             payload = {
                 "fields": {
@@ -198,10 +228,7 @@ def enviar_dados_bitrix(empresas):
                     "UF": uf,
                     "PHONE": telefones,
                     "EMAIL": [{"VALUE": empresa.get('email', ''), "VALUE_TYPE": "WORK"}],
-                    "COMMENTS": (
-                        f"Porte: {empresa.get('porte', '')}\n\n"
-                        f"Sócios:\n\n{socio_details}"
-                    )
+                    "COMMENTS": comentarios
                 },
                 "params": {"REGISTER_SONET_EVENT": "Y"}
             }
@@ -218,3 +245,14 @@ def enviar_dados_bitrix(empresas):
             except RequestException as e:
                 print(f"Erro inesperado na requisição ao Bitrix: {e}")
 
+def atualizar_dados_empresa_com_scrap(empresa, scrap_data):
+    """Atualiza os dados da empresa com as informações obtidas via scrap."""
+    contact_info = scrap_data.get('consolidated_contact_info', {})
+    knowledge_graph = scrap_data.get('knowledge_graph', {})
+
+    # Atualizar telefone, email e endereço se disponíveis no scrap
+    empresa['telefone_1'] = contact_info.get('phone', empresa.get('telefone_1', ''))
+    empresa['email'] = contact_info.get('email', empresa.get('email', ''))
+    empresa['logradouro'] = contact_info.get('address', empresa.get('logradouro', ''))
+
+    return empresa
