@@ -13,6 +13,10 @@ import sys
 import time
 
 TIMEOUT = 20
+
+phone_regex = r'\(?\+?[0-9]{1,4}\)?[\s.-]?[0-9]{1,4}[\s.-]?[0-9]{1,4}[\s.-]?[0-9]{1,9}'
+address_regex = r'\d+\s[\w\s.-]+,\s?[A-Za-z\s]+,\s?[A-Za-z\s]+,\s?\d{5}(-\d{4})?'
+
 # Função para capturar informações do Knowledge Graph
 async def extract_knowledge_graph(soup):
     knowledge_data = {}
@@ -105,7 +109,7 @@ async def google_search(query, session):
 
             results = []
 
-            # Captura do Knowledge Graph
+            # Captura do Knowledge Graph, se disponível
             knowledge_graph_data = await extract_knowledge_graph(soup)
             if knowledge_graph_data:
                 results.append({
@@ -113,18 +117,28 @@ async def google_search(query, session):
                     'link': 'Info do Knowledge Graph',
                     'knowledge_data': knowledge_graph_data
                 })
-            else:
-                pass
 
-            # Extrair links dos resultados normais de busca
+            # Capturar links dos resultados normais de busca
             for g in soup.find_all('div', class_='g'):
                 title = g.find('h3').text if g.find('h3') else "No title"
                 a_tag = g.find('a')
                 link = a_tag['href'] if a_tag and a_tag.has_attr('href') else None
                 snippet = g.find('span', class_='aCOpRe').text if g.find('span', class_='aCOpRe') else "No snippet"
-                results.append({'title': title, 'link': link, 'snippet': snippet})
+
+                # Extração de possíveis telefones ou endereços no snippet de texto
+                phone = re.findall(phone_regex, snippet)
+                address = re.findall(address_regex, snippet)
+
+                results.append({
+                    'title': title,
+                    'link': link,
+                    'snippet': snippet,
+                    'phone': phone[0] if phone else None,
+                    'address': address[0] if address else None
+                })
 
             return results
+
     except asyncio.TimeoutError:
         print(f"Timeout ao acessar {google_search_url}")
         return []

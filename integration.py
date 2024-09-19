@@ -5,6 +5,8 @@ from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestExce
 import scrap
 import json
 import asyncio
+import csv
+import os
 
 
 # Função auxiliar para validar o CNPJ
@@ -76,20 +78,6 @@ def obter_dados_cnpj(termo, estado='', cidade='', page=1):
         print(f"Erro inesperado na requisição ao obter dados do CNPJ: {e}")
         return None
 
-def filtrar_cnpjs_por_palavras_chave(cnpjs, palavras_chave):
-    palavras_chave_lower = [palavra.lower() for palavra in palavras_chave]
-    return [
-        cnpj for cnpj in cnpjs
-        if any(palavra in cnpj.get('razao_social', '').lower() for palavra in palavras_chave_lower)
-    ]
-
-# Exemplo de uso:
-palavras_chave = ["conta", "contabil", "contabilidade", "advo", "advogado", "advocacia", "associ", "associação"]
-termo = "conta"  # Termo inicial para a busca
-cnpjs = obter_dados_cnpj(termo)
-if cnpjs:
-    cnpjs_filtrados = filtrar_cnpjs_por_palavras_chave(cnpjs, palavras_chave)
-
 # Função para obter os dados enriquecidos do CNPJ via BrasilAPI
 def obter_detalhes_cnpj(cnpj):
     url = f"https://brasilapi.com.br/api/cnpj/v1/{cnpj}"
@@ -158,6 +146,32 @@ def verificar_lead_existente_por_titulo(titulo):
         print(f"Erro inesperado na requisição ao verificar lead no Bitrix: {e}")
         return None
 
+import csv
+import os
+
+def salvar_dados_fracos_csv(empresa):
+    # Define o caminho do arquivo CSV na pasta 'data/'
+    caminho_arquivo = 'data/dados_fracos.csv'
+
+    # Verifica se a pasta 'data/' existe, se não, cria a pasta
+    if not os.path.exists('data'):
+        os.makedirs('data')
+
+    # Abre o arquivo CSV em modo de append ('a') e cria o writer
+    with open(caminho_arquivo, mode='a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+
+        # Se o arquivo está vazio, escreve o cabeçalho
+        if file.tell() == 0:
+            writer.writerow(['Nome Fantasia / Razão Social', 'Município'])
+
+        # Escreve a nova linha com os dados da empresa
+        nome_fantasia_ou_razao_social = empresa.get('nome_fantasia', empresa.get('razao_social', ''))
+        municipio = empresa.get('municipio', '')
+
+        writer.writerow([nome_fantasia_ou_razao_social, municipio])
+    print(f"Dados fracos salvos no CSV: {nome_fantasia_ou_razao_social}, {municipio}")
+
 def enviar_dados_bitrix(empresas):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"
 
@@ -177,6 +191,17 @@ def enviar_dados_bitrix(empresas):
 
         # Validação dos dados da empresa
         erros = validar_dados_empresa(empresa)
+
+        # Verifica se os telefones são placeholders ou estão ausentes
+        placeholder_telefone = '+555525501001'
+        telefone_1 = empresa.get('telefone_1')
+        telefone_2 = empresa.get('telefone_2')
+
+        if (telefone_1 == placeholder_telefone or not telefone_1) and (telefone_2 == placeholder_telefone or not telefone_2):
+            # Dados fracos (sem telefone válido)
+            salvar_dados_fracos_csv(empresa)
+            continue  # Pula para a próxima empresa
+
         if erros:
             print(f"Erros encontrados na empresa {empresa.get('razao_social', 'Desconhecida')} - CNPJ: {empresa.get('cnpj', 'Desconhecido')}")
             for erro in erros:
@@ -195,7 +220,7 @@ def enviar_dados_bitrix(empresas):
             continue
         else:
             # Montagem dos detalhes dos sócios
-            socio_details = "\n\n".join([f"Nome: {socio['nome']}\n"
+            socio_details = "\n\n".join([f"Nome: {', '.join(socio['nome']) if isinstance(socio['nome'], list) else socio['nome']}\n"
                                          f"Qualificação: {socio['qualificacao']}\n"
                                          f"Faixa Etária: {socio['faixa_etaria']}\n"
                                          f"Data de Entrada: {socio['data_entrada']}"
@@ -209,9 +234,9 @@ def enviar_dados_bitrix(empresas):
             endereco_padronizado = f"{logradouro} - {municipio} {uf} - {cep[:5]}-{cep[5:]}"
 
             telefones = []
-            if empresa.get('telefone_1'):
+            if empresa.get('telefone_1') and empresa.get('telefone_1') != placeholder_telefone:
                 telefones.append({"VALUE": empresa.get('telefone_1', ''), "VALUE_TYPE": "WORK"})
-            if empresa.get('telefone_2'):
+            if empresa.get('telefone_2') and empresa.get('telefone_2') != placeholder_telefone:
                 telefones.append({"VALUE": empresa.get('telefone_2', ''), "VALUE_TYPE": "WORK"})
 
             # Formatação do campo de comentários com os dados enriquecidos e sócios
