@@ -44,10 +44,6 @@ def validar_dados_empresa(empresa):
     if not empresa.get('razao_social', '').strip():
         erros.append("Razão social da empresa está ausente.")
 
-    # Verifica se o nome fantasia está presente
-    if not empresa.get('nome_fantasia', '').strip():
-        erros.append("Nome fantasia da empresa está ausente.")
-
     # Verifica se pelo menos um telefone ou e-mail está presente
     if not (empresa.get('telefone_1') or empresa.get('telefone_2') or empresa.get('email')):
         erros.append("É necessário pelo menos um telefone ou e-mail de contato.")
@@ -161,9 +157,6 @@ def verificar_lead_existente_por_titulo(titulo):
     except RequestException as e:
         print(f"Erro inesperado na requisição ao verificar lead no Bitrix: {e}")
         return None
-
-import csv
-import os
 
 def salvar_dados_fracos_csv(empresa, usuario_logado):
     caminho_arquivo = 'data/dados_fracos.csv'

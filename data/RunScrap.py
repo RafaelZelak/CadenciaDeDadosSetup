@@ -1,10 +1,11 @@
 import asyncio
 import json
+import csv
 from WebScrapSelenium import run_scraping_multiple
 from WebScrapBeautifulSoup import run_beautifulsoup_scraping
 from tqdm.asyncio import tqdm_asyncio
 import time
-import json
+import os
 
 async def combine_results(selenium_data, beautifulsoup_data):
     # Verificar se os dados do BeautifulSoup são válidos
@@ -12,7 +13,6 @@ async def combine_results(selenium_data, beautifulsoup_data):
         bs_data = {}
     else:
         try:
-            # Tentar carregar diretamente o beautifulsoup_data
             bs_data = json.loads(beautifulsoup_data)
         except (json.JSONDecodeError, TypeError) as e:
             print(f"Erro ao carregar BeautifulSoup data: {e}")
@@ -22,16 +22,17 @@ async def combine_results(selenium_data, beautifulsoup_data):
     if not isinstance(bs_data, dict):
         bs_data = {}
 
-    # Garantir que bs_data sempre tenha um dicionário para knowledge_graph e consolidated_contact_info
-    knowledge_graph = bs_data.get("knowledge_graph", {})
+    # Garantir que bs_data sempre tenha um dicionário para consolidated_contact_info
     consolidated_contact_info = bs_data.get("consolidated_contact_info", {})
 
-    # Garantir que knowledge_graph e consolidated_contact_info não sejam None
-    if not isinstance(knowledge_graph, dict):
-        knowledge_graph = {}
+    # Garantir que consolidated_contact_info não seja None
     if not isinstance(consolidated_contact_info, dict):
         consolidated_contact_info = {}
 
+    # Verificar se existe um knowledge_graph e lidar com a ausência dele
+    knowledge_graph = bs_data.get("knowledge_graph", {})
+    if not isinstance(knowledge_graph, dict):
+        knowledge_graph = {}
 
     # Combinar redes sociais de Selenium e BeautifulSoup e remover duplicatas
     combined_social_media = list(set(selenium_data.get("social_media_profiles", []) + consolidated_contact_info.get("social_media_profiles", [])))
@@ -47,9 +48,9 @@ async def combine_results(selenium_data, beautifulsoup_data):
 
     # Criar o dicionário consolidado usando os dados disponíveis
     consolidated_data = {
-        "name": knowledge_graph.get("title", ""),
-        "rating": knowledge_graph.get("rating", ""),
-        "review_count": knowledge_graph.get("review_count", ""),
+        "name": knowledge_graph.get("title", ""),  # Ignora se não tiver título
+        "rating": knowledge_graph.get("rating", ""),  # Ignora se não tiver rating
+        "review_count": knowledge_graph.get("review_count", ""),  # Ignora se não tiver review_count
         "address": consolidated_contact_info.get("address", None),
         "phone": selenium_data.get("phone", consolidated_contact_info.get("phone", "")),
         "email": selenium_data.get("email", consolidated_contact_info.get("email", [])),
@@ -57,35 +58,55 @@ async def combine_results(selenium_data, beautifulsoup_data):
         "social_media_profiles": normalized_social_media
     }
 
-
     return consolidated_data
 
 async def main():
-    queries = [
-        "Setup Tecnologia"
-    ]
+    csv_file_path = os.path.join(os.path.dirname(__file__), 'dados_fracos.csv')
+    # Carregar os dados do CSV
+    with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        empresas = [row for row in reader]
 
-    start_time = time.time()  # Registrar o tempo no início da execução
+    resultados_enriquecidos = []
 
-    # Rodar o scraping com Selenium e BeautifulSoup em paralelo para todas as queries
-    selenium_task = asyncio.to_thread(run_scraping_multiple, queries)  # Converter função síncrona para assíncrona
-    beautifulsoup_task = run_beautifulsoup_scraping(queries)  # Já é assíncrona
+    start_time = time.time()
 
-    # Exibir uma barra de progresso enquanto as tarefas estão em execução
-    selenium_results, beautifulsoup_results = await tqdm_asyncio.gather(
-        selenium_task,
-        beautifulsoup_task,
-        desc="Processando scraping",
-        total=2
-    )
+    # Fazer a pesquisa para cada empresa
+    for empresa in empresas:
+        query = f"{empresa['Empresa']} {empresa['Município']}"
+        print(f"\nIniciando scraping para: {query}")
 
-    # Combinar os resultados de cada query
-    for query, selenium_result in selenium_results.items():
-        beautifulsoup_result = beautifulsoup_results[queries.index(query)]
+        # Rodar o scraping com Selenium e BeautifulSoup em paralelo
+        selenium_task = asyncio.to_thread(run_scraping_multiple, [query])
+        beautifulsoup_task = run_beautifulsoup_scraping([query])
+
+        # Exibir barra de progresso enquanto a tarefa executa
+        selenium_results, beautifulsoup_results = await tqdm_asyncio.gather(
+            selenium_task,
+            beautifulsoup_task,
+            desc=f"Processando scraping para {query}",
+            total=2
+        )
+
+        # Combinar os resultados do Selenium e BeautifulSoup
+        selenium_result = selenium_results.get(query, {})
+        beautifulsoup_result = beautifulsoup_results[0]  # Assumimos que a posição 0 é para este query
         combined_result = await combine_results(selenium_result, beautifulsoup_result)
 
-        # Exibir o resultado combinado para cada empresa
-        print(f"\nResultado Combinado para '{query}': {json.dumps(combined_result, indent=4, ensure_ascii=False)}")
+        # Adicionar username ao resultado combinado
+        combined_result['username'] = empresa['Username']
+
+        # Armazenar o resultado para salvar posteriormente
+        resultados_enriquecidos.append(combined_result)
+
+    # Salvar os resultados no CSV de saída
+    with open('data/dados_enriquecidos.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        fieldnames = ['name', 'rating', 'review_count', 'address', 'phone', 'email', 'hours', 'social_media_profiles', 'username']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for resultado in resultados_enriquecidos:
+            writer.writerow(resultado)
 
     # Calcular o tempo total de execução
     end_time = time.time()
