@@ -152,6 +152,8 @@ def enviar_empresa():
         ]
     }
 
+    usuario_logado = session.get('username', 'Usuário Desconhecido')
+
     lead_existente = integration.verificar_lead_existente_por_titulo(f"Via Automação - {empresa['razao_social']} - CNPJ: {empresa['cnpj']}")
 
     if lead_existente:
@@ -159,8 +161,8 @@ def enviar_empresa():
         lead_link = f"https://setup.bitrix24.com.br/crm/lead/show/{lead_id}/"
         return jsonify({"success": True, "lead_existente": True, "lead_link": lead_link})
     else:
-        # Cria o lead se não existir
-        integration.enviar_dados_bitrix([empresa])
+        # Passar o nome do usuário para a função do integration.py
+        integration.enviar_dados_bitrix([empresa], usuario_logado)
         return jsonify({"success": True, "lead_existente": False})
 
 @app.route('/logout', methods=['POST'])

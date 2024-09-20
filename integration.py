@@ -149,30 +149,26 @@ def verificar_lead_existente_por_titulo(titulo):
 import csv
 import os
 
-def salvar_dados_fracos_csv(empresa):
-    # Define o caminho do arquivo CSV na pasta 'data/'
+def salvar_dados_fracos_csv(empresa, usuario_logado):
     caminho_arquivo = 'data/dados_fracos.csv'
 
-    # Verifica se a pasta 'data/' existe, se não, cria a pasta
     if not os.path.exists('data'):
         os.makedirs('data')
 
-    # Abre o arquivo CSV em modo de append ('a') e cria o writer
     with open(caminho_arquivo, mode='a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
 
-        # Se o arquivo está vazio, escreve o cabeçalho
         if file.tell() == 0:
-            writer.writerow(['Nome Fantasia / Razão Social', 'Município'])
+            writer.writerow(['Nome Fantasia / Razão Social', 'Município', 'Usuário'])
 
-        # Escreve a nova linha com os dados da empresa
         nome_fantasia_ou_razao_social = empresa.get('nome_fantasia', empresa.get('razao_social', ''))
         municipio = empresa.get('municipio', '')
 
-        writer.writerow([nome_fantasia_ou_razao_social, municipio])
-    print(f"Dados fracos salvos no CSV: {nome_fantasia_ou_razao_social}, {municipio}")
+        writer.writerow([nome_fantasia_ou_razao_social, municipio, usuario_logado])
 
-def enviar_dados_bitrix(empresas):
+    print(f"Dados fracos salvos no CSV: {nome_fantasia_ou_razao_social}, {municipio}, Usuário: {usuario_logado}")
+
+def enviar_dados_bitrix(empresas, usuario_logado):
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.lead.add.json"
 
     # Lista de queries a ser enviada para o scrap.py
@@ -193,13 +189,13 @@ def enviar_dados_bitrix(empresas):
         erros = validar_dados_empresa(empresa)
 
         # Verifica se os telefones são placeholders ou estão ausentes
-        placeholder_telefone = '+555525501001'
+        placeholder_telefone = '+553758200010'
         telefone_1 = empresa.get('telefone_1')
         telefone_2 = empresa.get('telefone_2')
 
         if (telefone_1 == placeholder_telefone or not telefone_1) and (telefone_2 == placeholder_telefone or not telefone_2):
             # Dados fracos (sem telefone válido)
-            salvar_dados_fracos_csv(empresa)
+            salvar_dados_fracos_csv(empresa, usuario_logado)
             continue  # Pula para a próxima empresa
 
         if erros:
