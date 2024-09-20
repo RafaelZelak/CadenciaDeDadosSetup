@@ -7,7 +7,19 @@ import json
 import asyncio
 import csv
 import os
+from nltk.stem import SnowballStemmer
 
+stemmer = SnowballStemmer("portuguese")
+
+def expandir_termo(termo):
+    radical = stemmer.stem(termo)
+
+    # Possíveis sufixos comuns no português
+    sufixos = ['a', 'aria', 'idade', 'mento', 'ção', 'dor', 'ismo', 'ista', 'oso', 'ável', 'ção', 'eria', 'ório', 'teria', 'ia']
+
+    expansoes = [termo] + [radical + sufixo for sufixo in sufixos]
+
+    return expansoes
 
 # Função auxiliar para validar o CNPJ
 def validar_cnpj(cnpj):
@@ -46,9 +58,13 @@ def validar_dados_empresa(empresa):
 def obter_dados_cnpj(termo, estado='', cidade='', page=1):
     scraper = cloudscraper.create_scraper()
     url = "https://api.casadosdados.com.br/v2/public/cnpj/search"
+
+    # Expande o termo para incluir possíveis variações
+    termos_expandidos = expandir_termo(termo)
+
     data = {
         "query": {
-            "termo": [termo],
+            "termo": termos_expandidos,  # Agora buscando por variações
             "uf": [estado] if estado else [],
             "municipio": [cidade] if cidade else [],
             "situacao_cadastral": "ATIVA"
@@ -189,7 +205,7 @@ def enviar_dados_bitrix(empresas, usuario_logado):
         erros = validar_dados_empresa(empresa)
 
         # Verifica se os telefones são placeholders ou estão ausentes
-        placeholder_telefone = '+553758200010'
+        placeholder_telefone = '+555525501001'
         telefone_1 = empresa.get('telefone_1')
         telefone_2 = empresa.get('telefone_2')
 
