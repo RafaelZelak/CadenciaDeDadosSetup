@@ -30,14 +30,13 @@ def query_already_exists(cursor, query):
     return cursor.fetchone() is not None
 
 # Função para inserir o resultado enriquecido no banco de dados, incluindo a query
-# Função para inserir o resultado enriquecido no banco de dados, incluindo a query
 def insert_enriched_data(cursor, user_id, data, query):
     try:
         # Certifique-se de usar o nome exato da tabela e colunas, com aspas duplas se necessário
         query_sql = '''
             INSERT INTO "Result" ("userid", "name", "rating", "review_count", "address",
-                                  "phone", "email", "hours", "social_media_profiles", "enterprise")
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                  "phone", "email", "hours", "social_media_profiles", "enterprise", "enviado_bitrix")
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         cursor.execute(query_sql, (
             user_id,
@@ -49,7 +48,8 @@ def insert_enriched_data(cursor, user_id, data, query):
             json.dumps(data.get("email", [])),
             json.dumps(data.get("hours", {})),
             json.dumps(data.get("social_media_profiles", [])),
-            query  # Aqui estamos inserindo a query
+            query,
+            False
         ))
         print(f"Dados inseridos com sucesso para o usuário ID {user_id}")
     except Exception as e:

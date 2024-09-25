@@ -40,6 +40,44 @@
     z-index: 9999;
 }
 
+#notification-counter {
+    display: none;
+}
+
+#notification-icon {
+    left: 10px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.notification{
+    background-color: #16335edc;
+    width: 600px;
+}
+
+.progress-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background-color: #3b82f6;
+    width: 100%;
+    transition: width linear 10s;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+.notification.disappearing {
+    animation: disappear 0.5s forwards;
+}
+
+@keyframes disappear {
+    to {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+}
+
 .custom-body {
     background-color: #0a192f;
     color: #ccd6f6;
@@ -328,4 +366,45 @@ border-radius: 10px;
 
 .custom-button:hover {
     background-color: #0a192f;
+}
+
+.switch-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+
+.switch {
+    width: 60px;
+    height: 30px;
+    background-color: #1e3a8a; /* Dark Blue */
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ball {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s ease;
+}
+
+.switch.on {
+    background-color: #2563eb; /* Lighter Blue when active */
+}
+
+.switch.on .ball {
+    left: 32px;
+}
+
+.toggle-text{
+    position: fixed;
+    bottom: 10px;
+    right: 80px;
 }

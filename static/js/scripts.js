@@ -187,3 +187,118 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Erro ao carregar cidades:', error));
     }
 });
+
+function toggleSwitch() {
+    const toggle = document.getElementById('toggle');
+    const text = document.getElementById('text');
+
+    // Alterna entre 'Bitrix' e 'Planilha'
+    if (toggle.classList.toggle('on')) {
+        text.innerText = 'Planilha';
+        localStorage.setItem('toggleState', 'Planilha');
+    } else {
+        text.innerText = 'Bitrix';
+        localStorage.setItem('toggleState', 'Bitrix');
+    }
+}
+
+// Carrega o estado salvo ao inicializar
+window.onload = function() {
+    const savedState = localStorage.getItem('toggleState');
+    const toggle = document.getElementById('toggle');
+    const text = document.getElementById('text');
+
+    if (savedState === 'Planilha') {
+        toggle.classList.add('on');
+        text.innerText = 'Planilha';
+    } else {
+        text.innerText = 'Bitrix';
+    }
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    const notifications = document.querySelectorAll('.notification');
+    const dismissedNotifications = []; // Armazena as notificações que sumiram
+    const notificationCounter = document.getElementById('notification-counter');
+    const notificationLink = document.getElementById('notification-link');
+
+    // Atualiza o contador de notificações
+    function updateNotificationCounter() {
+        notificationCounter.textContent = dismissedNotifications.length;
+        notificationCounter.style.display = dismissedNotifications.length > 0 ? 'inline' : 'none';
+    }
+
+    notifications.forEach((notification, index) => {
+        setTimeout(() => {
+            notification.classList.remove('opacity-0', 'translate-y-4');
+            notification.classList.add('opacity-100', 'translate-y-0');
+
+            // Inicia a redução da barra de progresso
+            const progressBar = notification.querySelector('.progress-bar');
+            progressBar.style.width = '0%';
+
+            // Remove a notificação após 10 segundos
+            setTimeout(() => {
+                notification.classList.add('disappearing');
+                dismissedNotifications.push(notification.outerHTML); // Salva a notificação
+                updateNotificationCounter(); // Atualiza o contador
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 500); // Tempo da animação de desaparecer
+            }, 10000); // 10 segundos de espera
+        }, 100 * index); // Cada notificação aparece com um pequeno atraso
+    });
+
+    // Função para exibir notificações quando o link é clicado
+    notificationLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        const notificationList = document.getElementById('notification-list');
+
+        // Reinsere as notificações que sumiram
+        dismissedNotifications.forEach((notificationHTML, index) => {
+            notificationList.insertAdjacentHTML('beforeend', notificationHTML);
+
+            const reinsertedNotification = notificationList.lastElementChild;
+            reinsertedNotification.classList.remove('disappearing');
+
+            // Aplica novamente o efeito de desaparecimento após 10 segundos
+            setTimeout(() => {
+                reinsertedNotification.classList.add('disappearing');
+                setTimeout(() => {
+                    reinsertedNotification.remove();
+                }, 500);
+            }, 10000);
+        });
+
+        // Limpa as notificações armazenadas
+        dismissedNotifications.length = 0;
+        updateNotificationCounter(); // Atualiza o contador
+    });
+});
+
+function dismissNotification(notificationId, accepted) {
+    const formData = new FormData();
+    formData.append('notification_id', notificationId);
+    formData.append('accepted', accepted);
+
+    fetch('/dismiss_notification', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const notificationElement = document.getElementById(`notification-${notificationId}`);
+            if (notificationElement) {
+                notificationElement.classList.add('disappearing');
+                setTimeout(() => {
+                    notificationElement.remove();
+                }, 500); // 500ms é o tempo da animação de desaparecimento
+            }
+        } else {
+            console.error('Erro ao processar a notificação:', data.error);
+        }
+    }).catch(error => {
+        console.error('Erro na requisição:', error);
+    });
+}

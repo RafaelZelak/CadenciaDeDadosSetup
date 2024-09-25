@@ -1,6 +1,7 @@
 from flask import Flask, request, session, redirect, url_for, render_template, flash, jsonify
 from ldap3 import Server, Connection, ALL_ATTRIBUTES, SUBTREE
 import integration
+from notification import get_user_notifications, get_db_connection
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
@@ -68,6 +69,19 @@ def home():
         return redirect(url_for('login'))
 
     full_name = session.get('full_name', 'Usuário')
+    username = session.get('username', 'Usuário')
+
+    # Obter notificações para o usuário logado
+    notifications = get_user_notifications(username)
+    show_notification = request.args.get('show_notification', 'true') == 'true'
+
+    # Verificar se o usuário tem notificações
+    notifications = get_user_notifications(username)
+    show_notification = request.args.get('show_notification', 'true') == 'true'
+
+    print(f"Notifications: {notifications}")  # Debug: Verifica notificações
+    print(f"Show Notification: {show_notification}")  # Debug: Verifica o estado do show_notification
+
 
     termo_busca = request.args.get('termo_busca', '')
     estado = request.args.get('estado', '')
@@ -95,6 +109,8 @@ def home():
     return render_template(
         'index.html',
         full_name=full_name,
+        notifications=notifications,
+        show_notification=show_notification,
         dados_cnpj=dados_cnpj,
         termo_busca=termo_busca,
         estado=estado,
@@ -102,6 +118,34 @@ def home():
         page=page,
         tem_mais_paginas=tem_mais_paginas
     )
+
+@app.route('/dismiss_notification', methods=['POST'])
+def dismiss_notification():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
+    notification_id = request.form.get('notification_id')
+    accepted = request.form.get('accepted') == 'true'
+
+    if notification_id and accepted:
+        try:
+            # Atualizar o status enviado_bitrix para true
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            cursor.execute("""
+                UPDATE "Result"
+                SET enviado_bitrix = true
+                WHERE id = %s
+            """, (notification_id,))
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return jsonify({'success': True}), 200
+        except Exception as e:
+            print(f"Erro ao atualizar notificação: {e}")
+            return jsonify({'error': 'Erro ao atualizar notificação'}), 500
+    else:
+        return jsonify({'error': 'ID de notificação inválido ou ação não especificada'}), 400
 
 @app.route('/enviar', methods=['POST'])
 def enviar_varias_empresas():

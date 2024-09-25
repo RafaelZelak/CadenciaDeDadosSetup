@@ -13,6 +13,29 @@
     <meta http-equiv="Expires" content="0" />
 </head>
 <body class="custom-body">
+    <div id="notification-icon" class="fixed top-4 right-4 z-50">
+        <a href="#" id="notification-link" class="relative">
+            <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
+            🔔 Notificações
+        </a>
+    </div>
+    {% if notifications and show_notification %}
+    <div class="fixed inset-0 flex items-start justify-end p-6 space-y-6 z-50 pointer-events-none notification-content">
+        <ul id="notification-list" class="space-y-6">
+            {% for notification in notifications %}
+            <li id="notification-{{ notification.id }}" class="notification p-6 rounded-lg shadow-lg transition-all duration-500 transform translate-y-4 opacity-0 pointer-events-auto max-w-lg w-96 relative">
+                <p class="text-white-600 font-semibold">Lead Enriquecido:</p>
+                <p class="text-white-600 font-semibold">{{ notification.enterprise }}</p>
+                <div class="mt-2 flex justify-start space-x-4">
+                    <a href="#" class="text-blue-400 hover:text-blue-100 underline font-semibold" onclick="dismissNotification('{{ notification.id }}', true, event)">Enviar Para o Bitrix24</a>
+                </div>
+                <!-- Barra de progresso -->
+                <div class="progress-bar"></div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
     <div class="custom-container">
         <div id="loading-spinner" style="display:none;">
             <div class="spinner"></div>
@@ -130,6 +153,14 @@
     <form action="{{ url_for('logout') }}" method="POST" class="exit">
         <button type="submit" class="exit-button">Sair</button>
     </form>
+    <div class="flex flex-col items-center">
+        <div id="text" class="text-white text-xl mb-2 toggle-text">Bitrix</div>
+        <div class="switch-container">
+            <div id="toggle" class="switch" onclick="toggleSwitch()">
+                <div id="ball" class="ball"></div>
+            </div>
+        </div>
+    </div>
     <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
