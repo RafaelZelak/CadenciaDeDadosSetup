@@ -18,6 +18,7 @@
             <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
             🔔 Notificações
         </a>
+        <button id="baixarCSV"> | ⬇️ Baixar CSV</button>
     </div>
     {% if notifications and show_notification %}
     <div class="fixed inset-0 flex items-start justify-end p-6 space-y-6 z-50 pointer-events-none notification-content">
@@ -126,7 +127,8 @@
                         <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
                     {% endfor %}
 
-                    <button type="submit" class="checkmark-btn ml-4 flex items-center">Enviar para Bitrix24
+                    <button id="submitButton_{{ loop.index }}" type="submit" class="checkmark-btn" data-index="{{ loop.index }}">
+                        <span class="button-text">Enviar para Bitrix24</span>
                         <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
                     </button>
                 </form>
@@ -161,13 +163,7 @@
             </div>
         </div>
     </div>
-    <button id="baixarCSV">Baixar CSV</button>
 
-<script>
-    document.getElementById('baixarCSV').addEventListener('click', function() {
-        window.location.href = '/baixar_csv';
-    });
-</script>
     <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>

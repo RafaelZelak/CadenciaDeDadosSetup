@@ -7,16 +7,25 @@ from io import BytesIO, TextIOWrapper
 import uuid
 import asyncio
 import json
+import os
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
 
-def get_user_session():
+def get_user_session_file():
+    # Gera um caminho para o arquivo de cache com base no UUID do usuário
     if 'user_id' not in session:
-        session['user_id'] = str(uuid.uuid4())  # Gerar um ID único para o usuário
-    if 'empresas' not in session:
-        session['empresas'] = []
-    return session['empresas']
+        session['user_id'] = str(uuid.uuid4())
+
+    user_id = session['user_id']
+    file_path = os.path.join('cache', f"{user_id}.json")
+
+    # Cria o arquivo temporário se não existir
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as file:
+            json.dump([], file)
+
+    return file_path
 
 def authenticate(username, password):
     domain = 'digitalup.intranet'
@@ -180,7 +189,8 @@ def enviar_varias_empresas():
 
 @app.route('/salvar_csv', methods=['POST'])
 def salvar_csv():
-    form_data = request.form.to_dict(flat=False)  # Convertendo para um dicionário
+    form_data = request.form.to_dict(flat=False)
+
     empresa = {
         "razao_social": form_data.get('razao_social', [''])[0],
         "nome_fantasia": form_data.get('nome_fantasia', [''])[0],
@@ -204,34 +214,30 @@ def salvar_csv():
         ]
     }
 
-    # Recupera a lista de empresas do usuário atual
-    empresas = get_user_session()
+    file_path = get_user_session_file()
 
-    # Adiciona a nova empresa à lista
-    empresas.append(empresa)
+    # Lê os dados do arquivo JSON e adiciona a nova empresa
+    with open(file_path, 'r+') as file:
+        empresas = json.load(file)
+        empresas.append(empresa)
+        file.seek(0)
+        json.dump(empresas, file)
 
-    # Salva a lista atualizada na sessão
-    session['empresas'] = empresas
-
-    # Retorna uma resposta de sucesso
-    return jsonify({'success': True, 'message': 'Empresa adicionada com sucesso à lista.'})
-
+    return jsonify({'success': True, 'message': 'Empresa adicionada com sucesso.'})
 
 @app.route('/baixar_csv')
 def baixar_csv():
-    # Recupera a lista de empresas do usuário atual
-    empresas = get_user_session()
+    file_path = get_user_session_file()
+
+    # Lê os dados do arquivo temporário
+    with open(file_path, 'r') as file:
+        empresas = json.load(file)
 
     if not empresas:
         return jsonify({'error': 'Nenhuma empresa disponível para download.'}), 400
 
-    # Criar o CSV em memória com BytesIO
     si = BytesIO()
-
-    # Criar um wrapper de texto em torno do BytesIO para escrever strings
     text_io = TextIOWrapper(si, encoding='utf-8', newline='')
-
-    # Criar o escritor CSV
     csv_writer = csv.writer(text_io)
 
     # Cabeçalhos do CSV
@@ -242,25 +248,24 @@ def baixar_csv():
     ]
     csv_writer.writerow(headers)
 
-    # Monta a lista de queries para o scrap
+    # Monta as queries para o scrap
     queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
 
-    # Chama a função de scrap e aguarda o resultado de forma síncrona
+    # Faz o scrap dos dados de forma assíncrona
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     scrap_results = loop.run_until_complete(integration.scrap.process_queries(queries))
 
-    # Escrevendo os dados de cada empresa
+    # Escreve os dados de cada empresa, incluindo o enriquecimento
     for idx, empresa in enumerate(empresas):
         scrap_data = json.loads(scrap_results[idx]) if scrap_results[idx] else {}
 
-        # Atualiza os dados da empresa com o resultado do scrap
+        # Enriquecer os dados da empresa com o scrap
         empresa_enriquecida = integration.atualizar_dados_empresa_com_scrap(empresa.copy(), scrap_data)
 
         knowledge_graph = scrap_data.get('knowledge_graph', {})
         contact_info = scrap_data.get('consolidated_contact_info', {})
 
-        # Extrair o endereço, telefone, email, rating, etc.
         endereco_enriquecido = contact_info.get('address', knowledge_graph.get('address', ''))
         telefone_enriquecido = contact_info.get('phone', knowledge_graph.get('phone', ''))
         email_enriquecido = contact_info.get('email', '')
@@ -268,13 +273,11 @@ def baixar_csv():
         review_count = knowledge_graph.get('review_count', '')
         horarios = "; ".join([f"{dia}: {horario}" for dia, horario in knowledge_graph.get('hours', {}).items()])
 
-        # Concatenação de sócios em uma única string (removendo quebras de linha)
         socios_str = "; ".join([
             f"Nome: {socio['nome']}, Faixa Etária: {socio['faixa_etaria']}, Qualificação: {socio['qualificacao']}, Data Entrada: {socio['data_entrada'].replace('\n', ' ')}"
             for socio in empresa['socios']
         ])
 
-        # Escrever uma única linha por empresa, incluindo todos os sócios
         csv_writer.writerow([
             empresa['razao_social'],
             empresa['nome_fantasia'],
@@ -287,7 +290,7 @@ def baixar_csv():
             empresa['email'],
             empresa['porte'],
             empresa['cnpj'],
-            socios_str,  # Sócios concatenados em uma única célula
+            socios_str,
             endereco_enriquecido,
             telefone_enriquecido,
             email_enriquecido,
@@ -296,19 +299,15 @@ def baixar_csv():
             horarios
         ])
 
-    # Garantir que o conteúdo seja gravado e esvaziar o buffer
     text_io.flush()
-
-    # Resetar o ponteiro para o início do arquivo em memória
     si.seek(0)
-
-    # Fechar o TextIOWrapper para evitar erro de I/O ao ler o conteúdo do BytesIO
     text_io.detach()
 
-    # Limpar a lista de empresas da sessão após o download
-    session.pop('empresas', None)
+    # Remover o arquivo temporário após o download
+    os.remove(file_path)
+    session.pop('user_id', None)
 
-    # Criar a resposta como um fluxo
+    # Retorna o CSV como resposta
     return Response(si.getvalue(),
                     mimetype="text/csv",
                     headers={"Content-Disposition": "attachment; filename=empresas.csv"})

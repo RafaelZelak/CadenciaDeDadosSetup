@@ -109,16 +109,55 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function toggleSwitch() {
+    console.log('toggleSwitch() function called');
+
     const toggle = document.getElementById('toggle');
     const text = document.getElementById('text');
+    const submitButtons = document.querySelectorAll('.checkmark-btn');
 
-    // Alterna entre 'Bitrix' e 'Planilha'
     if (toggle.classList.toggle('on')) {
+        console.log('Switched to Planilha');
         text.innerText = 'Planilha';
+        submitButtons.forEach((button) => {
+            const textSpan = button.querySelector('.button-text');  // Encontra o span dentro do botão
+            textSpan.textContent = 'Enviar para Planilha';  // Altera apenas o texto dentro do span
+        });
         localStorage.setItem('toggleState', 'Planilha');
     } else {
+        console.log('Switched to Bitrix');
         text.innerText = 'Bitrix';
+        submitButtons.forEach((button) => {
+            const textSpan = button.querySelector('.button-text');  // Encontra o span dentro do botão
+            textSpan.textContent = 'Enviar para Bitrix24';  // Altera apenas o texto dentro do span
+        });
         localStorage.setItem('toggleState', 'Bitrix');
+    }
+}
+
+window.onload = function() {
+    console.log('Page loaded');
+
+    const toggleState = localStorage.getItem('toggleState');
+    const toggle = document.getElementById('toggle');
+    const text = document.getElementById('text');
+    const submitButtons = document.querySelectorAll('.checkmark-btn');
+
+    if (toggleState === 'Planilha') {
+        console.log('Restoring Planilha state');
+        toggle.classList.add('on');
+        text.innerText = 'Planilha';
+        submitButtons.forEach((button) => {
+            const textSpan = button.querySelector('.button-text');
+            textSpan.textContent = 'Enviar para Planilha';
+        });
+    } else {
+        console.log('Restoring Bitrix state');
+        toggle.classList.remove('on');
+        text.innerText = 'Bitrix';
+        submitButtons.forEach((button) => {
+            const textSpan = button.querySelector('.button-text');
+            textSpan.textContent = 'Enviar para Bitrix24';
+        });
     }
 }
 
@@ -135,3 +174,7 @@ window.onload = function() {
         text.innerText = 'Bitrix';
     }
 };
+
+document.getElementById('baixarCSV').addEventListener('click', function() {
+    window.location.href = '/baixar_csv';
+});
