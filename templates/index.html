@@ -161,6 +161,13 @@
             </div>
         </div>
     </div>
+    <button id="baixarCSV">Baixar CSV</button>
+
+<script>
+    document.getElementById('baixarCSV').addEventListener('click', function() {
+        window.location.href = '/baixar_csv';
+    });
+</script>
     <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>

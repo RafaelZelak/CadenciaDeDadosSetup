@@ -50,8 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('beforeunload', function() {
         spinner.style.display = 'block';
-    });
 
+        setTimeout(function() {
+            spinner.style.display = 'none';
+        }, 5000);
+    });
     window.addEventListener('load', function() {
         spinner.style.display = 'none';
         loadFilters();

@@ -1,4 +1,11 @@
-Flask
-ldap3
+aiohttp
+BeautifulSoup4
 cloudscraper
+flask
+ldap3
+phonenumbers
+psycopg2
 requests
+selenium
+tqdm
+urllib3

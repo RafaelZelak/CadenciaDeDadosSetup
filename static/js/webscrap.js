@@ -13,7 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (form) {
                 const formData = new FormData(form);
 
-                fetch('/enviar_empresa', {
+                // Verifica o estado do toggle
+                const toggleState = localStorage.getItem('toggleState');
+
+                // Seleciona a rota com base no estado do toggle
+                const route = toggleState === 'Planilha' ? '/salvar_csv' : '/enviar_empresa';
+
+                fetch(route, {
                     method: 'POST',
                     body: formData
                 })
@@ -101,3 +107,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function toggleSwitch() {
+    const toggle = document.getElementById('toggle');
+    const text = document.getElementById('text');
+
+    // Alterna entre 'Bitrix' e 'Planilha'
+    if (toggle.classList.toggle('on')) {
+        text.innerText = 'Planilha';
+        localStorage.setItem('toggleState', 'Planilha');
+    } else {
+        text.innerText = 'Bitrix';
+        localStorage.setItem('toggleState', 'Bitrix');
+    }
+}
+
+// Carrega o estado salvo ao inicializar
+window.onload = function() {
+    const savedState = localStorage.getItem('toggleState');
+    const toggle = document.getElementById('toggle');
+    const text = document.getElementById('text');
+
+    if (savedState === 'Planilha') {
+        toggle.classList.add('on');
+        text.innerText = 'Planilha';
+    } else {
+        text.innerText = 'Bitrix';
+    }
+};
