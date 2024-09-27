@@ -225,6 +225,23 @@ def salvar_csv():
 
     return jsonify({'success': True, 'message': 'Empresa adicionada com sucesso.'})
 
+@app.route('/salvar_todas_csv', methods=['POST'])
+def salvar_todas_csv():
+    form_data = request.get_json()
+
+    empresas = form_data.get('empresas', [])
+
+    file_path = get_user_session_file()
+
+    # Lê os dados existentes no arquivo JSON
+    with open(file_path, 'r+') as file:
+        empresas_cache = json.load(file)
+        empresas_cache.extend(empresas)  # Adiciona as novas empresas
+        file.seek(0)
+        json.dump(empresas_cache, file)  # Atualiza o arquivo JSON com todas as empresas
+
+    return jsonify({'success': True, 'message': 'Todas as empresas foram salvas com sucesso.'})
+
 @app.route('/baixar_csv')
 def baixar_csv():
     file_path = get_user_session_file()
