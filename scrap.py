@@ -94,6 +94,8 @@ def consultar_cep(cep):
 # Função assíncrona para realizar a busca no Google
 async def google_search(query, session):
     google_search_url = f"https://www.google.com/search?q={query}"
+
+    # Lista de User-Agents para rotação
     headers = {
         "User-Agent": random.choice([
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -103,7 +105,15 @@ async def google_search(query, session):
     }
 
     try:
+        # Fazendo a requisição HTTP assíncrona
         async with session.get(google_search_url, headers=headers, timeout=aiohttp.ClientTimeout(total=TIMEOUT)) as response:
+
+            # Verifica se o status é 200 (OK)
+            if response.status != 200:
+                print(f"Erro ao acessar {google_search_url}, Status: {response.status}")
+                return []
+
+            # Pega o conteúdo da resposta
             text = await response.text()
             soup = BeautifulSoup(text, "html.parser")
 
@@ -118,7 +128,7 @@ async def google_search(query, session):
                     'knowledge_data': knowledge_graph_data
                 })
 
-            # Capturar links dos resultados normais de busca
+            # Captura dos links dos resultados normais de busca
             for g in soup.find_all('div', class_='g'):
                 title = g.find('h3').text if g.find('h3') else "No title"
                 a_tag = g.find('a')
@@ -129,6 +139,7 @@ async def google_search(query, session):
                 phone = re.findall(phone_regex, snippet)
                 address = re.findall(address_regex, snippet)
 
+                # Adiciona os resultados à lista
                 results.append({
                     'title': title,
                     'link': link,
@@ -136,6 +147,9 @@ async def google_search(query, session):
                     'phone': phone[0] if phone else None,
                     'address': address[0] if address else None
                 })
+
+            # Adicionar um delay entre requisições
+            await asyncio.sleep(2)
 
             return results
 
@@ -431,3 +445,16 @@ async def process_queries(queries):
         end_time = time.time()  # Tempo de término
         elapsed_time = end_time - start_time  # Tempo decorrido
         print(f"\nTempo total de execução: {elapsed_time:.2f} segundos")
+
+async def testar_query():
+    queries = ["Setup+Tecnologia+Curitiba"]  # Queries de exemplo
+    resultados = await process_queries(queries)
+
+    # Exibindo os resultados
+    for resultado in resultados:
+        if resultado:
+            print(resultado)
+
+if __name__ == "__main__":
+    # Executar o loop de eventos assíncronos
+    asyncio.run(testar_query())
