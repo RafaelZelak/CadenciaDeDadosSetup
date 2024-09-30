@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeadGen{{ ' - Buscando Por: ' + termo_busca if termo_busca else '' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
@@ -13,14 +14,17 @@
     <meta http-equiv="Expires" content="0" />
 </head>
 <body class="custom-body">
+    <div id="notification-error" class="notification-error hidden">
+        <p id="notificationErrorMessage"></p>
+    </div>
     <div id="notification-icon" class="fixed top-4 right-4 z-50">
         <a href="#" id="notification-link" class="relative">
             <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
             🔔 Notificações
         </a>
-        <button id="baixarCSV"> | ⬇️ Baixar CSV</button>
+        <button id="salvarTodasCsv">| 📋 Salvar na Lista </button>
+        <button id="baixarCSV"> | ⬇️ Baixar CSV </button>
     </div>
-    <button id="salvarTodasCsv" class="text-blue-500">Salvar todas em CSV</button>
 
     {% if notifications and show_notification %}
     <div class="fixed inset-0 flex items-start justify-end p-6 space-y-6 z-50 pointer-events-none notification-content">
@@ -37,6 +41,11 @@
             </li>
             {% endfor %}
         </ul>
+
+        <!-- Barra indicando mais notificações -->
+        <div id="more-notifications-bar" class="hidden p-6 rounded-lg shadow-lg bg-blue-600 text-white font-semibold max-w-lg w-96">
+            Mais <span id="more-notifications-count"></span> notificações
+        </div>
     </div>
     {% endif %}
     <div class="custom-container">
@@ -165,8 +174,21 @@
             </div>
         </div>
     </div>
+    <button id="overlayButton" class=" bg-blue-500 text-white p-2 rounded">Ativar Tutorial</button>
 
+    <div id="overlay" class="overlay">
+        <div id="highlight" class="highlight"></div>
+        <div id="arrow" class="arrow"></div> <!-- Seta adicionada -->
+        <div class="overlay-content">
+            <h1>Tutorial</h1>
+            <p id="tutorial-text">Clique no botão de toggle no canto inferior para ligar ou desligar a funcionalidade Bitrix.</p>
+            <button id="nextStepButton" class="mt-4 p-2 bg-green-500 text-white rounded">Continuar</button>
+        </div>
+    </div>
+
+    </div>
     <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tutorial.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

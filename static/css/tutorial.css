@@ -1,0 +1,62 @@
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Bloquear interação na área obscurecida */
+}
+
+.overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Cor de obscurecimento */
+    pointer-events: none; /* Bloquear interação */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); /* Padrão, será alterado no JS */
+    z-index: 1000; /* Fundo obscurecido */
+}
+/* Destaque ao redor do elemento */
+.highlight {
+    position: absolute;
+    border: 3px solid rgb(43, 75, 131); /* Cor dourada para destacar */
+    border-radius: 20px; /* Arredondar as bordas do destaque */
+    z-index: 1001; /* Sobrepõe outros elementos */
+    pointer-events: none; /* Impede interação */
+}
+
+/* Conteúdo do tutorial continua o mesmo */
+.overlay-content {
+    position: relative;
+    background-color: rgb(43, 75, 131);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1002;
+    text-align: center;
+    max-width: 400px;
+    pointer-events: auto;
+    font-family: 20pt;
+}
+
+/* Botão de próximo passo */
+#nextStepButton {
+    cursor: pointer;
+}
+
+/* Estilos para a seta */
+.arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 40px solid rgb(82, 115, 172); /* Cor da seta */
+    z-index: 1002;
+}

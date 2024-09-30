@@ -50,11 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('beforeunload', function() {
         spinner.style.display = 'block';
-
-        setTimeout(function() {
-            spinner.style.display = 'none';
-        }, 5000);
     });
+
     window.addEventListener('load', function() {
         spinner.style.display = 'none';
         loadFilters();
@@ -196,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const dismissedNotifications = []; // Armazena as notificações que sumiram
     const notificationCounter = document.getElementById('notification-counter');
     const notificationLink = document.getElementById('notification-link');
+    let visibleNotificationsCount = 0; // Controla quantas notificações estão visíveis
 
     // Atualiza o contador de notificações
     function updateNotificationCounter() {
@@ -203,7 +201,10 @@ document.addEventListener("DOMContentLoaded", function () {
         notificationCounter.style.display = dismissedNotifications.length > 0 ? 'inline' : 'none';
     }
 
-    notifications.forEach((notification, index) => {
+    function showNotification(notification, index) {
+        if (visibleNotificationsCount >= 3) return; // Limita para no máximo 3 notificações visíveis
+        visibleNotificationsCount++; // Incrementa o contador de notificações visíveis
+
         setTimeout(() => {
             notification.classList.remove('opacity-0', 'translate-y-4');
             notification.classList.add('opacity-100', 'translate-y-0');
@@ -220,9 +221,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 setTimeout(() => {
                     notification.remove();
+                    visibleNotificationsCount--; // Diminui o contador quando a notificação some
                 }, 500); // Tempo da animação de desaparecer
             }, 10000); // 10 segundos de espera
         }, 100 * index); // Cada notificação aparece com um pequeno atraso
+    }
+
+    notifications.forEach((notification, index) => {
+        showNotification(notification, index);
     });
 
     // Função para exibir notificações quando o link é clicado
@@ -242,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 reinsertedNotification.classList.add('disappearing');
                 setTimeout(() => {
                     reinsertedNotification.remove();
+                    visibleNotificationsCount--; // Diminui o contador quando a notificação some
                 }, 500);
             }, 10000);
         });
@@ -268,6 +275,7 @@ function dismissNotification(notificationId, accepted) {
                 notificationElement.classList.add('disappearing');
                 setTimeout(() => {
                     notificationElement.remove();
+                    visibleNotificationsCount--; // Diminui o contador quando a notificação é removida manualmente
                 }, 500); // 500ms é o tempo da animação de desaparecimento
             }
         } else {

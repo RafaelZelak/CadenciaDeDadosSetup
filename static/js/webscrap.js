@@ -240,5 +240,53 @@ document.getElementById('salvarTodasCsv').addEventListener('click', function (e)
 });
 
 document.getElementById('baixarCSV').addEventListener('click', function() {
-    window.location.href = '/baixar_csv';
+    const spinner = document.getElementById('loading-spinner');
+    const notificationError = document.getElementById('notification-error');
+    const notificationErrorMessage = document.getElementById('notificationErrorMessage');
+
+    spinner.style.display = 'block'; // Exibe o spinner
+
+    fetch('/baixar_csv')
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 400) {
+                    throw new Error('Nenhuma empresa disponível para download.');
+                } else {
+                    throw new Error('Erro ao baixar o CSV');
+                }
+            }
+            return response.blob(); // Transforma a resposta em um blob (arquivo)
+        })
+        .then(blob => {
+            // Cria uma URL temporária para baixar o arquivo
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'empresas.csv'; // Nome do arquivo baixado
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url); // Libera a URL temporária
+        })
+        .catch(error => {
+            // Exibe a notificação de erro
+            notificationErrorMessage.textContent = error.message;
+            notificationError.classList.remove('hidden');
+
+            // Força o navegador a aplicar a transição corretamente
+            setTimeout(() => {
+                notificationError.classList.add('show');
+            }, 10); // Pequeno delay para processar o estado "hidden"
+
+            // Esconde a notificação após 3 segundos
+            setTimeout(() => {
+                notificationError.classList.remove('show');
+                setTimeout(() => {
+                    notificationError.classList.add('hidden');
+                }, 500); // Delay para dar tempo à animação de sumir
+            }, 3000);
+        })
+        .finally(() => {
+            spinner.style.display = 'none'; // Esconde o spinner após o download ou erro
+        });
 });

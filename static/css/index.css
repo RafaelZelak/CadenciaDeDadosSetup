@@ -55,6 +55,12 @@
     width: 600px;
 }
 
+#more-notifications-bar {
+    background-color: #16335edc;
+    width: 600px;
+    display: none;
+    margin-top: 10px; /* Adiciona um espaçamento entre a última notificação e a barra */
+}
 .progress-bar {
     position: absolute;
     left: 0;
@@ -407,4 +413,32 @@ border-radius: 10px;
     position: fixed;
     bottom: 10px;
     right: 80px;
+}
+
+/* Estilos para a notificação de erro */
+.notification-error {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f44336; /* Vermelho para erro */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0; /* Começa invisível */
+    transform: translateY(20px); /* Posiciona abaixo */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Transições para suavidade */
+    z-index: 1000;
+}
+
+/* Quando a notificação está visível */
+.notification-error.show {
+    opacity: 1; /* Torna visível */
+    transform: translateY(0); /* Move para a posição correta */
+}
+
+/* Quando a notificação está oculta */
+.notification-error.hidden {
+    opacity: 0; /* Torna invisível */
+    transform: translateY(20px); /* Move para fora da visão */
 }
