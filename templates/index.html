@@ -17,12 +17,15 @@
     <div id="notification-error" class="notification-error hidden">
         <p id="notificationErrorMessage"></p>
     </div>
+    <div id="notification-sucess" class="notification-sucess hidden">
+        <p id="notificationSucessMessage"></p>
+    </div>
     <div id="notification-icon" class="fixed top-4 right-4 z-50">
         <a href="#" id="notification-link" class="relative">
             <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
             🔔 Notificações
         </a>
-        <button id="salvarTodasCsv">| 📋 Salvar na Lista </button>
+        <button id="overlayButton">| 📚 Tutorial</button>
         <button id="baixarCSV"> | ⬇️ Baixar CSV </button>
     </div>
 
@@ -57,7 +60,9 @@
         <form action="/home" method="GET" class="form-container" id="searchForm">
             <div class="input-container">
                 <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
-                <button type="submit" class="buscar"><img src="{{ url_for('static', filename='img/search.svg') }}" alt="Buscar"></button>
+                <button type="submit" class="buscar">
+                    <img src="{{ url_for('static', filename='img/search.svg') }}" alt="Buscar">
+                </button>
             </div>
 
             <div class="estado-cidade-button-container">
@@ -70,7 +75,7 @@
                     <datalist id="cidades"></datalist>
                 </div>
 
-                <button type="button" id="enviarTodasEmpresas" class="global-send-button">Enviar Todas as Empresas para o Bitrix24</button>
+                <button id="salvarTodasCsv">Salvar Todas as Empresas na Planilha</button>
             </div>
         </form>
 
@@ -166,23 +171,25 @@
     <form action="{{ url_for('logout') }}" method="POST" class="exit">
         <button type="submit" class="exit-button">Sair</button>
     </form>
-    <div class="flex flex-col items-center">
-        <div id="text" class="text-white text-xl mb-2 toggle-text">Bitrix</div>
+    <div class="flex flex-col items-center toggle">
+
         <div class="switch-container">
+            <div id="text" class="text-white text-xl mb-2 toggle-text">Bitrix</div>
             <div id="toggle" class="switch" onclick="toggleSwitch()">
                 <div id="ball" class="ball"></div>
             </div>
         </div>
     </div>
-    <button id="overlayButton" class=" bg-blue-500 text-white p-2 rounded">Ativar Tutorial</button>
 
     <div id="overlay" class="overlay">
         <div id="highlight" class="highlight"></div>
         <div id="arrow" class="arrow"></div> <!-- Seta adicionada -->
         <div class="overlay-content">
-            <h1>Tutorial</h1>
+            <div class="titleOver">
+                <p class="titleOverTitle">Tutorial</p>
+            </div>
             <p id="tutorial-text">Clique no botão de toggle no canto inferior para ligar ou desligar a funcionalidade Bitrix.</p>
-            <button id="nextStepButton" class="mt-4 p-2 bg-green-500 text-white rounded">Continuar</button>
+            <button id="nextStepButton" class="mt-4 p-2 bg-green-500 text-white">Continuar</button>
         </div>
     </div>
 

@@ -163,26 +163,16 @@ window.onload = function() {
     }
 }
 
-// Carrega o estado salvo ao inicializar
-window.onload = function() {
-    const savedState = localStorage.getItem('toggleState');
-    const toggle = document.getElementById('toggle');
-    const text = document.getElementById('text');
-
-    if (savedState === 'Planilha') {
-        toggle.classList.add('on');
-        text.innerText = 'Planilha';
-        textSpan.textContent = 'Enviar para Planilha';
-
-    } else {
-        text.innerText = 'Bitrix';
-        textSpan.textContent = 'Enviar para Bitrix24';
-
-    }
-};
-
 document.getElementById('salvarTodasCsv').addEventListener('click', function (e) {
     e.preventDefault();
+
+    const spinner = document.getElementById('loading-spinner');
+    const notificationError = document.getElementById('notification-error');
+    const notificationErrorMessage = document.getElementById('notificationErrorMessage');
+    const notificationSucessMessage = document.getElementById('notificationSucessMessage');
+    const notificationSucess = document.getElementById('notification-sucess'); // ID da notificação de sucesso
+
+    spinner.style.display = 'block'; // Exibe o spinner
 
     const empresas = [];
 
@@ -217,6 +207,29 @@ document.getElementById('salvarTodasCsv').addEventListener('click', function (e)
         empresas.push(empresa);
     });
 
+    // Verifica se há empresas para salvar
+    if (empresas.length === 0) {
+        // Exibe notificação de erro
+        notificationErrorMessage.textContent = "Nenhum dado para ser salvo.";
+        notificationError.classList.remove('hidden');
+
+        // Aplica a transição corretamente
+        setTimeout(() => {
+            notificationError.classList.add('show');
+        }, 10);
+
+        // Esconde a notificação após 3 segundos
+        setTimeout(() => {
+            notificationError.classList.remove('show');
+            setTimeout(() => {
+                notificationError.classList.add('hidden');
+            }, 500);
+        }, 3000);
+
+        spinner.style.display = 'none'; // Esconde o spinner
+        return;
+    }
+
     // Envia todas as empresas para o backend
     fetch('/salvar_todas_csv', {
         method: 'POST',
@@ -228,14 +241,45 @@ document.getElementById('salvarTodasCsv').addEventListener('click', function (e)
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
+            notificationSucessMessage.textContent = data.message;
+            notificationSucess.classList.remove('hidden');
+
+            // Aplica a transição corretamente
+            setTimeout(() => {
+                notificationSucess.classList.add('show');
+            }, 10);
+
+            // Esconde a notificação após 3 segundos
+            setTimeout(() => {
+                notificationSucess.classList.remove('show');
+                setTimeout(() => {
+                    notificationSucess.classList.add('hidden');
+                }, 500);
+            }, 3000);
         } else {
-            alert('Erro ao salvar as empresas.');
+            throw new Error('Erro ao salvar as empresas.');
         }
     })
     .catch(error => {
-        console.error('Erro:', error);
-        alert('Erro na requisição.');
+        // Exibe notificação de erro
+        notificationErrorMessage.textContent = error.message;
+        notificationError.classList.remove('hidden');
+
+        // Aplica a transição corretamente
+        setTimeout(() => {
+            notificationError.classList.add('show');
+        }, 10);
+
+        // Esconde a notificação após 3 segundos
+        setTimeout(() => {
+            notificationError.classList.remove('show');
+            setTimeout(() => {
+                notificationError.classList.add('hidden');
+            }, 500);
+        }, 3000);
+    })
+    .finally(() => {
+        spinner.style.display = 'none'; // Esconde o spinner após o download ou erro
     });
 });
 
@@ -243,6 +287,8 @@ document.getElementById('baixarCSV').addEventListener('click', function() {
     const spinner = document.getElementById('loading-spinner');
     const notificationError = document.getElementById('notification-error');
     const notificationErrorMessage = document.getElementById('notificationErrorMessage');
+    const notificationSucess = document.getElementById('notification-sucess'); // Verifique se esse ID está correto
+    const notificationSucessMessage = document.getElementById('notificationSucessMessage');
 
     spinner.style.display = 'block'; // Exibe o spinner
 
@@ -252,7 +298,7 @@ document.getElementById('baixarCSV').addEventListener('click', function() {
                 if (response.status === 400) {
                     throw new Error('Nenhuma empresa disponível para download.');
                 } else {
-                    throw new Error('Erro ao baixar o CSV');
+                    throw new Error('Erro ao baixar o arquivo.');
                 }
             }
             return response.blob(); // Transforma a resposta em um blob (arquivo)
@@ -262,11 +308,28 @@ document.getElementById('baixarCSV').addEventListener('click', function() {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'empresas.csv'; // Nome do arquivo baixado
+            a.download = 'empresas.xlsx'; // Nome do arquivo baixado, agora com extensão .xlsx
             document.body.appendChild(a);
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url); // Libera a URL temporária
+
+            // Exibe notificação de sucesso
+            notificationSucessMessage.textContent = "Arquivo baixado com sucesso!";
+            notificationSucess.classList.remove('hidden');
+
+            // Aplica a transição corretamente
+            setTimeout(() => {
+                notificationSucess.classList.add('show');
+            }, 10);
+
+            // Esconde a notificação após 3 segundos
+            setTimeout(() => {
+                notificationSucess.classList.remove('show');
+                setTimeout(() => {
+                    notificationSucess.classList.add('hidden');
+                }, 500);
+            }, 3000);
         })
         .catch(error => {
             // Exibe a notificação de erro

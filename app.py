@@ -3,6 +3,8 @@ from ldap3 import Server, Connection, ALL_ATTRIBUTES, SUBTREE
 import integration
 from notification import get_user_notifications, get_db_connection
 import csv
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Font, Alignment
 from io import BytesIO, TextIOWrapper
 import uuid
 import asyncio
@@ -242,6 +244,8 @@ def salvar_todas_csv():
 
     return jsonify({'success': True, 'message': 'Todas as empresas foram salvas com sucesso.'})
 
+from openpyxl.styles import PatternFill, Font, Alignment
+
 @app.route('/baixar_csv')
 def baixar_csv():
     file_path = get_user_session_file()
@@ -253,17 +257,55 @@ def baixar_csv():
     if not empresas:
         return jsonify({'error': 'Nenhuma empresa disponível para download.'}), 400
 
-    si = BytesIO()
-    text_io = TextIOWrapper(si, encoding='utf-8', newline='')
-    csv_writer = csv.writer(text_io)
+    # Criar um arquivo Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Empresas"
 
-    # Cabeçalhos do CSV
+    # Cabeçalhos do XLSX
     headers = [
-        'Razão Social', 'Nome Fantasia', 'Logradouro', 'Município', 'UF', 'CEP', 'Telefone 1', 'Telefone 2', 'Email', 'Porte', 'CNPJ',
-        'Sócios (Nome, Faixa Etária, Qualificação, Data Entrada)',
-        'Logradouro Enriquecido', 'Telefone Enriquecido', 'Email Enriquecido', 'Rating', 'Review Count', 'Horários de Funcionamento'
+        'Razão Social', 'Nome Fantasia', 'Logradouro', 'Município', 'UF', 'CEP', 'Telefone 1', 'Telefone 2', 'Email', 'Porte', 'CNPJ'
     ]
-    csv_writer.writerow(headers)
+
+    # Adiciona cabeçalhos dinâmicos para os sócios com base no máximo de sócios que alguma empresa tem
+    max_socios = max(len(empresa.get('socios', [])) for empresa in empresas) if empresas else 0
+    for i in range(1, max_socios + 1):
+        headers.extend([f'Sócio {i} Nome', f'Sócio {i} Faixa Etária', f'Sócio {i} Qualificação', f'Sócio {i} Data Entrada'])
+
+    # Adiciona cabeçalhos para os dias da semana
+    dias_da_semana = [
+        'segunda-feira', 'terça-feira', 'quarta-feira',
+        'quinta-feira', 'sexta-feira', 'sábado', 'domingo'
+    ]
+    headers.extend(dias_da_semana)
+
+    headers.extend([
+        'Logradouro Enriquecido', 'Telefone Enriquecido', 'Email Enriquecido', 'Rating', 'Review Count'
+    ])
+
+    ws.append(headers)
+
+    # Aplicando estilo e formatação
+    contact_group = ['Telefone 1', 'Telefone 2', 'Telefone Enriquecido', 'Email', 'Email Enriquecido']
+    address_group = ['Logradouro', 'Município', 'UF', 'CEP', 'Logradouro Enriquecido']
+    contact_fill = PatternFill(start_color='FFCCE5', end_color='FFCCE5', fill_type='solid')
+    address_fill = PatternFill(start_color='CCFFCC', end_color='CCFFCC', fill_type='solid')
+    socio_fill = PatternFill(start_color='CCE5FF', end_color='CCE5FF', fill_type='solid')
+    light_gray_fill = PatternFill(start_color='F5F5F5', end_color='F5F5F5', fill_type='solid')
+    white_fill = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
+
+    # Aplicar formatação aos cabeçalhos
+    for i, cell in enumerate(ws[1], 1):
+        if cell.value in contact_group:
+            cell.fill = contact_fill
+        elif cell.value in address_group:
+            cell.fill = address_fill
+        elif 'Sócio' in cell.value:
+            cell.fill = socio_fill
+        else:
+            cell.fill = white_fill
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
     # Monta as queries para o scrap
     queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
@@ -288,14 +330,28 @@ def baixar_csv():
         email_enriquecido = contact_info.get('email', '')
         rating = knowledge_graph.get('rating', '')
         review_count = knowledge_graph.get('review_count', '')
-        horarios = "; ".join([f"{dia}: {horario}" for dia, horario in knowledge_graph.get('hours', {}).items()])
 
-        socios_str = "; ".join([
-            f"Nome: {socio['nome']}, Faixa Etária: {socio['faixa_etaria']}, Qualificação: {socio['qualificacao']}, Data Entrada: {socio['data_entrada'].replace('\n', ' ')}"
-            for socio in empresa['socios']
-        ])
+        # Processar os horários de funcionamento
+        horarios = knowledge_graph.get('hours', {})
+        horarios_formatados = [horarios.get(dia, 'Fechado') for dia in dias_da_semana]
 
-        csv_writer.writerow([
+        # Prepara os dados dos sócios
+        socios_data = []
+        for socio in empresa.get('socios', []):
+            socios_data.extend([
+                socio['nome'],
+                socio['faixa_etaria'],
+                socio['qualificacao'],
+                socio['data_entrada'].replace('\n', ' ')
+            ])
+
+        # Adiciona dados dos sócios e preenche com vazios caso não haja sócios
+        num_socios = len(empresa.get('socios', []))
+        while len(socios_data) < num_socios * 4:
+            socios_data.append('')
+
+        # Adiciona os dados na planilha
+        ws.append([
             empresa['razao_social'],
             empresa['nome_fantasia'],
             empresa['logradouro'],
@@ -307,27 +363,37 @@ def baixar_csv():
             empresa['email'],
             empresa['porte'],
             empresa['cnpj'],
-            socios_str,
+        ] + socios_data + horarios_formatados + [
             endereco_enriquecido,
             telefone_enriquecido,
             email_enriquecido,
             rating,
-            review_count,
-            horarios
+            review_count
         ])
 
-    text_io.flush()
-    si.seek(0)
-    text_io.detach()
+        # Aplicar formatação nas linhas
+        fill = light_gray_fill if idx % 2 == 0 else white_fill
+        for cell in ws[idx + 2]:
+            cell.fill = fill
+
+    # Ajustar largura das colunas automaticamente
+    for col in ws.columns:
+        max_length = max(len(str(cell.value)) for cell in col) + 2
+        ws.column_dimensions[col[0].column_letter].width = max_length
+
+    # Salvar o arquivo em memória
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
 
     # Remover o arquivo temporário após o download
     os.remove(file_path)
     session.pop('user_id', None)
 
-    # Retorna o CSV como resposta
-    return Response(si.getvalue(),
-                    mimetype="text/csv",
-                    headers={"Content-Disposition": "attachment; filename=empresas.csv"})
+    # Retorna o XLSX como resposta
+    return Response(output,
+                    mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    headers={"Content-Disposition": "attachment; filename=empresas.xlsx"})
 
 @app.route('/enviar_empresa', methods=['POST'])
 def enviar_empresa():

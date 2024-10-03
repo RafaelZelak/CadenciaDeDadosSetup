@@ -148,11 +148,11 @@ border-radius: 10px;
     padding-top: 10px;
     overflow: hidden;
     max-height: 0;
-    transition: max-height 3.5s ease-out;
+    transition: max-height .7s ease-out;
 }
 
 .detalhes-empresa.expanded {
-    max-height: 1000px;
+    max-height: 2000px;
 }
 
 .socio-extra {
@@ -431,6 +431,31 @@ border-radius: 10px;
     z-index: 1000;
 }
 
+.notification-sucess {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #15c056; /* Vermelho para erro */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0; /* Começa invisível */
+    transform: translateY(20px); /* Posiciona abaixo */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Transições para suavidade */
+    z-index: 1000;
+}
+
+.notification-sucess.show{
+    opacity: 1; /* Torna visível */
+    transform: translateY(0); /* Move para a posição correta */
+}
+
+.notification-sucess.hidden {
+    opacity: 0; /* Torna invisível */
+    transform: translateY(20px); /* Move para fora da visão */
+}
+
 /* Quando a notificação está visível */
 .notification-error.show {
     opacity: 1; /* Torna visível */
@@ -441,4 +466,8 @@ border-radius: 10px;
 .notification-error.hidden {
     opacity: 0; /* Torna invisível */
     transform: translateY(20px); /* Move para fora da visão */
+}
+
+#salvarTodasCsv{
+    margin-right: 1%;
 }

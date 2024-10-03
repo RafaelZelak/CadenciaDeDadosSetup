@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     enviarTodasEmpresasBtn.addEventListener('click', function() {
-        spinner.style.display = 'block';
+        pass
     });
 
     window.addEventListener('beforeunload', function() {
@@ -102,90 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Alternar visibilidade de detalhes
-    document.querySelectorAll('.ver-mais').forEach(button => {
-        button.addEventListener('click', function() {
-            const detalhes = this.previousElementSibling;
-            detalhes.classList.toggle('expanded');
-            this.textContent = detalhes.classList.contains('expanded') ? 'Ver menos' : 'Ver mais';
+document.querySelectorAll('.ver-mais-socios').forEach(button => {
+    button.addEventListener('click', function() {
+        const socioExtras = this.previousElementSibling.querySelectorAll('.socio-extra');
+        let isVisible = socioExtras[0].style.display === 'block';
+
+        // Alternar visibilidade dos sócios extras
+        socioExtras.forEach(socio => {
+            socio.style.display = isVisible ? 'none' : 'block';
         });
+
+        // Atualizar o texto do botão
+        this.textContent = isVisible ? 'Ver mais sócios' : 'Ver menos sócios';
     });
+});
 
-    document.querySelectorAll('.ver-mais-socios').forEach(button => {
-        button.addEventListener('click', function() {
-            const socioExtras = this.previousElementSibling.querySelectorAll('.socio-extra');
-
-            socioExtras.forEach(socio => {
-                socio.classList.toggle('visible');
-            });
-
-            if (this.textContent === 'Ver mais sócios') {
-                this.textContent = 'Ver menos sócios';
-            } else {
-                this.textContent = 'Ver mais sócios';
-            }
-        });
-    });
-
-    // Carregar estados
-    fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-        .then(response => response.json())
-        .then(estados => {
-            const estadoDatalist = document.getElementById('estados');
-            estados.forEach(estado => {
-                const option = document.createElement('option');
-                option.value = estado.sigla;
-                option.textContent = estado.nome;
-                estadoDatalist.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Erro ao carregar estados:', error));
-
-    // Carregar cidades com base no estado selecionado
-    estadoInput.addEventListener('input', function() {
-        const estadoSigla = this.value.toUpperCase();
-        const cidadeDatalist = document.getElementById('cidades');
-
-        cidadeDatalist.innerHTML = '';
-
-        if (estadoSigla) {
-            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`)
-                .then(response => response.json())
-                .then(cidades => {
-                    cidades.forEach(cidade => {
-                        const option = document.createElement('option');
-                        option.value = cidade.nome;
-                        cidadeDatalist.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Erro ao carregar cidades:', error));
-        }
-    });
-
-    // Preencher campos com parâmetros da URL
-    const termoBusca = urlParams.get('termo_busca') || '';
-    const estado = urlParams.get('estado') || '';
-    const cidade = urlParams.get('cidade') || '';
-
-    termoBuscaInput.value = termoBusca;
-    estadoInput.value = estado;
-    cidadeInput.value = cidade;
-
-    if (estado) {
-        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`)
-            .then(response => response.json())
-            .then(cidades => {
-                const cidadeDatalist = document.getElementById('cidades');
-                cidadeDatalist.innerHTML = '';
-
-                cidades.forEach(cidade => {
-                    const option = document.createElement('option');
-                    option.value = cidade.nome;
-                    cidadeDatalist.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Erro ao carregar cidades:', error));
-    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -285,3 +216,107 @@ function dismissNotification(notificationId, accepted) {
         console.error('Erro na requisição:', error);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const verMaisButtons = document.querySelectorAll('.ver-mais');
+
+    verMaisButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const detalhesEmpresa = this.closest('.dadosEmpresa').querySelector('.detalhes-empresa');
+
+            if (detalhesEmpresa.style.maxHeight && detalhesEmpresa.classList.contains('expanded')) {
+                // Recolher
+                detalhesEmpresa.style.maxHeight = null;
+                detalhesEmpresa.classList.remove('expanded');
+                this.textContent = 'Ver mais';
+            } else {
+                // Expandir com altura dinâmica
+                detalhesEmpresa.style.maxHeight = detalhesEmpresa.scrollHeight + "px";
+                detalhesEmpresa.classList.add('expanded');
+                this.textContent = 'Ver menos';
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Carregar estados
+    fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(estados => {
+            console.log('Estados carregados:', estados); // Verifica se os estados estão sendo carregados
+            const estadoDatalist = document.getElementById('estados');
+            estados.forEach(estado => {
+                const option = document.createElement('option');
+                option.value = estado.sigla; // Sigla do estado
+                option.textContent = estado.nome; // Nome do estado
+                estadoDatalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar estados:', error));
+
+    const estadoInput = document.getElementById('estado');
+    const cidadeInput = document.getElementById('cidade');
+    const cidadeDatalist = document.getElementById('cidades');
+
+    // Carregar cidades com base no estado selecionado
+    estadoInput.addEventListener('input', function() {
+        const estadoSigla = this.value.toUpperCase();
+        cidadeDatalist.innerHTML = ''; // Limpa as cidades ao mudar o estado
+
+        if (estadoSigla) {
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(cidades => {
+                    console.log('Cidades carregadas:', cidades); // Verifica se as cidades estão sendo carregadas
+                    cidades.forEach(cidade => {
+                        const option = document.createElement('option');
+                        option.value = cidade.nome; // Nome da cidade
+                        cidadeDatalist.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar cidades:', error));
+        }
+    });
+
+    // Preencher campos com parâmetros da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const termoBusca = urlParams.get('termo_busca') || '';
+    const estado = urlParams.get('estado') || '';
+    const cidade = urlParams.get('cidade') || '';
+
+    const termoBuscaInput = document.querySelector('input[name="termo_busca"]');
+    termoBuscaInput.value = termoBusca; // Preenche o campo de busca
+    estadoInput.value = estado; // Preenche o campo do estado
+    cidadeInput.value = cidade; // Preenche o campo da cidade
+
+    // Carregar cidades se o estado estiver preenchido
+    if (estado) {
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(cidades => {
+                cidadeDatalist.innerHTML = ''; // Limpa as cidades antes de carregar
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.nome; // Nome da cidade
+                    cidadeDatalist.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar cidades:', error));
+    }
+});

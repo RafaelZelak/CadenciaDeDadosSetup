@@ -1,41 +1,73 @@
-// Obtém os elementos
 const overlay = document.getElementById('overlay');
 const highlight = document.getElementById('highlight');
 const overlayButton = document.getElementById('overlayButton');
 const nextStepButton = document.getElementById('nextStepButton');
-const toggleButton = document.querySelector('.switch-container');
 const tutorialText = document.getElementById('tutorial-text');
 const arrow = document.getElementById('arrow');
 
 // Variável para controlar o estado do tutorial
 let currentStep = 0;
 
-// Função para ativar o overlay
+// Variáveis de controle para etapas específicas
+let filterStepCompleted = false;
+let searchStepCompleted = false;
+
+// Função para iniciar o overlay do tutorial
 overlayButton.addEventListener('click', () => {
     overlay.style.display = 'flex';
     currentStep = 0; // Reiniciar o tutorial ao clicar no botão de ativação
-    showStep(currentStep);
+    filterStepCompleted = false; // Resetar o estado do passo 1 (filtro)
+    searchStepCompleted = false; // Resetar o estado do passo 3 (pesquisa)
+    showFilterStep(currentStep); // Exibir o passo inicial
 });
 
-// Função para avançar o tutorial
+// Função para avançar no tutorial
 nextStepButton.addEventListener('click', () => {
-    currentStep++;
-    const totalSteps = 6; // Número total de passos (0 a 3)
-
-    if (currentStep < totalSteps) {
-        showStep(currentStep);
-    } else {
-        // Fechar o tutorial ao fim
-        overlay.style.display = 'none';
-    }
+    handleNextFilterStep();
 });
 
-function showStep(step) {
+// Função para gerenciar o avanço do passo específico (com filtro e pesquisa)
+function handleNextFilterStep() {
+    if (currentStep === 1 && !filterStepCompleted) {
+        // Atualizar o texto do tutorial
+        tutorialText.innerText = 'Vamos colocar por exemplo "PR" "Curitiba"';
+
+        // Preencher os filtros com os valores de exemplo
+        document.getElementById('estado').value = 'PR';
+        document.getElementById('cidade').value = 'Curitiba';
+
+        // Marcar o passo do filtro como completado
+        filterStepCompleted = true;
+    } else if (currentStep === 2 && !searchStepCompleted) {
+        // Atualizar o texto do tutorial
+        tutorialText.innerText = 'Vamos usar por exemplo o termo "Setup Tecnologia"';
+
+        // Preencher a caixa de pesquisa com o termo de exemplo
+        document.querySelector('.pesquisa').value = 'Setup Tecnologia';
+
+        // Marcar o passo da pesquisa como completado
+        searchStepCompleted = true;
+    } else {
+        currentStep++;
+        const totalSteps = 6; // Número total de passos (0 a 5)
+
+        if (currentStep < totalSteps) {
+            showFilterStep(currentStep);
+        } else {
+            // Fechar o tutorial ao fim
+            overlay.style.display = 'none';
+        }
+    }
+}
+
+// Função para mostrar o passo atual do tutorial
+function showFilterStep(step) {
     let rect;
 
     if (step === 0) {
+        const toggleButton = document.querySelector('.switch-container');
         rect = toggleButton.getBoundingClientRect();
-        tutorialText.innerText = "Clique no botão de toggle no canto inferior para ligar ou desligar a funcionalidade Bitrix.";
+        tutorialText.innerText = "Clique no botão para alternar entre Enviar para o Bitrix24 ou gerar uma planilha\n(Já pode clicar!)";
     } else if (step === 1) {
         const filterContainer = document.querySelector('.estado-cidade-container');
         rect = filterContainer.getBoundingClientRect();
@@ -48,16 +80,11 @@ function showStep(step) {
         const searchButton = document.querySelector('.buscar');
         rect = searchButton.getBoundingClientRect();
         tutorialText.innerText = "Por fim, clique no botão de pesquisa para buscar os dados.";
-    } else if (step === 4) {
-        const anotherButton = document.querySelector('.dadosEmpresa');
-        rect = anotherButton.getBoundingClientRect();
-        tutorialText.innerText = "Clique aqui para ver mais detalhes sobre a empresa.";
-    } else if (step === 5) {
-        const finalElement = document.querySelector('.button-text');
-        rect = finalElement.getBoundingClientRect();
-        tutorialText.innerText = "Finalizamos o tutorial!";
-    }
 
+        setTimeout(() => {
+            searchButton.click();
+        }, 2000);
+    }
     const padding = 10;
     const left = rect.left - padding;
     const top = rect.top - padding;
