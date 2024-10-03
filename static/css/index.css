@@ -420,7 +420,7 @@ border-radius: 10px;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #f44336; /* Vermelho para erro */
+    background-color: #cf4a41; /* Vermelho para erro */
     color: white;
     padding: 15px;
     border-radius: 5px;
@@ -435,8 +435,8 @@ border-radius: 10px;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #15c056; /* Vermelho para erro */
-    color: white;
+    background-color: #64ffda; /* Vermelho para erro */
+    color: black;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
