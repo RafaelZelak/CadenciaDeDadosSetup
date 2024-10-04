@@ -83,24 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Alternar estilo de fundo
-    let isImageStyle = false;
-
-    document.addEventListener('keydown', function(event) {
-        if (event.ctrlKey && event.key === 'y') {
-            event.preventDefault();
-
-            if (isImageStyle) {
-                document.body.style.backgroundColor = '#0a192f';
-                document.body.style.backgroundImage = 'none'; // Remove a imagem de fundo
-            } else {
-                document.body.style.backgroundColor = 'transparent'; // Remove a cor de fundo
-                document.body.style.backgroundImage = 'url("../static/img/thiago.png")';
-            }
-
-            isImageStyle = !isImageStyle;
-        }
-    });
 
 document.querySelectorAll('.ver-mais-socios').forEach(button => {
     button.addEventListener('click', function() {
@@ -319,4 +301,30 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .catch(error => console.error('Erro ao carregar cidades:', error));
     }
+});
+
+function toggleBackgroundImage(options) {
+    let isImageStyle = false;
+
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'y') {
+            event.preventDefault();
+
+            if (isImageStyle) {
+                document.body.style.backgroundColor = options.backgroundColor || '#0a192f';
+                document.body.style.backgroundImage = 'none'; // Remove a imagem de fundo
+            } else {
+                document.body.style.backgroundColor = 'transparent'; // Remove a cor de fundo
+                document.body.style.backgroundImage = `url(${options.imageUrl || ''})`;
+            }
+
+            isImageStyle = !isImageStyle;
+        }
+    });
+}
+
+// Inicializa a funcionalidade
+toggleBackgroundImage({
+    backgroundColor: '#0a192f',
+    imageUrl: '../static/img/thiago.png'
 });
