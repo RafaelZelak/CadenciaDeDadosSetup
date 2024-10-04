@@ -9,3 +9,5 @@ requests
 selenium
 tqdm
 urllib3
+nltk
+openpyxl
