@@ -87,6 +87,10 @@
 .custom-body {
     background-color: #0a192f;
     color: #ccd6f6;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
 }
 .custom-container {
     background-color: #112240;
@@ -411,23 +415,22 @@ border-radius: 10px;
 
 .toggle-text{
     position: fixed;
-    bottom: 10px;
+    bottom: 5px;
     right: 80px;
 }
 
-/* Estilos para a notificação de erro */
 .notification-error {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #cf4a41; /* Vermelho para erro */
+    background-color: #ef4444;
     color: white;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    opacity: 0; /* Começa invisível */
-    transform: translateY(20px); /* Posiciona abaixo */
-    transition: opacity 0.5s ease, transform 0.5s ease; /* Transições para suavidade */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
     z-index: 1000;
 }
 
@@ -435,16 +438,22 @@ border-radius: 10px;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #64ffda; /* Vermelho para erro */
+    transform: translateX(20px);
+    background-color: #64ffda;
     color: black;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    opacity: 0; /* Começa invisível */
-    transform: translateY(20px); /* Posiciona abaixo */
-    transition: opacity 0.5s ease, transform 0.5s ease; /* Transições para suavidade */
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
     z-index: 1000;
+    display: block;
+    text-align: center;
+    width: auto;
+    max-width: 90%;
 }
+
+
 
 .notification-sucess.show{
     opacity: 1; /* Torna visível */
