@@ -10,9 +10,16 @@ import uuid
 import asyncio
 import json
 import os
+import unicodedata
+import re
+from unidecode import unidecode
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
+
+def remover_acentos(texto):
+    # Remove acentos e converte ç para c
+    return unidecode(texto)
 
 def get_user_session_file():
     # Gera um caminho para o arquivo de cache com base no UUID do usuário
@@ -98,18 +105,17 @@ def home():
     notifications = get_user_notifications(username)
     show_notification = request.args.get('show_notification', 'true') == 'true'
 
-    # Verificar se o usuário tem notificações
-    notifications = get_user_notifications(username)
-    show_notification = request.args.get('show_notification', 'true') == 'true'
-
     print(f"Notifications: {notifications}")  # Debug: Verifica notificações
     print(f"Show Notification: {show_notification}")  # Debug: Verifica o estado do show_notification
-
 
     termo_busca = request.args.get('termo_busca', '')
     estado = request.args.get('estado', '')
     cidade = request.args.get('cidade', '')
     page = int(request.args.get('page', 1))
+
+    # Remove caracteres especiais de estado e cidade
+    estado = remover_acentos(estado)
+    cidade = remover_acentos(cidade)
 
     dados_cnpj = []
     tem_mais_paginas = False
