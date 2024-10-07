@@ -13,6 +13,7 @@ import os
 import unicodedata
 import re
 from unidecode import unidecode
+from server.errorLog import get_error_logs
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
@@ -44,20 +45,28 @@ def authenticate(username, password):
 
     try:
         if conn.bind():
+            # Pesquisa pelo usuário no LDAP
             conn.search(search_base='DC=digitalup,DC=intranet',
                         search_filter=f'(sAMAccountName={username})',
-                        attributes=['cn', 'homePhone', 'telephoneNumber'])
+                        attributes=['cn', 'memberOf', 'homePhone', 'telephoneNumber'])
 
             if len(conn.entries) > 0:
                 user_info = conn.entries[0]
-
-                print(user_info)
-
                 full_name = user_info.cn.value if hasattr(user_info, 'cn') else None
+                is_admin = False
 
+                # Verifica se o usuário pertence ao grupo de Administradores
+                if hasattr(user_info, 'memberOf'):
+                    for group in user_info.memberOf:
+                        if 'CN=Administrators' in group:
+                            is_admin = True
+                            break
+
+                # Armazena as informações na sessão
                 session['logged_in'] = True
                 session['username'] = username
                 session['full_name'] = full_name
+                session['is_admin'] = is_admin  # Salva a informação do grupo Admin
 
                 return True
             else:
@@ -125,6 +134,7 @@ def home():
 
     full_name = session.get('full_name', 'Usuário')
     username = session.get('username', 'Usuário')
+    is_admin = session.get('is_admin', False)  # Pega o status de admin da sessão
 
     notifications = get_user_notifications(username)
     show_notification = request.args.get('show_notification', 'true') == 'true'
@@ -153,11 +163,10 @@ def home():
                 if detalhes:
                     empresa.update(detalhes)
 
-            # Ordena as empresas pela razão social ou nome fantasia
             dados_cnpj.sort(key=lambda empresa: empresa.get('razao_social', '').lower())
 
             proxima_pagina = integration.obter_dados_cnpj(termo_busca, estado, cidade, page + 1)
-            tem_mais_paginas = bool(proxima_pagina)  # True se houver mais páginas de resultados
+            tem_mais_paginas = bool(proxima_pagina)
         else:
             if not erro:
                 flash('Nenhum dado encontrado para o termo informado.', 'error')
@@ -165,7 +174,6 @@ def home():
     if erro:
         flash(erro, 'error')
 
-    # Passar total_results para o template
     return render_template(
         'index.html',
         full_name=full_name,
@@ -177,8 +185,17 @@ def home():
         cidade=cidade,
         page=page,
         tem_mais_paginas=tem_mais_paginas,
-        total_results=total_results  # Passando o total de resultados
+        total_results=total_results,
+        is_admin=is_admin  # Passa a informação de admin para o template
     )
+
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    # Pegar os logs de erro
+    error_logs = get_error_logs()
+
+    # Renderizar os logs no template
+    return render_template('admin_dashboard.html', logs=error_logs)
 
 @app.route('/dismiss_notification', methods=['POST'])
 def dismiss_notification():

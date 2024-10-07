@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            background-color: #001f3f; /* Fundo azul escuro */
+            color: #ffffff; /* Texto em branco */
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .error-block {
+            margin: 20px 0;
+            border: 1px solid #ddd; /* Borda clara ao redor do bloco */
+            border-radius: 5px; /* Bordas arredondadas */
+            background-color: #003366; /* Fundo azul mais claro para os blocos */
+            padding: 10px;
+        }
+        pre {
+            background-color: #1e1e1e; /* Fundo escuro para o código */
+            border: 1px solid #444; /* Borda escura para o bloco de código */
+            padding: 10px;
+            margin: 0; /* Remove margem do pre */
+            overflow-x: auto; /* Adiciona rolagem se necessário */
+            color: #ffffff; /* Cor do texto do código */
+        }
+        .datetime-header {
+            font-size: 18px; /* Tamanho da fonte do cabeçalho */
+            font-weight: bold; /* Negrito */
+            margin-bottom: 10px; /* Espaço abaixo do cabeçalho */
+        }
+    </style>
+</head>
+<body>
+    <h1>Logs de Erro do Serviço</h1>
+
+    {% if logs %}
+        {% for log in logs %}
+            <div class="error-block">
+                {% set log_parts = log.split('----------') %}
+                {% if log_parts | length > 2 %}
+                    <div class="datetime-header">
+                        Erro Data/Hora: {{ log_parts[1].strip() }}
+                    </div>
+                    <pre><code>{{ log_parts[2].strip() }}</code></pre>
+                {% else %}
+                    <div class="datetime-header">
+                        Erro Data/Hora: Informação incompleta
+                    </div>
+                    <pre><code>{{ log }}</code></pre>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum log encontrado.</p>
+    {% endif %}
+</body>
+</html>
