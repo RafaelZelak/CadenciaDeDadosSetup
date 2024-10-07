@@ -60,7 +60,7 @@ def obter_dados_cnpj(termo, estado='', cidade='', page=1):
 
     data = {
         "query": {
-            "termo": termos_expandidos,  # Agora buscando por variações
+            "termo": termos_expandidos,
             "uf": [estado] if estado else [],
             "municipio": [cidade] if cidade else [],
             "situacao_cadastral": "ATIVA"
@@ -79,16 +79,29 @@ def obter_dados_cnpj(termo, estado='', cidade='', page=1):
     try:
         response = scraper.post(url, json=data, timeout=10)
         response.raise_for_status()
-        return response.json().get('data', {}).get('cnpj', [])
+
+        # Obter o total de resultados
+        total_results = response.json().get('data', {}).get('count', 0)
+        dados_cnpj = response.json().get('data', {}).get('cnpj', [])
+
+        # Ordenar as empresas pelo CNPJ ou razão social (ordenação constante)
+        dados_cnpj.sort(key=lambda empresa: empresa.get('cnpj', ''))
+
+        return dados_cnpj, total_results, None
+
     except (ConnectionError, Timeout):
         print("Erro de conexão ou tempo de resposta excedido ao obter dados do CNPJ.")
-        return None
+        return None, 0, "Erro de conexão ou tempo de resposta excedido."
     except HTTPError as e:
+        if e.response.status_code == 429:
+            print("Erro HTTP 429: Too Many Requests.")
+            return None, 0, "Você atingiu o limite de requisições. Tente novamente mais tarde."
         print(f"Erro HTTP ao tentar obter dados do CNPJ: {e}")
-        return None
+        return None, 0, f"Erro HTTP: {e}"
     except RequestException as e:
         print(f"Erro inesperado na requisição ao obter dados do CNPJ: {e}")
-        return None
+        return None, 0, f"Erro inesperado: {e}"
+
 
 # Função para obter os dados enriquecidos do CNPJ via BrasilAPI
 def obter_detalhes_cnpj(cnpj):

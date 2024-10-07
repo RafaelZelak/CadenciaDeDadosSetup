@@ -93,6 +93,31 @@ def login():
 
     return render_template('login.html')
 
+# Handle multiple errors
+@app.errorhandler(400)
+def bad_request_error(e):
+    response = jsonify({'message': 'Requisição inválida (400)!'})
+    response.status_code = 400
+    return response
+
+@app.errorhandler(404)
+def not_found_error(e):
+    response = jsonify({'message': 'Página não encontrada (404)!'})
+    response.status_code = 404
+    return response
+
+@app.errorhandler(500)
+def internal_error(e):
+    response = jsonify({'message': 'Erro interno no servidor (500)!'})
+    response.status_code = 500
+    return response
+
+@app.errorhandler(429)
+def too_many_requests(e):
+    response = jsonify({'message': 'Muitas requisições! Por favor, tente novamente mais tarde (429).'})
+    response.status_code = 429
+    return response
+
 @app.route('/home', methods=['GET'])
 def home():
     if not session.get('logged_in'):
@@ -101,27 +126,25 @@ def home():
     full_name = session.get('full_name', 'Usuário')
     username = session.get('username', 'Usuário')
 
-    # Obter notificações para o usuário logado
     notifications = get_user_notifications(username)
     show_notification = request.args.get('show_notification', 'true') == 'true'
-
-    print(f"Notifications: {notifications}")  # Debug: Verifica notificações
-    print(f"Show Notification: {show_notification}")  # Debug: Verifica o estado do show_notification
 
     termo_busca = request.args.get('termo_busca', '')
     estado = request.args.get('estado', '')
     cidade = request.args.get('cidade', '')
     page = int(request.args.get('page', 1))
 
-    # Remove caracteres especiais de estado e cidade
     estado = remover_acentos(estado)
     cidade = remover_acentos(cidade)
 
     dados_cnpj = []
     tem_mais_paginas = False
+    erro = None
+    total_results = 0
 
     if termo_busca:
-        dados_cnpj = integration.obter_dados_cnpj(termo_busca, estado, cidade, page)
+        dados_cnpj, total_results, erro = integration.obter_dados_cnpj(termo_busca, estado, cidade, page)
+        print(f"Total de resultados encontrados: {total_results}")
 
         if dados_cnpj:
             for empresa in dados_cnpj:
@@ -130,11 +153,19 @@ def home():
                 if detalhes:
                     empresa.update(detalhes)
 
+            # Ordena as empresas pela razão social ou nome fantasia
+            dados_cnpj.sort(key=lambda empresa: empresa.get('razao_social', '').lower())
+
             proxima_pagina = integration.obter_dados_cnpj(termo_busca, estado, cidade, page + 1)
             tem_mais_paginas = bool(proxima_pagina)  # True se houver mais páginas de resultados
         else:
-            flash('Nenhum dado encontrado para o termo informado.', 'error')
+            if not erro:
+                flash('Nenhum dado encontrado para o termo informado.', 'error')
 
+    if erro:
+        flash(erro, 'error')
+
+    # Passar total_results para o template
     return render_template(
         'index.html',
         full_name=full_name,
@@ -145,7 +176,8 @@ def home():
         estado=estado,
         cidade=cidade,
         page=page,
-        tem_mais_paginas=tem_mais_paginas
+        tem_mais_paginas=tem_mais_paginas,
+        total_results=total_results  # Passando o total de resultados
     )
 
 @app.route('/dismiss_notification', methods=['POST'])

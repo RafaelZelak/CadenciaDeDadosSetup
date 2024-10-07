@@ -14,6 +14,15 @@
     <meta http-equiv="Expires" content="0" />
 </head>
 <body class="custom-body">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
     <div id="notification-error" class="notification-error hidden">
         <p id="notificationErrorMessage"></p>
     </div>
@@ -63,8 +72,8 @@
                 <button type="submit" class="buscar">
                     <img src="{{ url_for('static', filename='img/search.svg') }}" alt="Buscar">
                 </button>
-            </div>
 
+            </div>
             <div class="estado-cidade-button-container">
                 <div class="estado-cidade-container">
                     <label class="title-filter">Filtros:</label>
@@ -81,6 +90,10 @@
 
         {% if dados_cnpj %}
         <h2 class="result-title font-bold mb-4 text-center">Resultados</h2>
+        <div class="result-container">
+            <span class="limitado">Limitado a 20 resultados por página</span>
+            <p class="total_results">Total de resultados encontrados: {{ total_results }}</p>
+        </div>
         <ul>
             {% for empresa in dados_cnpj %}
             <li class="mb-4 dadosEmpresa flex justify-between items-center">
@@ -197,5 +210,6 @@
     <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/tutorial.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/error.js') }}"></script>
 </body>
 </html>
