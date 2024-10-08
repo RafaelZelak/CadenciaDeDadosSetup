@@ -4,7 +4,8 @@ import integration
 from notification import get_user_notifications, get_db_connection
 import csv
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Font, Alignment
+from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 from io import BytesIO, TextIOWrapper
 import uuid
 import asyncio
@@ -12,6 +13,7 @@ import json
 import os
 import unicodedata
 import re
+from datetime import datetime
 from unidecode import unidecode
 from server.errorLog import get_error_logs
 from server.loginLog import get_login_logs
@@ -20,7 +22,6 @@ app = Flask(__name__)
 app.secret_key = 'calvo'
 
 def remover_acentos(texto):
-    # Remove acentos e converte ç para c
     return unidecode(texto)
 
 def get_user_session_file():
@@ -80,6 +81,134 @@ def authenticate(username, password):
     finally:
         conn.unbind()
 
+def ajustar_largura_colunas(ws):
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter  # Pega a letra da coluna
+        for cell in col:
+            try:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            except:
+                pass
+        adjusted_width = (max_length + 2)  # Ajuste com base no tamanho do texto
+        ws.column_dimensions[column].width = adjusted_width
+
+def gerar_excel(empresas, scrap_results):
+    # Criar uma nova pasta de trabalho e uma planilha
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Empresas"
+
+    # Cabeçalhos das colunas principais
+    headers = [
+        "Razão Social", "Nome Fantasia", "CNPJ", "Endereço",
+        "Telefone 1", "Telefone 2", "E-mail", "Telefone Enriquecido"
+    ]
+
+    # Encontrar o número máximo de sócios para adicionar as colunas de forma dinâmica
+    max_socios = max(len(empresa['socios']) for empresa in empresas)
+
+    # Cabeçalhos dinâmicos para sócios
+    for i in range(1, max_socios + 1):
+        headers.extend([f"Nome Sócio {i}", f"Faixa Etária Sócio {i}", f"Qualificação Sócio {i}", f"Data Entrada Sócio {i}"])
+
+    # Adicionar os cabeçalhos à planilha
+    ws.append(headers)
+
+    # Estilo para os cabeçalhos
+    header_fill = PatternFill(start_color="15294b", end_color="15294b", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True)
+
+    # Aplicar estilos aos cabeçalhos
+    for col in range(1, len(headers) + 1):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    # Estilo para contorno e bordas internas
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    # Iterar pelas empresas e scrap_results ao mesmo tempo
+    for empresa, enriched_data_str in zip(empresas, scrap_results):
+        # Converta a string JSON para dicionário
+        try:
+            enriched_data = json.loads(enriched_data_str)  # Tente carregar o JSON
+        except json.JSONDecodeError:
+            enriched_data = {}  # Se falhar, use um dicionário vazio
+
+        # Dados principais da empresa
+        row = [
+            empresa['razao_social'],
+            empresa['nome_fantasia'],
+            empresa['cnpj'],
+            empresa['logradouro'],
+            empresa['telefone_1'],
+            empresa['telefone_2'],
+            empresa['email'],
+            enriched_data.get('consolidated_contact_info', {}).get('phone', '')  # Telefone do enriched_info
+        ]
+
+        # Adicionar as informações dos sócios (ou deixar em branco se não houver dados)
+        for socio in empresa['socios']:
+            row.extend([
+                socio.get('nome', ''),  # Deixa vazio se não houver valor
+                socio.get('faixa_etaria', ''),
+                socio.get('qualificacao', ''),
+                socio.get('data_entrada', '')
+            ])
+
+        # Preenche células vazias para sócios que não existem
+        socios_faltantes = max_socios - len(empresa['socios'])
+        if socios_faltantes > 0:
+            row.extend([''] * 4 * socios_faltantes)  # Preenche com células vazias
+
+        # Adicionar a linha completa na planilha
+        ws.append(row)
+
+    # Ajustar a largura das colunas com base no conteúdo
+    ajustar_largura_colunas(ws)
+
+    # Aplicar bordas nas células dentro da tabela
+    for row in ws.iter_rows(min_row=2, max_col=len(headers), max_row=ws.max_row):
+        for cell in row:
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+            cell.border = thin_border
+
+    # Remover bordas fora da tabela
+    for row in ws.iter_rows(min_row=ws.max_row+1, max_col=len(headers)):
+        for cell in row:
+            cell.border = Border()  # Sem borda
+
+    # Salvar em um objeto BytesIO e retornar
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return output
+
+def carregar_blacklist():
+    blacklist = {}
+    try:
+        with open('resource/blacklist.csv', 'r', newline='') as blacklist_file:
+            reader = csv.DictReader(blacklist_file)
+            for row in reader:
+                cnpj = row['cnpj']
+                user = row['user']
+                datetime_str = row['datetime']
+                blacklist[cnpj] = {
+                    'user': user,
+                    'datetime': datetime_str
+                }
+    except FileNotFoundError:
+        print("O arquivo blacklist.csv não foi encontrado.")
+    return blacklist
+
 @app.after_request
 def add_cache_control_headers(resp):
     resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -103,30 +232,21 @@ def login():
 
     return render_template('login.html')
 
-# Handle multiple errors
-@app.errorhandler(400)
-def bad_request_error(e):
-    response = jsonify({'message': 'Requisição inválida (400)!'})
-    response.status_code = 400
-    return response
+@app.template_filter('format_cnpj')
+def format_cnpj(cnpj):
+    if cnpj and len(cnpj) == 14:  # Verifica se o CNPJ tem 14 dígitos
+        return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
+    return cnpj
 
-@app.errorhandler(404)
-def not_found_error(e):
-    response = jsonify({'message': 'Página não encontrada (404)!'})
-    response.status_code = 404
-    return response
-
-@app.errorhandler(500)
-def internal_error(e):
-    response = jsonify({'message': 'Erro interno no servidor (500)!'})
-    response.status_code = 500
-    return response
-
-@app.errorhandler(429)
-def too_many_requests(e):
-    response = jsonify({'message': 'Muitas requisições! Por favor, tente novamente mais tarde (429).'})
-    response.status_code = 429
-    return response
+@app.template_filter('format_datetime')
+def format_datetime(dt_str):
+    if dt_str:
+        try:
+            dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
+            return dt.strftime("%d/%m/%Y às %H:%M h")
+        except ValueError:
+            return dt_str
+    return ""
 
 @app.route('/home', methods=['GET'])
 def home():
@@ -135,7 +255,7 @@ def home():
 
     full_name = session.get('full_name', 'Usuário')
     username = session.get('username', 'Usuário')
-    is_admin = session.get('is_admin', False)  # Pega o status de admin da sessão
+    is_admin = session.get('is_admin', False)
 
     notifications = get_user_notifications(username)
     show_notification = request.args.get('show_notification', 'true') == 'true'
@@ -153,6 +273,9 @@ def home():
     erro = None
     total_results = 0
 
+    # Carregar dados da blacklist
+    blacklist = carregar_blacklist()
+
     if termo_busca:
         dados_cnpj, total_results, erro = integration.obter_dados_cnpj(termo_busca, estado, cidade, page)
         print(f"Total de resultados encontrados: {total_results}")
@@ -163,6 +286,10 @@ def home():
                 detalhes = integration.obter_detalhes_cnpj(cnpj)
                 if detalhes:
                     empresa.update(detalhes)
+
+                # Adicionar informações da blacklist, se existir
+                if cnpj in blacklist:
+                    empresa['blacklist_info'] = blacklist[cnpj]
 
             dados_cnpj.sort(key=lambda empresa: empresa.get('razao_social', '').lower())
 
@@ -187,8 +314,9 @@ def home():
         page=page,
         tem_mais_paginas=tem_mais_paginas,
         total_results=total_results,
-        is_admin=is_admin  # Passa a informação de admin para o template
+        is_admin=is_admin
     )
+
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -304,7 +432,6 @@ def salvar_csv():
     }
 
     file_path = get_user_session_file()
-
     # Lê os dados do arquivo JSON e adiciona a nova empresa
     with open(file_path, 'r+') as file:
         empresas = json.load(file)
@@ -314,24 +441,59 @@ def salvar_csv():
 
     return jsonify({'success': True, 'message': 'Empresa adicionada com sucesso.'})
 
+def normalizar_cnpj(cnpj):
+    return re.sub(r'\D', '', cnpj)
+
 @app.route('/salvar_todas_csv', methods=['POST'])
 def salvar_todas_csv():
     form_data = request.get_json()
-
     empresas = form_data.get('empresas', [])
-
     file_path = get_user_session_file()
 
+    # Lê os CNPJs da blacklist
+    blacklist_cnpjs = set()
+    try:
+        with open('resource/blacklist.csv', mode='r') as blacklist_file:
+            csv_reader = csv.DictReader(blacklist_file)
+            for row in csv_reader:
+                cnpj_blacklist = normalizar_cnpj(row['cnpj'].strip())  # Normaliza o CNPJ da blacklist
+                blacklist_cnpjs.add(cnpj_blacklist)
+    except FileNotFoundError:
+        return jsonify({'success': False, 'message': 'Arquivo de blacklist não encontrado.'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+    # Debug: imprime CNPJs da blacklist
+    print("CNPJs na blacklist:", blacklist_cnpjs)
+
     # Lê os dados existentes no arquivo JSON
-    with open(file_path, 'r+') as file:
-        empresas_cache = json.load(file)
-        empresas_cache.extend(empresas)  # Adiciona as novas empresas
-        file.seek(0)
-        json.dump(empresas_cache, file)  # Atualiza o arquivo JSON com todas as empresas
+    try:
+        with open(file_path, 'r+') as file:
+            try:
+                empresas_cache = json.load(file)
+            except json.JSONDecodeError:
+                empresas_cache = []  # Inicializa com uma lista vazia se o arquivo estiver vazio ou corrompido
 
-    return jsonify({'success': True, 'message': 'Todas as empresas foram salvas com sucesso.'})
+            for empresa in empresas:
+                cnpj = empresa.get('cnpj')
+                cnpj_normalizado = normalizar_cnpj(cnpj)  # Normaliza o CNPJ da empresa
 
-from openpyxl.styles import PatternFill, Font, Alignment
+                if cnpj_normalizado and cnpj_normalizado not in blacklist_cnpjs:  # Verifica se o CNPJ não está na blacklist
+                    empresas_cache.append(empresa)  # Adiciona as novas empresas
+                else:
+                    print("Ignorando CNPJ (Já processado):", cnpj_normalizado)
+
+            # Agora sobrescreve o arquivo de forma segura
+            file.seek(0)  # Posiciona o ponteiro no início do arquivo
+            json.dump(empresas_cache, file, indent=4)  # Atualiza o arquivo JSON com todas as empresas, usando indent para clareza
+            file.truncate()  # Garante que o conteúdo antigo é apagado, mantendo apenas o novo conteúdo
+
+    except FileNotFoundError:
+        return jsonify({'success': False, 'message': 'Arquivo de cache não encontrado.'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+    return jsonify({'success': True, 'message': 'Todas as empresas, novas, foram salvas com sucesso.'})
 
 @app.route('/baixar_csv')
 def baixar_csv():
@@ -344,134 +506,34 @@ def baixar_csv():
     if not empresas:
         return jsonify({'error': 'Nenhuma empresa disponível para download.'}), 400
 
-    # Criar um arquivo Excel
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Empresas"
-
-    # Cabeçalhos do XLSX
-    headers = [
-        'Razão Social', 'Nome Fantasia', 'Logradouro', 'Município', 'UF', 'CEP', 'Telefone 1', 'Telefone 2', 'Email', 'Porte', 'CNPJ'
-    ]
-
-    # Adiciona cabeçalhos dinâmicos para os sócios com base no máximo de sócios que alguma empresa tem
-    max_socios = max(len(empresa.get('socios', [])) for empresa in empresas) if empresas else 0
-    for i in range(1, max_socios + 1):
-        headers.extend([f'Sócio {i} Nome', f'Sócio {i} Faixa Etária', f'Sócio {i} Qualificação', f'Sócio {i} Data Entrada'])
-
-    # Adiciona cabeçalhos para os dias da semana
-    dias_da_semana = [
-        'segunda-feira', 'terça-feira', 'quarta-feira',
-        'quinta-feira', 'sexta-feira', 'sábado', 'domingo'
-    ]
-    headers.extend(dias_da_semana)
-
-    headers.extend([
-        'Logradouro Enriquecido', 'Telefone Enriquecido', 'Email Enriquecido', 'Rating', 'Review Count'
-    ])
-
-    ws.append(headers)
-
-    # Aplicando estilo e formatação
-    contact_group = ['Telefone 1', 'Telefone 2', 'Telefone Enriquecido', 'Email', 'Email Enriquecido']
-    address_group = ['Logradouro', 'Município', 'UF', 'CEP', 'Logradouro Enriquecido']
-    contact_fill = PatternFill(start_color='FFCCE5', end_color='FFCCE5', fill_type='solid')
-    address_fill = PatternFill(start_color='CCFFCC', end_color='CCFFCC', fill_type='solid')
-    socio_fill = PatternFill(start_color='CCE5FF', end_color='CCE5FF', fill_type='solid')
-    light_gray_fill = PatternFill(start_color='F5F5F5', end_color='F5F5F5', fill_type='solid')
-    white_fill = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
-
-    # Aplicar formatação aos cabeçalhos
-    for i, cell in enumerate(ws[1], 1):
-        if cell.value in contact_group:
-            cell.fill = contact_fill
-        elif cell.value in address_group:
-            cell.fill = address_fill
-        elif 'Sócio' in cell.value:
-            cell.fill = socio_fill
-        else:
-            cell.fill = white_fill
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-
-    # Monta as queries para o scrap
-    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
-
     # Faz o scrap dos dados de forma assíncrona
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
     scrap_results = loop.run_until_complete(integration.scrap.process_queries(queries))
 
-    # Escreve os dados de cada empresa, incluindo o enriquecimento
-    for idx, empresa in enumerate(empresas):
-        scrap_data = json.loads(scrap_results[idx]) if scrap_results[idx] else {}
+    # Blacklist
+    blacklist_path = 'resource/blacklist.csv'
 
-        # Enriquecer os dados da empresa com o scrap
-        empresa_enriquecida = integration.atualizar_dados_empresa_com_scrap(empresa.copy(), scrap_data)
+    # Verifica se o arquivo já existe, senão cria com cabeçalhos
+    if not os.path.exists(blacklist_path):
+        with open(blacklist_path, 'w', newline='') as blacklist_file:
+            writer = csv.writer(blacklist_file)
+            writer.writerow(['cnpj', 'user', 'datetime'])  # Adiciona cabeçalhos
 
-        knowledge_graph = scrap_data.get('knowledge_graph', {})
-        contact_info = scrap_data.get('consolidated_contact_info', {})
+    # Nome do usuário logado e data/hora atual
+    username = session.get('username', 'Usuário desconhecido')
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        endereco_enriquecido = contact_info.get('address', knowledge_graph.get('address', ''))
-        telefone_enriquecido = contact_info.get('phone', knowledge_graph.get('phone', ''))
-        email_enriquecido = contact_info.get('email', '')
-        rating = knowledge_graph.get('rating', '')
-        review_count = knowledge_graph.get('review_count', '')
+    # Adiciona os CNPJs no CSV de blacklist
+    with open(blacklist_path, 'a', newline='') as blacklist_file:
+        writer = csv.writer(blacklist_file)
+        for empresa in empresas:
+            cnpj_normalizado = normalizar_cnpj(empresa['cnpj'])  # Normaliza o CNPJ
+            writer.writerow([cnpj_normalizado, username, current_time])
 
-        # Processar os horários de funcionamento
-        horarios = knowledge_graph.get('hours', {})
-        horarios_formatados = [horarios.get(dia, 'Fechado') for dia in dias_da_semana]
-
-        # Prepara os dados dos sócios
-        socios_data = []
-        for socio in empresa.get('socios', []):
-            socios_data.extend([
-                socio['nome'],
-                socio['faixa_etaria'],
-                socio['qualificacao'],
-                socio['data_entrada'].replace('\n', ' ')
-            ])
-
-        # Adiciona dados dos sócios e preenche com vazios caso não haja sócios
-        num_socios = len(empresa.get('socios', []))
-        while len(socios_data) < num_socios * 4:
-            socios_data.append('')
-
-        # Adiciona os dados na planilha
-        ws.append([
-            empresa['razao_social'],
-            empresa['nome_fantasia'],
-            empresa['logradouro'],
-            empresa['municipio'],
-            empresa['uf'],
-            empresa['cep'],
-            empresa['telefone_1'],
-            empresa['telefone_2'],
-            empresa['email'],
-            empresa['porte'],
-            empresa['cnpj'],
-        ] + socios_data + horarios_formatados + [
-            endereco_enriquecido,
-            telefone_enriquecido,
-            email_enriquecido,
-            rating,
-            review_count
-        ])
-
-        # Aplicar formatação nas linhas
-        fill = light_gray_fill if idx % 2 == 0 else white_fill
-        for cell in ws[idx + 2]:
-            cell.fill = fill
-
-    # Ajustar largura das colunas automaticamente
-    for col in ws.columns:
-        max_length = max(len(str(cell.value)) for cell in col) + 2
-        ws.column_dimensions[col[0].column_letter].width = max_length
-
-    # Salvar o arquivo em memória
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
+    # Chama a função para gerar o Excel
+    output = gerar_excel(empresas, scrap_results)
 
     # Remover o arquivo temporário após o download
     os.remove(file_path)
@@ -481,6 +543,7 @@ def baixar_csv():
     return Response(output,
                     mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     headers={"Content-Disposition": "attachment; filename=empresas.xlsx"})
+
 
 @app.route('/enviar_empresa', methods=['POST'])
 def enviar_empresa():
