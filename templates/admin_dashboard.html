@@ -4,57 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <style>
-        body {
-            background-color: #001f3f; /* Fundo azul escuro */
-            color: #ffffff; /* Texto em branco */
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .error-block {
-            margin: 20px 0;
-            border: 1px solid #ddd; /* Borda clara ao redor do bloco */
-            border-radius: 5px; /* Bordas arredondadas */
-            background-color: #003366; /* Fundo azul mais claro para os blocos */
-            padding: 10px;
-        }
-        pre {
-            background-color: #1e1e1e; /* Fundo escuro para o código */
-            border: 1px solid #444; /* Borda escura para o bloco de código */
-            padding: 10px;
-            margin: 0; /* Remove margem do pre */
-            overflow-x: auto; /* Adiciona rolagem se necessário */
-            color: #ffffff; /* Cor do texto do código */
-        }
-        .datetime-header {
-            font-size: 18px; /* Tamanho da fonte do cabeçalho */
-            font-weight: bold; /* Negrito */
-            margin-bottom: 10px; /* Espaço abaixo do cabeçalho */
-        }
-    </style>
-</head>
-<body>
-    <h1>Logs de Erro do Serviço</h1>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
 
-    {% if logs %}
-        {% for log in logs %}
-            <div class="error-block">
-                {% set log_parts = log.split('----------') %}
-                {% if log_parts | length > 2 %}
-                    <div class="datetime-header">
-                        Erro Data/Hora: {{ log_parts[1].strip() }}
-                    </div>
-                    <pre><code>{{ log_parts[2].strip() }}</code></pre>
-                {% else %}
-                    <div class="datetime-header">
-                        Erro Data/Hora: Informação incompleta
-                    </div>
-                    <pre><code>{{ log }}</code></pre>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Nenhum log encontrado.</p>
-    {% endif %}
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <div class="bg-darkblue p-10 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 class="text-3xl font-bold mb-8 text-center text-white">Admin Dashboard</h1>
+
+        <div class="flex flex-col space-y-6">
+            <a href="{{ url_for('error_log') }}" class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                View Error Log
+            </a>
+            <a href="{{ url_for('login_log') }}" class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                View Login Log
+            </a>
+            <button class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                Button 3
+            </button>
+            <button class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                Button 4
+            </button>
+        </div>
+    </div>
+
 </body>
 </html>

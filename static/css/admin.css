@@ -1,0 +1,64 @@
+
+body {
+    background-color: #0a192f; /* Fundo azul escuro */
+    color: #ffffff; /* Texto em branco */
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+.error-block {
+    margin: 20px 0;
+    border: 1px solid #ddd; /* Borda clara ao redor do bloco */
+    border-radius: 5px; /* Bordas arredondadas */
+    background-color: #112240; /* Fundo azul mais claro para os blocos */
+    padding: 10px;
+}
+pre {
+    background-color: #1e1e1e; /* Fundo escuro para o código */
+    border: 1px solid #444; /* Borda escura para o bloco de código */
+    padding: 10px;
+    margin: 0; /* Remove margem do pre */
+    overflow-x: auto; /* Adiciona rolagem se necessário */
+    color: #ffffff; /* Cor do texto do código */
+}
+.datetime-header {
+    font-size: 18px; /* Tamanho da fonte do cabeçalho */
+    font-weight: bold; /* Negrito */
+    margin-bottom: 10px; /* Espaço abaixo do cabeçalho */
+}
+
+
+.bg-darkblue {
+    background-color: #112240; /* Um tom de dark blue bem mais escuro */
+}
+.bg-darkbutton {
+    background-color: #27344b; /* Cor escura para os botões */
+}
+.hover-lightblue {
+    background-color: #2e405f; /* Cor azul mais clara no hover */
+}
+.bg-container{
+    background-color: #1a2f58;
+}
+
+.container {
+    background-color: #112240;
+    padding: 20px;
+    border-radius: 8px;
+}
+.header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.log-entry {
+    border-bottom: 1px solid #1c2e4a;
+    padding: 10px 0;
+    white-space: pre-wrap; /* Mantém a formatação com quebras de linha */
+}
+.filter-button {
+    background-color: #27344b;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+}

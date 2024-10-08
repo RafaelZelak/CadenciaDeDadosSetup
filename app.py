@@ -14,6 +14,7 @@ import unicodedata
 import re
 from unidecode import unidecode
 from server.errorLog import get_error_logs
+from server.loginLog import get_login_logs
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
@@ -191,11 +192,42 @@ def home():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
+    # Verificar se o usuário está logado e se é administrador
+    if not session.get('logged_in') or not session.get('is_admin'):
+        flash('Acesso negado. Você não tem permissão para acessar essa página.', 'error')
+        return redirect(url_for('home'))
+
     # Pegar os logs de erro
     error_logs = get_error_logs()
 
     # Renderizar os logs no template
     return render_template('admin_dashboard.html', logs=error_logs)
+
+@app.route('/error_log')
+def error_log():
+    # Verificar se o usuário está logado e se é administrador
+    if not session.get('logged_in') or not session.get('is_admin'):
+        flash('Acesso negado. Você não tem permissão para acessar essa página.', 'error')
+        return redirect(url_for('home'))
+
+    # Pegar os logs de erro
+    error_logs = get_error_logs()
+
+    # Renderizar os logs no template
+    return render_template('error_log.html', logs=error_logs)
+
+@app.route('/login_log')
+def login_log():
+    # Verificar se o usuário está logado e se é administrador
+    if not session.get('logged_in') or not session.get('is_admin'):
+        flash('Acesso negado. Você não tem permissão para acessar essa página.', 'error')
+        return redirect(url_for('home'))
+
+    # Pegar os logs de login
+    login_logs = get_login_logs()
+
+    # Renderizar os logs no template
+    return render_template('login_log.html', logs=login_logs)
 
 @app.route('/dismiss_notification', methods=['POST'])
 def dismiss_notification():
