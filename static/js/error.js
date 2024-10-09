@@ -27,7 +27,6 @@
             } else {
                 // Processa a resposta normalmente
                 const result = await response.text();
-                console.log(result);
             }
         } catch (error) {
             console.error('Erro ao fazer a requisição:', error);

@@ -231,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         })
         .then(estados => {
-            console.log('Estados carregados:', estados); // Verifica se os estados estão sendo carregados
             const estadoDatalist = document.getElementById('estados');
             estados.forEach(estado => {
                 const option = document.createElement('option');

@@ -12,6 +12,7 @@ import asyncio
 import json
 import os
 import unicodedata
+from unidecode import unidecode
 import re
 from datetime import datetime
 from unidecode import unidecode
@@ -456,7 +457,7 @@ def salvar_todas_csv():
         with open('resource/blacklist.csv', mode='r') as blacklist_file:
             csv_reader = csv.DictReader(blacklist_file)
             for row in csv_reader:
-                cnpj_blacklist = normalizar_cnpj(row['cnpj'].strip())  # Normaliza o CNPJ da blacklist
+                cnpj_blacklist = normalizar_cnpj(row['cnpj'].strip())
                 blacklist_cnpjs.add(cnpj_blacklist)
     except FileNotFoundError:
         return jsonify({'success': False, 'message': 'Arquivo de blacklist não encontrado.'}), 404
@@ -472,21 +473,34 @@ def salvar_todas_csv():
             try:
                 empresas_cache = json.load(file)
             except json.JSONDecodeError:
-                empresas_cache = []  # Inicializa com uma lista vazia se o arquivo estiver vazio ou corrompido
+                empresas_cache = []
 
             for empresa in empresas:
                 cnpj = empresa.get('cnpj')
-                cnpj_normalizado = normalizar_cnpj(cnpj)  # Normaliza o CNPJ da empresa
+                cnpj_normalizado = normalizar_cnpj(cnpj)
 
-                if cnpj_normalizado and cnpj_normalizado not in blacklist_cnpjs:  # Verifica se o CNPJ não está na blacklist
-                    empresas_cache.append(empresa)  # Adiciona as novas empresas
+                if cnpj_normalizado and cnpj_normalizado not in blacklist_cnpjs:
+                    # Remove os acentos dos campos de cada empresa e sócios
+                    empresa['razao_social'] = unidecode(empresa['razao_social'])
+                    empresa['nome_fantasia'] = unidecode(empresa['nome_fantasia'])
+                    empresa['logradouro'] = unidecode(empresa['logradouro'])
+                    empresa['municipio'] = unidecode(empresa['municipio'])
+                    empresa['porte'] = unidecode(empresa['porte'])
+
+                    # Remover acentos dos sócios
+                    for socio in empresa['socios']:
+                        socio['nome'] = unidecode(socio['nome'])
+                        socio['faixa_etaria'] = unidecode(socio['faixa_etaria'])
+                        socio['qualificacao'] = unidecode(socio['qualificacao'])
+                        socio['data_entrada'] = unidecode(socio['data_entrada'])
+
+                    empresas_cache.append(empresa)
                 else:
                     print("Ignorando CNPJ (Já processado):", cnpj_normalizado)
 
-            # Agora sobrescreve o arquivo de forma segura
-            file.seek(0)  # Posiciona o ponteiro no início do arquivo
-            json.dump(empresas_cache, file, indent=4)  # Atualiza o arquivo JSON com todas as empresas, usando indent para clareza
-            file.truncate()  # Garante que o conteúdo antigo é apagado, mantendo apenas o novo conteúdo
+            file.seek(0)
+            json.dump(empresas_cache, file, indent=4)
+            file.truncate()
 
     except FileNotFoundError:
         return jsonify({'success': False, 'message': 'Arquivo de cache não encontrado.'}), 404

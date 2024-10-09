@@ -105,7 +105,7 @@
                     <p class="font-semibold">CNPJ: {{ empresa.cnpj|format_cnpj }}</p></p>
 
                     {% if empresa.blacklist_info %}
-                    <p class="text-red-800">
+                    <p class="text-red-900">
                         Dado salvo por <b>"{{ empresa.blacklist_info.user }}"</b> no dia {{ empresa.blacklist_info.datetime|format_datetime }}
                     </p>
                     {% endif %}
@@ -126,10 +126,10 @@
                         <ul class="ul_socios">
                             {% for socio in empresa.socios %}
                                 <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
-                                    <strong>Nome:</strong> {{ socio.nome or '' }} <br>
-                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria or '' }} <br>
-                                    <strong>Qualificação:</strong> {{ socio.qualificacao or '' }} <br>
-                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada or '' }}
+                                    <strong>Nome:</strong> {{ socio.nome }} <br>
+                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
+                                    <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
+                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
                                 </li>
                                 <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                             {% endfor %}

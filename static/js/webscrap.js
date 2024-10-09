@@ -196,10 +196,10 @@ document.getElementById('salvarTodasCsv').addEventListener('click', function (e)
         // Percorre todos os sócios da empresa
         empresaDiv.querySelectorAll('.ul_socios .socio').forEach((socioLi) => {
             const socio = {
-                nome: socioLi.querySelector('strong:nth-of-type(1)').textContent.trim().replace('Nome: ', ''),
-                faixa_etaria: socioLi.querySelector('strong:nth-of-type(2)').textContent.trim().replace('Faixa Etária: ', ''),
-                qualificacao: socioLi.querySelector('strong:nth-of-type(3)').textContent.trim().replace('Qualificação: ', ''),
-                data_entrada: socioLi.querySelector('strong:nth-of-type(4)').textContent.trim().replace('Data de Entrada: ', ''),
+                nome: socioLi.querySelector('strong:nth-of-type(1)').nextSibling.textContent.trim(),
+                faixa_etaria: socioLi.querySelector('strong:nth-of-type(2)').nextSibling.textContent.trim(),
+                qualificacao: socioLi.querySelector('strong:nth-of-type(3)').nextSibling.textContent.trim(),
+                data_entrada: socioLi.querySelector('strong:nth-of-type(4)').nextSibling.textContent.trim(),
             };
             empresa.socios.push(socio);
         });
