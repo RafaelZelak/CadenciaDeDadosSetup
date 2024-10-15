@@ -179,7 +179,7 @@
                 <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
             </a>
 
-            <span>Página {{ page }}</span>
+            <span>Página <span id="numero-pagina">{{ page }}</span></span>
 
             <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link" {% if not tem_mais_paginas %}disabled{% endif %}>
                 <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">

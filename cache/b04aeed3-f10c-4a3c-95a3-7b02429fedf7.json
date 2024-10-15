@@ -1,0 +1,941 @@
+[
+    {
+        "razao_social": "AV CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "38.615.977/0001-96",
+        "nome_fantasia": "AV CONTABIL",
+        "logradouro": "CORONEL JOSE DIAS BICALHO",
+        "municipio": "BELO HORIZONTE",
+        "uf": "MG",
+        "cep": "31275050",
+        "email": "None",
+        "telefone_1": "3130185676",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "DOUGLAS ALBERTO GOMES VIANNA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-10-14"
+            }
+        ]
+    },
+    {
+        "razao_social": "C CONTABIL CONTABILIDADE DIGITAL LTDA",
+        "cnpj": "45.194.189/0001-39",
+        "nome_fantasia": "C CONTABIL CONTABILIDADE DIGITAL",
+        "logradouro": "TOMAS ANTONIO GONZAGA",
+        "municipio": "SANTO ANDRE",
+        "uf": "SP",
+        "cep": "09230740",
+        "email": "None",
+        "telefone_1": "1195019829",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "CAMILA CUSTODIO",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-02-08"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL BAHIA CONTABILIDADE LTDA",
+        "cnpj": "48.166.024/0001-41",
+        "nome_fantasia": "CONTABIL BAHIA",
+        "logradouro": "PERNAMBUCO",
+        "municipio": "SALVADOR",
+        "uf": "BA",
+        "cep": "41830390",
+        "email": "None",
+        "telefone_1": "7199888783",
+        "telefone_2": "7141413011",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "LEDA MARIA GUEDES DE CARVALHO GUIMARAES",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2024-05-14"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL CONTABILIDADE E ASSESSORIA LTDA",
+        "cnpj": "34.854.208/0001-90",
+        "nome_fantasia": "CONTABIL",
+        "logradouro": "09 DE JANEIRO",
+        "municipio": "BELEM",
+        "uf": "PA",
+        "cep": "66060370",
+        "email": "None",
+        "telefone_1": "9132236316",
+        "telefone_2": "Telefone 2:",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "MARIA ACIREMA MACEDO FONTOURA",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "1990-05-25"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL CONTABILIDADE EMPRESARIAL LTDA",
+        "cnpj": "10.639.916/0001-40",
+        "nome_fantasia": "CONTABILIZA CONTABILIDADE",
+        "logradouro": "SETE DE SETEMBRO",
+        "municipio": "BRUSQUE",
+        "uf": "SC",
+        "cep": "88352000",
+        "email": "None",
+        "telefone_1": "4733551703",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SIMONE GIANESINI",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2009-02-05"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL COUTO CONTABILIDADE E ASSESSORIA LTDA",
+        "cnpj": "12.389.067/0001-49",
+        "nome_fantasia": "CONTABIL COUTO - CONTABILIDADE & ASSESSORIA",
+        "logradouro": "CORONEL JOAO LEME",
+        "municipio": "BRAGANCA PAULISTA",
+        "uf": "SP",
+        "cep": "12900160",
+        "email": "None",
+        "telefone_1": "1140328745",
+        "telefone_2": "1124736852",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ERICO UMBELINO MARCOLINO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-04-19"
+            },
+            {
+                "nome": "JULIO CESAR COUTO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-04-19"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL PAULISTA CONTABILISTAS ASSOCIADOS",
+        "cnpj": "61.216.891/0001-02",
+        "nome_fantasia": "Nome Fantasia:",
+        "logradouro": "SANTO AMARO",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "01315000",
+        "email": "None",
+        "telefone_1": "1132929300",
+        "telefone_2": "Telefone 2:",
+        "porte": "DEMAIS",
+        "socios": [
+            {
+                "nome": "PAULO FISCHER NETTO",
+                "faixa_etaria": "Maiores de 80 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "1998-05-25"
+            },
+            {
+                "nome": "DORIVAL MALVEZZI",
+                "faixa_etaria": "Entre 71 a 80 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "1998-05-25"
+            },
+            {
+                "nome": "MILTON ANTONIAZZI",
+                "faixa_etaria": "Entre 71 a 80 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2004-07-23"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABIL SALGUEIRO ASSESSORIA E CONTABILIDADE",
+        "cnpj": "52.293.104/0001-35",
+        "nome_fantasia": "CONTABIL SALGUEIRO ASSESSORIA E CONTABILIDADE",
+        "logradouro": "DO LUTERO",
+        "municipio": "COTIA",
+        "uf": "SP",
+        "cep": "06715400",
+        "email": "None",
+        "telefone_1": "1174586476",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": []
+    },
+    {
+        "razao_social": "CONTABIL SERVICOS DE CONTABILIDADE LTDA",
+        "cnpj": "12.207.828/0001-02",
+        "nome_fantasia": "CONTABIL",
+        "logradouro": "AFONSO CAMPOS",
+        "municipio": "CAMPINA GRANDE",
+        "uf": "PB",
+        "cep": "58400235",
+        "email": "None",
+        "telefone_1": "8333422861",
+        "telefone_2": "8333422861",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ROSEANE MARIA SILVA",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2010-07-09"
+            },
+            {
+                "nome": "ANTONIO SOARES DE GOIS FILHO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2019-02-28"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABILIDADE HABIL CONTABIL LTDA",
+        "cnpj": "18.755.500/0001-07",
+        "nome_fantasia": "HABIL - CONTABIL",
+        "logradouro": "DEZ",
+        "municipio": "SAO LUIS",
+        "uf": "MA",
+        "cep": "65076520",
+        "email": "None",
+        "telefone_1": "9832680030",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MARGARIDA EVANGELISTA AIRES",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2013-08-26"
+            },
+            {
+                "nome": "LUCIMAR FERREIRA CARVALHO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2013-08-26"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABILISTA SUPRIMENTOS PARA ESCRITORIO S.A.",
+        "cnpj": "77.765.840/0001-70",
+        "nome_fantasia": "CONTABILISTA PAPELARIA",
+        "logradouro": "JOSE BATISTA DOS SANTOS",
+        "municipio": "CURITIBA",
+        "uf": "PR",
+        "cep": "81250000",
+        "email": "None",
+        "telefone_1": "4133308093",
+        "telefone_2": "4133308050",
+        "porte": "DEMAIS",
+        "socios": [
+            {
+                "nome": "VALDOMIRO ALTRAO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Presidente",
+                "data_entrada": "1989-10-26"
+            },
+            {
+                "nome": "DENISE DO ROCIO ALTRAO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Diretor",
+                "data_entrada": "2019-03-25"
+            }
+        ]
+    },
+    {
+        "razao_social": "E-CONTABIL ON CONTABILIDADE LTDA",
+        "cnpj": "39.331.460/0001-38",
+        "nome_fantasia": "E-CONTABIL ON CONTABILIDADE",
+        "logradouro": "VERENA",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "03614010",
+        "email": "None",
+        "telefone_1": "1199999999",
+        "telefone_2": "Telefone 2:",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "MAURICIO FERNANDES AGOSTINHO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-10-06"
+            },
+            {
+                "nome": "ANGELICA FERREIRA AGOSTINHO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-10-06"
+            }
+        ]
+    },
+    {
+        "razao_social": "EQUIPE CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "13.042.337/0001-03",
+        "nome_fantasia": "EQUIPE CONTABIL",
+        "logradouro": "RAUL NASSAR",
+        "municipio": "CACHOEIRO DE ITAPEMIRIM",
+        "uf": "ES",
+        "cep": "29313825",
+        "email": "None",
+        "telefone_1": "2899832608",
+        "telefone_2": "2830388035",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ROGERIO DE BACKER FILHO",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2010-09-08"
+            },
+            {
+                "nome": "LUIZ GUSTAVO VITORINO CARLITO",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2010-09-08"
+            }
+        ]
+    },
+    {
+        "razao_social": "HT CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "08.975.560/0001-73",
+        "nome_fantasia": "HT CONTABIL",
+        "logradouro": "TIJUCO PRETO",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "03316000",
+        "email": "None",
+        "telefone_1": "1136831234",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MATHEUS GOES WANSHI",
+                "faixa_etaria": "Entre 21 a 30 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-01-21"
+            },
+            {
+                "nome": "FREDERICO WANSHI SILVA",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-11-09"
+            }
+        ]
+    },
+    {
+        "razao_social": "META CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "12.377.946/0001-50",
+        "nome_fantasia": "META CONTABIL",
+        "logradouro": "GRP 010",
+        "municipio": "GAROPABA",
+        "uf": "SC",
+        "cep": "88495000",
+        "email": "None",
+        "telefone_1": "4833541678",
+        "telefone_2": "4899978244",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "GLAUCIA CARDOSO BATISTA MELLO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2010-08-13"
+            },
+            {
+                "nome": "FABIO DE SOUZA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2010-08-13"
+            },
+            {
+                "nome": "FRANCIELI CARDOSO FURTADO",
+                "faixa_etaria": "Entre 21 a 30 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2022-05-11"
+            },
+            {
+                "nome": "JULIANA VIEIRA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2022-05-11"
+            }
+        ]
+    },
+    {
+        "razao_social": "NEOCONT CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "14.314.147/0001-60",
+        "nome_fantasia": "MCKA CONTABILIDADE E ASSESSORIA CONTABIL",
+        "logradouro": "ALBERTO RAMOS",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "03222000",
+        "email": "None",
+        "telefone_1": "1121544719",
+        "telefone_2": "1177890818",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "ANGELICA RODRIGUES DE ANDRADE",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2011-08-23"
+            },
+            {
+                "nome": "MARCELO SILVA DE ANDRADE",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2011-08-23"
+            }
+        ]
+    },
+    {
+        "razao_social": "O CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "17.976.880/0001-39",
+        "nome_fantasia": "O CONTABIL",
+        "logradouro": "FLORENCIO MACHADO",
+        "municipio": "ARAGUAINA",
+        "uf": "TO",
+        "cep": "77803020",
+        "email": "None",
+        "telefone_1": "6334122081",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ALEXANDRA SIQUEIRA DA SILVA COSTA GUERRA",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2013-04-19"
+            },
+            {
+                "nome": "LUZIMARY RODRIGUES DA COSTA",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2019-08-20"
+            }
+        ]
+    },
+    {
+        "razao_social": "PENINSULA CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "07.657.947/0001-19",
+        "nome_fantasia": "PENINSULA CONTABIL",
+        "logradouro": "SHIN CA 01 LOTE A BLOCO A SALA",
+        "municipio": "BRASILIA",
+        "uf": "DF",
+        "cep": "71503501",
+        "email": "None",
+        "telefone_1": "6134683035",
+        "telefone_2": "6139645870",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MARCELO SEBASTIAO CHAVES DE CERQUEIRA CAVALCANTE",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2005-10-19"
+            }
+        ]
+    },
+    {
+        "razao_social": "PRODADOS CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "48.342.493/0001-74",
+        "nome_fantasia": "PRODADOS CONTABIL",
+        "logradouro": "MARANHAO",
+        "municipio": "GOIATUBA",
+        "uf": "GO",
+        "cep": "75600000",
+        "email": "None",
+        "telefone_1": "6434952001",
+        "telefone_2": "000000000000",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "WANDERSON ELIAS RABELO",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-10-19"
+            }
+        ]
+    },
+    {
+        "razao_social": "WN7 CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "15.616.736/0001-66",
+        "nome_fantasia": "WN7 CONTABIL",
+        "logradouro": "ANA COSTA",
+        "municipio": "SANTOS",
+        "uf": "SP",
+        "cep": "11060001",
+        "email": "None",
+        "telefone_1": "1333853703",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "WILTON JOSE DO NASCIMENTO",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-11-22"
+            }
+        ]
+    },
+    {
+        "razao_social": "ADR COSTA CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "19.164.355/0001-44",
+        "nome_fantasia": "ADR COSTA CONTABIL",
+        "logradouro": "DR BRAULIO GOMES",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "01047020",
+        "email": "None",
+        "telefone_1": "1132312402",
+        "telefone_2": "1183349816",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "RITA DE CASSIA DE FREITAS ORNELAS COSTA",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2013-10-30"
+            },
+            {
+                "nome": "DAVID JOSE DE OLIVEIRA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-05-16"
+            }
+        ]
+    },
+    {
+        "razao_social": "BESSA CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "52.734.322/0001-68",
+        "nome_fantasia": "BESSA CONTABILIDADE",
+        "logradouro": "FRANCISCO PEREIRA DE OLIVEIRA",
+        "municipio": "ARAGOIANIA",
+        "uf": "GO",
+        "cep": "75330000",
+        "email": "None",
+        "telefone_1": "6285782986",
+        "telefone_2": "000000000000",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "LORENA MARTINS DE BESSA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-10-31"
+            }
+        ]
+    },
+    {
+        "razao_social": "BS - CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "05.240.125/0001-02",
+        "nome_fantasia": "BS CONTABILIDADE",
+        "logradouro": "VOLUNTARIOS DA PATRIA",
+        "municipio": "CURITIBA",
+        "uf": "PR",
+        "cep": "80020000",
+        "email": "None",
+        "telefone_1": "4132336996",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "CLEVERSON LUIZ SANTOS DA SILVA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-05-08"
+            }
+        ]
+    },
+    {
+        "razao_social": "CBG CONTABILIDADE - ASSESSORIA CONTABIL LTDA",
+        "cnpj": "32.319.877/0001-36",
+        "nome_fantasia": "CBG CONTABILIDADE",
+        "logradouro": "PIO XII",
+        "municipio": "CARIACICA",
+        "uf": "ES",
+        "cep": "29146290",
+        "email": "None",
+        "telefone_1": "2732265309",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "CLEIDSON BASSANI GOMES",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-12-27"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABILIDADE ANTUNES ASSESSORIA CONTABIL LTDA",
+        "cnpj": "09.454.478/0001-66",
+        "nome_fantasia": "CONTABILIDADE ANTUNES",
+        "logradouro": "DR FELICIANO SODRE",
+        "municipio": "SAO GONCALO",
+        "uf": "RJ",
+        "cep": "24440440",
+        "email": "None",
+        "telefone_1": "2170254584",
+        "telefone_2": "2170427489",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SHEILA AVELINO BARCELOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-09-14"
+            }
+        ]
+    },
+    {
+        "razao_social": "CONTABILIDADE AXC ASSESSORIA CONTABIL-ME",
+        "cnpj": "08.406.414/0001-27",
+        "nome_fantasia": "AXC ASSESSORIA CONTABIL",
+        "logradouro": "ANTONIO MARIA COELHO",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "08191170",
+        "email": "None",
+        "telefone_1": "1125814499",
+        "telefone_2": "1148368535",
+        "porte": "MICRO EMPRESA",
+        "socios": []
+    },
+    {
+        "razao_social": "CONTABILIDADE SOMAR ASSESSORIA CONTABIL LTDA",
+        "cnpj": "29.847.862/0001-36",
+        "nome_fantasia": "SOMAR ASSESSORIA CONTABIL",
+        "logradouro": "MAESTRO JOAO LUIZ DO ESPIRITO SANTO",
+        "municipio": "FORMOSA",
+        "uf": "GO",
+        "cep": "73807745",
+        "email": "None",
+        "telefone_1": "6136424593",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "PAULO GUSTAVO MUNIZ PEREIRA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-03-05"
+            },
+            {
+                "nome": "AUGUSTO CESAR MUNIZ PEREIRA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-03-10"
+            }
+        ]
+    },
+    {
+        "razao_social": "DESCOMPLICA CONTABIL ASSESSORIA E CONTABILIDADE LTDA",
+        "cnpj": "49.775.258/0001-59",
+        "nome_fantasia": "DESCOMPLICA CONTABIL ASSESSORIA E CONTABILIDADE LTDA",
+        "logradouro": "BENTO GONCALVES",
+        "municipio": "TORRES",
+        "uf": "RS",
+        "cep": "95560000",
+        "email": "None",
+        "telefone_1": "5192414302",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ARIANA DA SILVA BUSNELLO BIANCHINI",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-03-02"
+            }
+        ]
+    },
+    {
+        "razao_social": "DOCS CONTABIL CONTABILIDADE EMPRESARIAL LTDA",
+        "cnpj": "57.527.909/0001-10",
+        "nome_fantasia": "DOCS-CONTABIL CONSULTIVO",
+        "logradouro": "RUA ELYDIO VIEIRA DE SOUZA",
+        "municipio": "RIBEIRAO PRETO",
+        "uf": "SP",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "EZF CONTABILIDADE, AUDITORIA & PERICIA CONTABIL LTDA",
+        "cnpj": "43.595.508/0001-92",
+        "nome_fantasia": "EZF CONTABILIDADE, AUDITORIA & PERICIA CONTABIL LTDA",
+        "logradouro": "SETE DE SETEMBRO",
+        "municipio": "PALMITAL",
+        "uf": "SP",
+        "cep": "19970102",
+        "email": "None",
+        "telefone_1": "1897059523",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ELISANGELA ZACARI FROIS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2021-09-21"
+            }
+        ]
+    },
+    {
+        "razao_social": "FATO CONTABIL SERVICOS DE CONTABILIDADE LTDA",
+        "cnpj": "46.714.894/0001-82",
+        "nome_fantasia": "FATO CONTABIL CONSULTORIA E SERVICOS DE CONTABILIDADE",
+        "logradouro": "ERNESTO DORINI",
+        "municipio": "CORNELIO PROCOPIO",
+        "uf": "PR",
+        "cep": "86300000",
+        "email": "None",
+        "telefone_1": "4391764489",
+        "telefone_2": "Telefone 2:",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "LEANDRO FORTUNATO FERRACIN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-06-08"
+            }
+        ]
+    },
+    {
+        "razao_social": "M N CONTABIL CONTABILIDADE LTDA",
+        "cnpj": "13.158.099/0001-04",
+        "nome_fantasia": "M N CONTABILIDADE",
+        "logradouro": "GOV CARLOS DE LIMA CAVALCANTI",
+        "municipio": "OLINDA",
+        "uf": "PE",
+        "cep": "53130555",
+        "email": "None",
+        "telefone_1": "8199634510",
+        "telefone_2": "8134730964",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ROBERTA CONCEICAO CARDOSO",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2015-01-20"
+            },
+            {
+                "nome": "MANOEL NOBERTO CARDOSO",
+                "faixa_etaria": "Maiores de 80 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2015-01-20"
+            }
+        ]
+    },
+    {
+        "razao_social": "M.R.V CONTABILIDADE & ASSESSORIA CONTABIL LTDA",
+        "cnpj": "32.247.139/0001-20",
+        "nome_fantasia": "CONTROLLER CONTABILIDADE & ASSESSORIA",
+        "logradouro": "RIO DE JANEIRO",
+        "municipio": "IVATE",
+        "uf": "PR",
+        "cep": "87525000",
+        "email": "None",
+        "telefone_1": "4488050016",
+        "telefone_2": "4437731018",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "VITOR RODRIGUES DIAS",
+                "faixa_etaria": "Entre 21 a 30 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-12-13"
+            }
+        ]
+    },
+    {
+        "razao_social": "PONTUAL CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "39.994.457/0001-02",
+        "nome_fantasia": "PONTUAL CONTABILIDADE",
+        "logradouro": "DOUTOR ANTONIO JOSE DE BARROS",
+        "municipio": "UBERABA",
+        "uf": "MG",
+        "cep": "38081420",
+        "email": "None",
+        "telefone_1": "3488124845",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MISLAINE DE FATIMA FIUZA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2024-01-25"
+            }
+        ]
+    },
+    {
+        "razao_social": "PREDILETA CONTABILIDADE & ASSESSORIA CONTABIL LTDA",
+        "cnpj": "22.580.926/0001-36",
+        "nome_fantasia": "PREDILETA ASSESSORIA CONTABIL",
+        "logradouro": "LUIZ BOALI PORTO SALMAN",
+        "municipio": "TEOFILO OTONI",
+        "uf": "MG",
+        "cep": "39802000",
+        "email": "None",
+        "telefone_1": "3335223522",
+        "telefone_2": "3388432911",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "THAISE VIEIRA DA SILVA SANTOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2015-06-03"
+            },
+            {
+                "nome": "WILSON FERREIRA GONCALVES",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2015-06-03"
+            }
+        ]
+    },
+    {
+        "razao_social": "R3 CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "17.868.758/0001-49",
+        "nome_fantasia": "R3 CONTABILIDADE",
+        "logradouro": "TANCREDO NEVES",
+        "municipio": "SALVADOR",
+        "uf": "BA",
+        "cep": "41820021",
+        "email": "None",
+        "telefone_1": "7194001212",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "FABRICIA RODRIGUES DA PALMA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-02-11"
+            }
+        ]
+    },
+    {
+        "razao_social": "RICO CONTABILIDADE ASSESSORIA CONTABIL LTDA",
+        "cnpj": "57.008.831/0001-27",
+        "nome_fantasia": "RICO CONTABILIDADE",
+        "logradouro": "NOVA CANTAREIRA",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "02330003",
+        "email": "None",
+        "telefone_1": "1129501012",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "RICARDO ANTONIO SANTANA DE ALMEIDA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2015-01-20"
+            },
+            {
+                "nome": "WELLINGTON LEANDRO DOS SANTOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2021-01-27"
+            }
+        ]
+    },
+    {
+        "razao_social": "UNIAO CONTABIL CONTABILIDADE DIGITAL LTDA",
+        "cnpj": "31.547.567/0001-06",
+        "nome_fantasia": "UNICONT - CONTABILIDADE DIGITAL",
+        "logradouro": "MAL TITO",
+        "municipio": "SAO PAULO",
+        "uf": "SP",
+        "cep": "08022000",
+        "email": "None",
+        "telefone_1": "1145803286",
+        "telefone_2": "Telefone 2:",
+        "porte": "DEMAIS",
+        "socios": [
+            {
+                "nome": "JONATAS LOURENCO DA SILVA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-11-25"
+            }
+        ]
+    },
+    {
+        "razao_social": "WARREN & SANTOS CONTABILIDADE E PERICIA CONTABIL LTDA",
+        "cnpj": "40.328.542/0001-02",
+        "nome_fantasia": "BS CONTABILIDADE E PERICIA CONTABIL",
+        "logradouro": "BERNARDO VIEIRA DE MELO",
+        "municipio": "JABOATAO DOS GUARARAPES",
+        "uf": "PE",
+        "cep": "54410010",
+        "email": "None",
+        "telefone_1": "8185810593",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "BRUNA CRISTINA DO NASCIMENTO SANTOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-03-14"
+            },
+            {
+                "nome": "ANA PAULA WARREN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2023-03-14"
+            }
+        ]
+    },
+    {
+        "razao_social": "WRP ASSESSORIA CONTABIL E CONTABILIDADE UNIPESSOAL LTDA",
+        "cnpj": "28.932.805/0001-92",
+        "nome_fantasia": "WRP CONTABILIDADE E ASSESSORIA CONTABIL",
+        "logradouro": "DOUTOR EZIO CARNEIRO",
+        "municipio": "LUZIANIA",
+        "uf": "GO",
+        "cep": "72800420",
+        "email": "None",
+        "telefone_1": "6136227872",
+        "telefone_2": "6136014338",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ANA MARIA MENDES FEITOSA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2017-10-25"
+            }
+        ]
+    }
+]

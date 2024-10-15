@@ -7,12 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const cidadeInput = document.getElementById('cidade');
     const termoBuscaInput = document.querySelector('input[name="termo_busca"]');
     const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = urlParams.get('page') || 1;
 
     // Função para carregar filtros do localStorage
     const loadFilters = () => {
         estadoInput.value = localStorage.getItem('estado') || '';
         cidadeInput.value = localStorage.getItem('cidade') || '';
         termoBuscaInput.value = localStorage.getItem('termo_busca') || '';
+        currentPage = localStorage.getItem('currentPage') || 1;
     };
 
     // Função para salvar filtros no localStorage
@@ -20,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('estado', estadoInput.value);
         localStorage.setItem('cidade', cidadeInput.value);
         localStorage.setItem('termo_busca', termoBuscaInput.value);
+        localStorage.setItem('currentPage', currentPage); // Salva a página atual
     };
 
     // Adicionar parâmetros de filtro aos links de paginação
@@ -33,6 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
             pageUrl.searchParams.set('estado', estadoInput.value);
             pageUrl.searchParams.set('cidade', cidadeInput.value);
 
+            // Atualiza o número da página no localStorage
+            currentPage = pageUrl.searchParams.get('page') || 1;
+            saveFilters();
+
             // Redirecionar para a URL com filtros preservados
             window.location.href = pageUrl.toString();
             spinner.style.display = 'block';
@@ -45,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     enviarTodasEmpresasBtn.addEventListener('click', function() {
-        pass
+        pass; // Aqui pode ir a lógica de exportar todas as empresas
     });
 
     window.addEventListener('beforeunload', function() {
@@ -326,4 +333,71 @@ function toggleBackgroundImage(options) {
 toggleBackgroundImage({
     backgroundColor: '#0a192f',
     imageUrl: '../static/img/thiago.png'
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const numeroPaginaSpan = document.getElementById('numero-pagina');
+
+    numeroPaginaSpan.addEventListener('click', function() {
+        const currentPage = numeroPaginaSpan.textContent.trim();
+        const inputField = document.createElement('input');
+        inputField.type = 'number';
+        inputField.value = currentPage;
+        inputField.min = 1;
+        inputField.classList.add('input-page-field');
+
+        inputField.style.width = '40px';
+        inputField.style.fontSize = '1.2em';
+        inputField.style.padding = '0';
+        inputField.style.marginLeft = '5px';
+        inputField.style.backgroundColor = 'transparent';
+        inputField.style.border = 'none';
+        inputField.style.outline = 'none';
+        inputField.style.textAlign = 'center';
+
+        numeroPaginaSpan.replaceWith(inputField);
+        inputField.focus();
+
+        inputField.addEventListener('blur', function() {
+            revertToSpan(inputField.value);
+        });
+
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const newPage = inputField.value;
+                if (newPage >= 1) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', newPage);
+
+                    // Preservar os filtros se existirem
+                    const termoBuscaInput = document.querySelector('input[name="termo_busca"]');
+                    const estadoInput = document.getElementById('estado');
+                    const cidadeInput = document.getElementById('cidade');
+                    url.searchParams.set('termo_busca', termoBuscaInput.value);
+                    url.searchParams.set('estado', estadoInput.value);
+                    url.searchParams.set('cidade', cidadeInput.value);
+
+                    window.location.href = url.toString(); // Redirecionar para a página desejada
+                } else {
+                    revertToSpan(currentPage); // Reverter se o número for inválido
+                }
+            } else if (event.key === 'Escape') {
+                revertToSpan(currentPage); // Reverter ao pressionar "Escape"
+            }
+        });
+
+        function revertToSpan(page) {
+            const spanElement = document.createElement('span');
+            spanElement.id = 'numero-pagina';
+            spanElement.textContent = page;
+            inputField.replaceWith(spanElement);
+
+            // Reaplicar o evento de clique para transformar em input novamente
+            spanElement.addEventListener('click', function() {
+                inputField.value = page;
+                spanElement.replaceWith(inputField);
+                inputField.focus();
+            });
+        }
+    });
 });

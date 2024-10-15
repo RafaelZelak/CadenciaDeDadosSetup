@@ -12,3 +12,4 @@ urllib3
 nltk
 openpyxl
 paramiko
+python-dotenv

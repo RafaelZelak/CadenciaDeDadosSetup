@@ -29,7 +29,7 @@ def get_error_logs():
 
         try:
             ssh.connect(server_ip, username=username, password=password)
-            command = 'journalctl -u app.service --no-pager'
+            command = 'cat /var/log/gunicorn/gunicorn.log'
             stdin, stdout, stderr = ssh.exec_command(command)
 
             output = stdout.read().decode('utf-8')
