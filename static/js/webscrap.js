@@ -109,14 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function toggleSwitch() {
-    console.log('toggleSwitch() function called');
 
     const toggle = document.getElementById('toggle');
     const text = document.getElementById('text');
     const submitButtons = document.querySelectorAll('.checkmark-btn');
 
     if (toggle.classList.toggle('on')) {
-        console.log('Switched to Planilha');
         text.innerText = 'Planilha';
         submitButtons.forEach((button) => {
             const textSpan = button.querySelector('.button-text');  // Encontra o span dentro do botão
@@ -124,7 +122,6 @@ function toggleSwitch() {
         });
         localStorage.setItem('toggleState', 'Planilha');
     } else {
-        console.log('Switched to Bitrix');
         text.innerText = 'Bitrix';
         submitButtons.forEach((button) => {
             const textSpan = button.querySelector('.button-text');  // Encontra o span dentro do botão
@@ -135,7 +132,6 @@ function toggleSwitch() {
 }
 
 window.onload = function() {
-    console.log('Page loaded');
 
     const toggleState = localStorage.getItem('toggleState');
     const toggle = document.getElementById('toggle');
@@ -143,7 +139,6 @@ window.onload = function() {
     const submitButtons = document.querySelectorAll('.checkmark-btn');
 
     if (toggleState === 'Planilha') {
-        console.log('Restoring Planilha state');
         toggle.classList.add('on');
         text.innerText = 'Planilha';
         submitButtons.forEach((button) => {
@@ -151,7 +146,6 @@ window.onload = function() {
             textSpan.textContent = 'Enviar para Planilha';
         });
     } else {
-        console.log('Restoring Bitrix state');
         toggle.classList.remove('on');
         text.innerText = 'Bitrix';
         submitButtons.forEach((button) => {

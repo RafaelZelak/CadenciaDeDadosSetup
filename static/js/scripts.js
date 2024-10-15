@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
         spinner.style.display = 'block';
     });
 
-    enviarTodasEmpresasBtn.addEventListener('click', function() {
-        pass; // Aqui pode ir a lógica de exportar todas as empresas
-    });
-
     window.addEventListener('beforeunload', function() {
         spinner.style.display = 'block';
     });
@@ -266,7 +262,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     return response.json();
                 })
                 .then(cidades => {
-                    console.log('Cidades carregadas:', cidades); // Verifica se as cidades estão sendo carregadas
                     cidades.forEach(cidade => {
                         const option = document.createElement('option');
                         option.value = cidade.nome; // Nome da cidade
