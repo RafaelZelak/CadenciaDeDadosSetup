@@ -112,14 +112,13 @@
 
                     <div class="detalhes-empresa">
                         <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
-                        <p><strong>Endereço:</strong> {{ empresa.logradouro }}</p>
-                        <p><strong>Cidade:</strong> {{ empresa.municipio }}</p>
-                        <p><strong>Estado:</strong> {{ empresa.uf }}</p>
-                        <p><strong>CEP:</strong> {{ empresa.cep }}</p>
+                        <p><strong>Endereço:</strong> {{ empresa.logradouro | capitalize }}, {{ empresa.numero }} - {{ empresa.bairro | capitalize }} - {{ empresa.municipio | capitalize}} - {{ empresa.uf }}, {{ empresa.cep | format_cep }}</p>
                         <p><strong>Email:</strong> {{ empresa.email }}</p>
-                        <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 }}</p>
-                        <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 }}</p>
-                        <p><strong>Porte:</strong> {{ empresa.porte }}</p>
+                        <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 | format_phone }}</p>
+                        {% if empresa.telefone_2 %}
+                            <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 | format_phone }}</p>
+                        {% endif %}
+                        <p><strong>Capital Social:</strong> {{ empresa.capital_social | formata_real }}</p>
                         {% if empresa.socios %}
                         <p class="socios"><strong>Sócios:</strong></p>
                         <hr class="linha">
@@ -127,9 +126,7 @@
                             {% for socio in empresa.socios %}
                                 <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                                     <strong>Nome:</strong> {{ socio.nome }} <br>
-                                    <strong>Faixa Etária:</strong> {{ socio.faixa_etaria }} <br>
                                     <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
-                                    <strong>Data de Entrada:</strong> {{ socio.data_entrada }}
                                 </li>
                                 <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
                             {% endfor %}
@@ -155,7 +152,7 @@
                     <input type="hidden" name="email" value="{{ empresa.email }}">
                     <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
                     <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
-                    <input type="hidden" name="porte" value="{{ empresa.porte }}">
+                    <input type="hidden" name="capital_social" value="{{ empresa.capital_social  }}">
                     <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}">
 
                     {% for socio in empresa.socios %}

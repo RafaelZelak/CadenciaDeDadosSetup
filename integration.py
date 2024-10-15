@@ -133,7 +133,10 @@ def obter_detalhes_cnpj(cnpj):
             "uf": dados.get("uf", ""),
             "cep": dados.get("cep", ""),
             "nome_fantasia": dados.get("nome_fantasia", ""),
-            "razao_social": dados.get("razao_social", "")
+            "razao_social": dados.get("razao_social", ""),
+            "capital_social": dados.get("capital_social", ""),
+            "numero": dados.get("numero", ""),
+            "bairro": dados.get("bairro", "")
         }
     except (ConnectionError, Timeout):
         print("Erro de conexão ou tempo de resposta excedido ao obter detalhes do CNPJ.")

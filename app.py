@@ -18,6 +18,9 @@ from datetime import datetime
 from unidecode import unidecode
 from server.errorLog import get_error_logs
 from server.loginLog import get_login_logs
+import locale
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 app = Flask(__name__)
 app.secret_key = 'calvo'
@@ -249,6 +252,44 @@ def format_datetime(dt_str):
             return dt_str
     return ""
 
+@app.template_filter('formata_real')
+def formata_real(valor):
+    try:
+        valor_float = float(valor) if isinstance(valor, str) else valor
+        return locale.currency(valor_float, grouping=True, symbol="R$")
+    except (TypeError, ValueError):
+        return "R$0,00"
+
+@app.template_filter('capitalize')
+def capitalize(value):
+    if value.isupper() and len(value) == 2:  # Manter UF em maiúsculas
+        return value
+    else:
+        return value.capitalize()
+
+@app.template_filter('format_cep')
+def format_cep(value):
+    if value and len(value) == 8 and value.isdigit():
+        return f"{value[:5]}-{value[5:]}"
+    return value
+
+@app.template_filter('format_phone')
+def format_phone(value):
+    if value and value.isdigit():
+        if len(value) == 10:
+            ddd = value[:2]
+            prefixo = value[2:6]
+            sufixo = value[6:]
+            if prefixo[0] in '6 7 8 9':
+                return f"({ddd}) 9{prefixo}-{sufixo}"
+            return f"({ddd}) {prefixo}-{sufixo}"
+        elif len(value) == 11:
+            ddd = value[:2]
+            prefixo = value[2:7]
+            sufixo = value[7:]
+            return f"({ddd}) {prefixo}-{sufixo}"
+    return value
+
 @app.route('/home', methods=['GET'])
 def home():
     if not session.get('logged_in'):
@@ -286,14 +327,17 @@ def home():
                 cnpj = empresa.get('cnpj')
                 detalhes = integration.obter_detalhes_cnpj(cnpj)
                 if detalhes:
+                    # Atualizar o dicionário empresa com os detalhes, incluindo capital social
                     empresa.update(detalhes)
 
                 # Adicionar informações da blacklist, se existir
                 if cnpj in blacklist:
                     empresa['blacklist_info'] = blacklist[cnpj]
 
+            # Ordenar pelo nome da razão social
             dados_cnpj.sort(key=lambda empresa: empresa.get('razao_social', '').lower())
 
+            # Verificar se existe próxima página de resultados
             proxima_pagina = integration.obter_dados_cnpj(termo_busca, estado, cidade, page + 1)
             tem_mais_paginas = bool(proxima_pagina)
         else:

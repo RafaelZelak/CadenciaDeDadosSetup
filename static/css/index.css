@@ -150,7 +150,7 @@ border-radius: 10px;
 }
 
 .detalhes-empresa {
-    padding-top: 10px;
+    padding-top: 17px;
     overflow: hidden;
     max-height: 0;
     transition: max-height .7s ease-out;
@@ -291,7 +291,6 @@ border-radius: 10px;
     gap: 20px;
     margin-top: 20px;
 }
-
 .pagination-link {
     display: flex;
     align-items: center;
