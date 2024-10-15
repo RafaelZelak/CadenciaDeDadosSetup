@@ -67,11 +67,11 @@ def obter_dados_cnpj(termo, estado='', cidade='', page=1):
         },
         "extras": {
             "excluir_mei": True,
-            "com_email": True,
+            "com_email": False,
             "com_contato_telefonico": True,
             "somente_fixo": False,
             "somente_celular": False,
-            "somente_matriz": True
+            "somente_matriz": False
         },
         "page": page
     }
