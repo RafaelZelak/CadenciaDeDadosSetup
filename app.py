@@ -19,7 +19,10 @@ from unidecode import unidecode
 from server.errorLog import get_error_logs
 from server.loginLog import get_login_logs
 import locale
+import sys
+import io
 
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 app = Flask(__name__)
@@ -85,19 +88,6 @@ def authenticate(username, password):
     finally:
         conn.unbind()
 
-def ajustar_largura_colunas(ws):
-    for col in ws.columns:
-        max_length = 0
-        column = col[0].column_letter  # Pega a letra da coluna
-        for cell in col:
-            try:
-                if cell.value:
-                    max_length = max(max_length, len(str(cell.value)))
-            except:
-                pass
-        adjusted_width = (max_length + 2)  # Ajuste com base no tamanho do texto
-        ws.column_dimensions[column].width = adjusted_width
-
 def gerar_excel(empresas, scrap_results):
     # Criar uma nova pasta de trabalho e uma planilha
     wb = Workbook()
@@ -107,7 +97,7 @@ def gerar_excel(empresas, scrap_results):
     # Cabeçalhos das colunas principais
     headers = [
         "Razão Social", "Nome Fantasia", "CNPJ", "Endereço",
-        "Telefone 1", "Telefone 2", "E-mail", "Telefone Enriquecido"
+        "Telefone 1", "Telefone 2", "E-mail", "Capital Social", "Telefone Enriquecido"
     ]
 
     # Encontrar o número máximo de sócios para adicionar as colunas de forma dinâmica
@@ -115,7 +105,7 @@ def gerar_excel(empresas, scrap_results):
 
     # Cabeçalhos dinâmicos para sócios
     for i in range(1, max_socios + 1):
-        headers.extend([f"Nome Sócio {i}", f"Faixa Etária Sócio {i}", f"Qualificação Sócio {i}", f"Data Entrada Sócio {i}"])
+        headers.extend([f"Nome Sócio {i}", f"Qualificação Sócio {i}"])
 
     # Adicionar os cabeçalhos à planilha
     ws.append(headers)
@@ -151,11 +141,12 @@ def gerar_excel(empresas, scrap_results):
         row = [
             empresa['razao_social'],
             empresa['nome_fantasia'],
-            empresa['cnpj'],
+            format_cnpj(empresa['cnpj']),
             empresa['logradouro'],
-            empresa['telefone_1'],
-            empresa['telefone_2'],
-            empresa['email'],
+            format_phone(empresa['telefone_1']),
+            format_phone(empresa['telefone_2']),
+            empresa['email'] if empresa['email'] != "None" else "",
+            formata_real(empresa['capital_social']),
             enriched_data.get('consolidated_contact_info', {}).get('phone', '')  # Telefone do enriched_info
         ]
 
@@ -163,15 +154,13 @@ def gerar_excel(empresas, scrap_results):
         for socio in empresa['socios']:
             row.extend([
                 socio.get('nome', ''),  # Deixa vazio se não houver valor
-                socio.get('faixa_etaria', ''),
-                socio.get('qualificacao', ''),
-                socio.get('data_entrada', '')
+                socio.get('qualificacao', '')
             ])
 
         # Preenche células vazias para sócios que não existem
         socios_faltantes = max_socios - len(empresa['socios'])
         if socios_faltantes > 0:
-            row.extend([''] * 4 * socios_faltantes)  # Preenche com células vazias
+            row.extend([''] * 2 * socios_faltantes)  # Preenche com células vazias
 
         # Adicionar a linha completa na planilha
         ws.append(row)
@@ -185,16 +174,25 @@ def gerar_excel(empresas, scrap_results):
             cell.alignment = Alignment(horizontal="center", vertical="center")
             cell.border = thin_border
 
-    # Remover bordas fora da tabela
-    for row in ws.iter_rows(min_row=ws.max_row+1, max_col=len(headers)):
-        for cell in row:
-            cell.border = Border()  # Sem borda
-
     # Salvar em um objeto BytesIO e retornar
     output = BytesIO()
     wb.save(output)
     output.seek(0)
     return output
+
+# Função para ajustar a largura das colunas
+def ajustar_largura_colunas(ws):
+    for column_cells in ws.columns:
+        max_length = 0
+        column = column_cells[0].column_letter  # Get the column name
+        for cell in column_cells:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = (max_length + 2)
+        ws.column_dimensions[column].width = adjusted_width
 
 def carregar_blacklist():
     blacklist = {}
@@ -457,20 +455,15 @@ def salvar_csv():
         "razao_social": form_data.get('razao_social', [''])[0],
         "nome_fantasia": form_data.get('nome_fantasia', [''])[0],
         "logradouro": form_data.get('logradouro', [''])[0],
-        "municipio": form_data.get('municipio', [''])[0],
-        "uf": form_data.get('uf', [''])[0],
-        "cep": form_data.get('cep', [''])[0],
         "telefone_1": form_data.get('telefone_1', [''])[0],
         "telefone_2": form_data.get('telefone_2', [''])[0],
         "email": form_data.get('email', [''])[0],
-        "porte": form_data.get('porte', [''])[0],
+        "capital_social": form_data.get('capital_social', [''])[0],
         "cnpj": form_data.get('cnpj', [''])[0],
         "socios": [
             {
                 "nome": form_data.get('socios_nome[]', [''])[i],
-                "faixa_etaria": form_data.get('socios_faixa_etaria[]', [''])[i],
                 "qualificacao": form_data.get('socios_qualificacao[]', [''])[i],
-                "data_entrada": form_data.get('socios_data_entrada[]', [''])[i]
             }
             for i in range(len(form_data.get('socios_nome[]', [])))
         ]
@@ -493,6 +486,7 @@ def normalizar_cnpj(cnpj):
 def salvar_todas_csv():
     form_data = request.get_json()
     empresas = form_data.get('empresas', [])
+
     file_path = get_user_session_file()
 
     # Lê os CNPJs da blacklist
@@ -528,15 +522,11 @@ def salvar_todas_csv():
                     empresa['razao_social'] = unidecode(empresa['razao_social'])
                     empresa['nome_fantasia'] = unidecode(empresa['nome_fantasia'])
                     empresa['logradouro'] = unidecode(empresa['logradouro'])
-                    empresa['municipio'] = unidecode(empresa['municipio'])
-                    empresa['porte'] = unidecode(empresa['porte'])
 
                     # Remover acentos dos sócios
                     for socio in empresa['socios']:
                         socio['nome'] = unidecode(socio['nome'])
-                        socio['faixa_etaria'] = unidecode(socio['faixa_etaria'])
                         socio['qualificacao'] = unidecode(socio['qualificacao'])
-                        socio['data_entrada'] = unidecode(socio['data_entrada'])
 
                     empresas_cache.append(empresa)
                 else:

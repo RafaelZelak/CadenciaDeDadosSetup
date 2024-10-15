@@ -145,10 +145,7 @@
                 <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
                     <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
                     <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
-                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro }}">
-                    <input type="hidden" name="municipio" value="{{ empresa.municipio }}">
-                    <input type="hidden" name="uf" value="{{ empresa.uf }}">
-                    <input type="hidden" name="cep" value="{{ empresa.cep }}">
+                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro | capitalize }}, {{ empresa.numero }} - {{ empresa.bairro | capitalize }} - {{ empresa.municipio | capitalize}} - {{ empresa.uf }}, {{ empresa.cep | format_cep }}">
                     <input type="hidden" name="email" value="{{ empresa.email }}">
                     <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
                     <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
@@ -157,9 +154,7 @@
 
                     {% for socio in empresa.socios %}
                         <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
-                        <input type="hidden" name="socios_faixa_etaria[]" value="{{ socio.faixa_etaria }}">
                         <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
-                        <input type="hidden" name="socios_data_entrada[]" value="{{ socio.data_entrada }}">
                     {% endfor %}
 
                     <button id="submitButton_{{ loop.index }}" type="submit" class="checkmark-btn" data-index="{{ loop.index }}">

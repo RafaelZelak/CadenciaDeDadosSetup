@@ -53,38 +53,36 @@ document.addEventListener('DOMContentLoaded', function () {
         forms.forEach(form => {
             const formData = new FormData(form);
 
+            // Array para armazenar os sócios
             const socios = [];
             const socios_nome = formData.getAll('socios_nome[]');
-            const socios_faixa_etaria = formData.getAll('socios_faixa_etaria[]');
             const socios_qualificacao = formData.getAll('socios_qualificacao[]');
-            const socios_data_entrada = formData.getAll('socios_data_entrada[]');
 
+            // Como os campos 'faixa_etaria' e 'data_entrada' não estão mais presentes,
+            // vamos removê-los do laço e da verificação.
             for (let i = 0; i < socios_nome.length; i++) {
-                if (socios_nome[i] && socios_faixa_etaria[i] && socios_qualificacao[i] && socios_data_entrada[i]) {
+                if (socios_nome[i] && socios_qualificacao[i]) {
                     socios.push({
                         nome: socios_nome[i],
-                        faixa_etaria: socios_faixa_etaria[i],
-                        qualificacao: socios_qualificacao[i],
-                        data_entrada: socios_data_entrada[i]
+                        qualificacao: socios_qualificacao[i]
                     });
                 }
             }
 
+            // Monta o objeto da empresa com os dados atualizados do form
             const empresa = {
                 "razao_social": formData.get('razao_social'),
                 "nome_fantasia": formData.get('nome_fantasia'),
                 "logradouro": formData.get('logradouro'),
-                "municipio": formData.get('municipio'),
-                "uf": formData.get('uf'),
-                "cep": formData.get('cep'),
                 "telefone_1": formData.get('telefone_1'),
                 "telefone_2": formData.get('telefone_2'),
                 "email": formData.get('email'),
-                "porte": formData.get('porte'),
+                "capital_social": formData.get('capital_social'), // Campo adicionado conforme a nova estrutura
                 "cnpj": formData.get('cnpj'),
                 "socios": socios
             };
 
+            // Adiciona a empresa ao array de empresas
             empresas.push(empresa);
         });
 
@@ -177,32 +175,28 @@ document.getElementById('salvarTodasCsv').addEventListener('click', function (e)
     const empresas = [];
 
     // Percorre todas as empresas renderizadas na página
-    document.querySelectorAll('.dadosEmpresa').forEach((empresaDiv) => {
+    document.querySelectorAll('.enviar-empresa-form').forEach((form) => {
         const empresa = {
-            razao_social: empresaDiv.querySelector('.empresa-info p.font-bold').textContent.trim(),
-            cnpj: empresaDiv.querySelector('.empresa-info p.font-semibold').textContent.trim().replace('CNPJ: ', ''),
-            nome_fantasia: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(1)').textContent.trim().replace('Nome Fantasia: ', ''),
-            logradouro: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(2)').textContent.trim().replace('Endereço: ', ''),
-            municipio: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(3)').textContent.trim().replace('Cidade: ', ''),
-            uf: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(4)').textContent.trim().replace('Estado: ', ''),
-            cep: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(5)').textContent.trim().replace('CEP: ', ''),
-            email: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(6)').textContent.trim().replace('Email: ', ''),
-            telefone_1: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(7)').textContent.trim().replace('Telefone 1: ', ''),
-            telefone_2: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(8)').textContent.trim().replace('Telefone 2: ', ''),
-            porte: empresaDiv.querySelector('.detalhes-empresa p:nth-of-type(9)').textContent.trim().replace('Porte: ', ''),
+            razao_social: form.querySelector('input[name="razao_social"]').value.trim(),
+            cnpj: form.querySelector('input[name="cnpj"]').value.trim(),
+            nome_fantasia: form.querySelector('input[name="nome_fantasia"]').value.trim(),
+            logradouro: form.querySelector('input[name="logradouro"]').value.trim(),
+            email: form.querySelector('input[name="email"]').value.trim(),
+            telefone_1: form.querySelector('input[name="telefone_1"]').value.trim(),
+            telefone_2: form.querySelector('input[name="telefone_2"]').value.trim(),
+            capital_social: form.querySelector('input[name="capital_social"]').value.trim(),
             socios: []
         };
 
         // Percorre todos os sócios da empresa
-        empresaDiv.querySelectorAll('.ul_socios .socio').forEach((socioLi) => {
+        form.querySelectorAll('input[name="socios_nome[]"]').forEach((socioNomeInput, index) => {
             const socio = {
-                nome: socioLi.querySelector('strong:nth-of-type(1)').nextSibling.textContent.trim(),
-                faixa_etaria: socioLi.querySelector('strong:nth-of-type(2)').nextSibling.textContent.trim(),
-                qualificacao: socioLi.querySelector('strong:nth-of-type(3)').nextSibling.textContent.trim(),
-                data_entrada: socioLi.querySelector('strong:nth-of-type(4)').nextSibling.textContent.trim(),
+                nome: socioNomeInput.value.trim(),
+                qualificacao: form.querySelectorAll('input[name="socios_qualificacao[]"]')[index].value.trim()
             };
             empresa.socios.push(socio);
         });
+
 
         empresas.push(empresa);
     });
