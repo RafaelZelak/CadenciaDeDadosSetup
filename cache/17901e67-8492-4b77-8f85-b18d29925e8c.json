@@ -1,0 +1,22 @@
+[
+    {
+        "razao_social": "ERS CONTABILIDADE LTDA",
+        "cnpj": "11176603000165",
+        "nome_fantasia": "ERS CONTABILIDADE",
+        "logradouro": "Diario de noticias, 400 - Cristal - Porto alegre - RS, 90810-080",
+        "email": "None",
+        "telefone_1": "5132332288",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "PRISCILA CORREA DADALT",
+                "qualificacao": "Socio-Administrador"
+            },
+            {
+                "nome": "EDUARDO RHEINHEIMER SEBEN",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    }
+]

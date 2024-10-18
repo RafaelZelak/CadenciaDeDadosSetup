@@ -23,6 +23,7 @@ import sys
 import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 app = Flask(__name__)

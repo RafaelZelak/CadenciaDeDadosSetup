@@ -1,0 +1,786 @@
+[
+    {
+        "razao_social": "AF CONTABILIDADE LTDA",
+        "cnpj": "38.471.675/0001-91",
+        "nome_fantasia": "AF CONTABILIDADE",
+        "logradouro": "AVENIDA DIARIO DE NOTICIAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "CATEDRAL CONTABILIDADE LTDA",
+        "cnpj": "32.202.214/0001-37",
+        "nome_fantasia": "CATEDRAL CONTABILIDADE",
+        "logradouro": "CAI",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90810120",
+        "email": "None",
+        "telefone_1": "5197485908",
+        "telefone_2": "Telefone 2:",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "ALLINE MARQUES REGINA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "JEAN MARQUES REGINA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "THIAGO RAFAEL VIEIRA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "DELCIO LUIZ RENNER",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2020-07-28"
+            }
+        ]
+    },
+    {
+        "razao_social": "COASA CONTABILIDADE LTDA",
+        "cnpj": "92.470.608/0001-06",
+        "nome_fantasia": "COASA CONTABILIDADE",
+        "logradouro": "FERNANDES VIEIRA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90035091",
+        "email": "None",
+        "telefone_1": "5133119911",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MARIO ROBERTO FRANCESCHETTO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "1988-11-01"
+            },
+            {
+                "nome": "MARCO AURELIO MULLER CARVALHO BERNARDES",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2015-02-06"
+            },
+            {
+                "nome": "MARCELO DE FREITAS",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2020-02-13"
+            }
+        ]
+    },
+    {
+        "razao_social": "DSS CONTABILIDADE LTDA",
+        "cnpj": "34.153.230/0001-02",
+        "nome_fantasia": "DSS CONTABILIDADE",
+        "logradouro": "DOS ANDRADAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90020007",
+        "email": "None",
+        "telefone_1": "5130232724",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "LENIRA MAETE AIRES DA ROSA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2019-07-09"
+            },
+            {
+                "nome": "DANIEL SOUZA DOS SANTOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2019-07-09"
+            }
+        ]
+    },
+    {
+        "razao_social": "ERS CONTABILIDADE LTDA",
+        "cnpj": "11.176.603/0001-65",
+        "nome_fantasia": "ERS CONTABILIDADE",
+        "logradouro": "DIARIO DE NOTICIAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90810080",
+        "email": "None",
+        "telefone_1": "5132332288",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "PRISCILA CORREA DADALT",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-03-15"
+            },
+            {
+                "nome": "EDUARDO RHEINHEIMER SEBEN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2019-11-11"
+            }
+        ]
+    },
+    {
+        "razao_social": "GERMANN CONTABILIDADE LTDA",
+        "cnpj": "24.312.454/0001-66",
+        "nome_fantasia": "GERMANN CONTABILIDADE",
+        "logradouro": "BACAIRIS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91130380",
+        "email": "None",
+        "telefone_1": "5130121350",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ELISANDRA DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "EDILIO DA PAZ GERMANN",
+                "faixa_etaria": "Entre 71 a 80 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "CRISTINA DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "RODRIGO DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            }
+        ]
+    },
+    {
+        "razao_social": "HERA CONTABILIDADE LTDA",
+        "cnpj": "46.850.149/0001-60",
+        "nome_fantasia": "HERA CONTABILIDADE",
+        "logradouro": "AVENIDA PLINIO BRASIL MILANO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "JCF CONTABILIDADE LTDA",
+        "cnpj": "24.454.338/0001-81",
+        "nome_fantasia": "JCF-CONTABILIDADE",
+        "logradouro": "OTAVIO ROCHA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90020151",
+        "email": "None",
+        "telefone_1": "5181352535",
+        "telefone_2": "5183183031",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "JULIANO CARVALHO FERREIRA",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2024-01-18"
+            }
+        ]
+    },
+    {
+        "razao_social": "JFGO CONTABILIDADE LTDA",
+        "cnpj": "41.496.617/0001-27",
+        "nome_fantasia": "JFGO CONTABILIDADE",
+        "logradouro": "RUA JOSE CARLOS FERREIRA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "MAGNUS CONTABILIDADE LTDA",
+        "cnpj": "47.170.861/0001-81",
+        "nome_fantasia": "MAGNUS CONTABILIDADE",
+        "logradouro": "ASSIS BRASIL",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91010007",
+        "email": "None",
+        "telefone_1": "5133447025",
+        "telefone_2": "000000000000",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "CAMILA MAGNUS DA SILVA HOLSTEIN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-07-15"
+            },
+            {
+                "nome": "MARIA SIBEL SELAU MAGNUS",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-07-15"
+            }
+        ]
+    },
+    {
+        "razao_social": "MDA CONTABILIDADE LTDA",
+        "cnpj": "05.704.605/0001-87",
+        "nome_fantasia": "MDA CONTABILIDADE",
+        "logradouro": "AVENIDA OTTO NIEMEYER",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "OSC CONTABILIDADE LTDA",
+        "cnpj": "46.201.944/0001-28",
+        "nome_fantasia": "OSC CONTABILIDADE",
+        "logradouro": "JOSE ALOISIO FILHO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90250180",
+        "email": "None",
+        "telefone_1": "5194072340",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "RODRIGO DOS SANTOS PIVA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-04-29"
+            }
+        ]
+    },
+    {
+        "razao_social": "PLANPER CONTABILIDADE LTDA",
+        "cnpj": "09.585.998/0001-08",
+        "nome_fantasia": "PLANPER CONTABILIDADE",
+        "logradouro": "RUA MOSTARDEIRO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "RABUSKE CONTABILIDADE LTDA",
+        "cnpj": "34.405.853/0001-25",
+        "nome_fantasia": "ESP CONTABILIDADE",
+        "logradouro": "BALTAZAR DE OLIVEIRA GARCIA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91180000",
+        "email": "None",
+        "telefone_1": "5133721333",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SIMONE GARCIA RABUSKE",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-03-03"
+            }
+        ]
+    },
+    {
+        "razao_social": "RC CONTABILIDADE LTDA",
+        "cnpj": "03.609.262/0001-46",
+        "nome_fantasia": "RC CONTABILIDADE",
+        "logradouro": "AVENIDA BENNO MENTZ",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "SRMB CONTABILIDADE LTDA",
+        "cnpj": "37.682.862/0001-51",
+        "nome_fantasia": "SRMB CONTABILIDADE",
+        "logradouro": "TERESOPOLIS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90870000",
+        "email": "None",
+        "telefone_1": "5132732832",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SERGIO LUIZ SBARDELOTTO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "RICARDO MOROSOLI BENITES",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "MICHELE CENA SOUZA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "BRUNA MARIA BATTISTI",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            }
+        ]
+    },
+    {
+        "razao_social": "TECNOCONTABIL CONTABILIDADE LTDA",
+        "cnpj": "50.957.269/0001-39",
+        "nome_fantasia": "TECNOCONTABIL CONTABILIDADE",
+        "logradouro": "RUA DR RAMIRO D'AVILA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "AF CONTABILIDADE LTDA",
+        "cnpj": "38.471.675/0001-91",
+        "nome_fantasia": "AF CONTABILIDADE",
+        "logradouro": "AVENIDA DIARIO DE NOTICIAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "CATEDRAL CONTABILIDADE LTDA",
+        "cnpj": "32.202.214/0001-37",
+        "nome_fantasia": "CATEDRAL CONTABILIDADE",
+        "logradouro": "CAI",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90810120",
+        "email": "None",
+        "telefone_1": "5197485908",
+        "telefone_2": "Telefone 2:",
+        "porte": "EMPRESA DE PEQUENO PORTE",
+        "socios": [
+            {
+                "nome": "ALLINE MARQUES REGINA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "JEAN MARQUES REGINA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "THIAGO RAFAEL VIEIRA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2018-12-07"
+            },
+            {
+                "nome": "DELCIO LUIZ RENNER",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2020-07-28"
+            }
+        ]
+    },
+    {
+        "razao_social": "COASA CONTABILIDADE LTDA",
+        "cnpj": "92.470.608/0001-06",
+        "nome_fantasia": "COASA CONTABILIDADE",
+        "logradouro": "FERNANDES VIEIRA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90035091",
+        "email": "None",
+        "telefone_1": "5133119911",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "MARIO ROBERTO FRANCESCHETTO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "1988-11-01"
+            },
+            {
+                "nome": "MARCO AURELIO MULLER CARVALHO BERNARDES",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2015-02-06"
+            },
+            {
+                "nome": "MARCELO DE FREITAS",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2020-02-13"
+            }
+        ]
+    },
+    {
+        "razao_social": "DSS CONTABILIDADE LTDA",
+        "cnpj": "34.153.230/0001-02",
+        "nome_fantasia": "DSS CONTABILIDADE",
+        "logradouro": "DOS ANDRADAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90020007",
+        "email": "None",
+        "telefone_1": "5130232724",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "LENIRA MAETE AIRES DA ROSA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2019-07-09"
+            },
+            {
+                "nome": "DANIEL SOUZA DOS SANTOS",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2019-07-09"
+            }
+        ]
+    },
+    {
+        "razao_social": "ERS CONTABILIDADE LTDA",
+        "cnpj": "11.176.603/0001-65",
+        "nome_fantasia": "ERS CONTABILIDADE",
+        "logradouro": "DIARIO DE NOTICIAS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90810080",
+        "email": "None",
+        "telefone_1": "5132332288",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "PRISCILA CORREA DADALT",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2018-03-15"
+            },
+            {
+                "nome": "EDUARDO RHEINHEIMER SEBEN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2019-11-11"
+            }
+        ]
+    },
+    {
+        "razao_social": "GERMANN CONTABILIDADE LTDA",
+        "cnpj": "24.312.454/0001-66",
+        "nome_fantasia": "GERMANN CONTABILIDADE",
+        "logradouro": "BACAIRIS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91130380",
+        "email": "None",
+        "telefone_1": "5130121350",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "ELISANDRA DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "EDILIO DA PAZ GERMANN",
+                "faixa_etaria": "Entre 71 a 80 anos",
+                "qualificacao": "Socio",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "CRISTINA DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            },
+            {
+                "nome": "RODRIGO DE MEDEIROS GERMANN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2016-03-03"
+            }
+        ]
+    },
+    {
+        "razao_social": "HERA CONTABILIDADE LTDA",
+        "cnpj": "46.850.149/0001-60",
+        "nome_fantasia": "HERA CONTABILIDADE",
+        "logradouro": "AVENIDA PLINIO BRASIL MILANO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "JCF CONTABILIDADE LTDA",
+        "cnpj": "24.454.338/0001-81",
+        "nome_fantasia": "JCF-CONTABILIDADE",
+        "logradouro": "OTAVIO ROCHA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90020151",
+        "email": "None",
+        "telefone_1": "5181352535",
+        "telefone_2": "5183183031",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "JULIANO CARVALHO FERREIRA",
+                "faixa_etaria": "Entre 51 a 60 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2024-01-18"
+            }
+        ]
+    },
+    {
+        "razao_social": "JFGO CONTABILIDADE LTDA",
+        "cnpj": "41.496.617/0001-27",
+        "nome_fantasia": "JFGO CONTABILIDADE",
+        "logradouro": "RUA JOSE CARLOS FERREIRA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "MAGNUS CONTABILIDADE LTDA",
+        "cnpj": "47.170.861/0001-81",
+        "nome_fantasia": "MAGNUS CONTABILIDADE",
+        "logradouro": "ASSIS BRASIL",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91010007",
+        "email": "None",
+        "telefone_1": "5133447025",
+        "telefone_2": "000000000000",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "CAMILA MAGNUS DA SILVA HOLSTEIN",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-07-15"
+            },
+            {
+                "nome": "MARIA SIBEL SELAU MAGNUS",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-07-15"
+            }
+        ]
+    },
+    {
+        "razao_social": "MDA CONTABILIDADE LTDA",
+        "cnpj": "05.704.605/0001-87",
+        "nome_fantasia": "MDA CONTABILIDADE",
+        "logradouro": "AVENIDA OTTO NIEMEYER",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "OSC CONTABILIDADE LTDA",
+        "cnpj": "46.201.944/0001-28",
+        "nome_fantasia": "OSC CONTABILIDADE",
+        "logradouro": "JOSE ALOISIO FILHO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90250180",
+        "email": "None",
+        "telefone_1": "5194072340",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "RODRIGO DOS SANTOS PIVA",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2022-04-29"
+            }
+        ]
+    },
+    {
+        "razao_social": "PLANPER CONTABILIDADE LTDA",
+        "cnpj": "09.585.998/0001-08",
+        "nome_fantasia": "PLANPER CONTABILIDADE",
+        "logradouro": "RUA MOSTARDEIRO",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "RABUSKE CONTABILIDADE LTDA",
+        "cnpj": "34.405.853/0001-25",
+        "nome_fantasia": "ESP CONTABILIDADE",
+        "logradouro": "BALTAZAR DE OLIVEIRA GARCIA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "91180000",
+        "email": "None",
+        "telefone_1": "5133721333",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SIMONE GARCIA RABUSKE",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2023-03-03"
+            }
+        ]
+    },
+    {
+        "razao_social": "RC CONTABILIDADE LTDA",
+        "cnpj": "03.609.262/0001-46",
+        "nome_fantasia": "RC CONTABILIDADE",
+        "logradouro": "AVENIDA BENNO MENTZ",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    },
+    {
+        "razao_social": "SRMB CONTABILIDADE LTDA",
+        "cnpj": "37.682.862/0001-51",
+        "nome_fantasia": "SRMB CONTABILIDADE",
+        "logradouro": "TERESOPOLIS",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "90870000",
+        "email": "None",
+        "telefone_1": "5132732832",
+        "telefone_2": "Telefone 2:",
+        "porte": "MICRO EMPRESA",
+        "socios": [
+            {
+                "nome": "SERGIO LUIZ SBARDELOTTO",
+                "faixa_etaria": "Entre 61 a 70 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "RICARDO MOROSOLI BENITES",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "MICHELE CENA SOUZA",
+                "faixa_etaria": "Entre 41 a 50 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            },
+            {
+                "nome": "BRUNA MARIA BATTISTI",
+                "faixa_etaria": "Entre 31 a 40 anos",
+                "qualificacao": "Socio-Administrador",
+                "data_entrada": "2020-07-10"
+            }
+        ]
+    },
+    {
+        "razao_social": "TECNOCONTABIL CONTABILIDADE LTDA",
+        "cnpj": "50.957.269/0001-39",
+        "nome_fantasia": "TECNOCONTABIL CONTABILIDADE",
+        "logradouro": "RUA DR RAMIRO D'AVILA",
+        "municipio": "PORTO ALEGRE",
+        "uf": "RS",
+        "cep": "CEP:",
+        "email": "Email:",
+        "telefone_1": "Telefone 1:",
+        "telefone_2": "Telefone 2:",
+        "porte": "Porte:",
+        "socios": []
+    }
+]
