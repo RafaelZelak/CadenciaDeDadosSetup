@@ -18,6 +18,7 @@ from datetime import datetime
 from unidecode import unidecode
 from server.errorLog import get_error_logs
 from server.loginLog import get_login_logs
+from api.PostApiData import criar_negocio
 import locale
 import sys
 import io
@@ -434,9 +435,44 @@ def dismiss_notification():
         return jsonify({'error': 'ID de notificação inválido ou ação não especificada'}), 400
 
 
-@app.route('/enviar', methods=['POST'])
-def enviar_bitrix():
-    pass
+@app.route('/criar_negocio', methods=['GET'])
+def criar_negocio_para_empresas():
+    file_path = get_user_session_file()
+
+    # Lê os dados do arquivo temporário
+    with open(file_path, 'r') as file:
+        empresas = json.load(file)
+
+    if not empresas:
+        return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.'}), 400
+
+    # Faz o scrap dos dados de forma assíncrona
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
+    scrap_results = loop.run_until_complete(integration.scrap.process_queries(queries))
+    print(scrap_results)
+
+    # Para cada empresa, cria um novo negócio no Bitrix24
+    for empresa in empresas:
+        razao_social = empresa.get('razao_social', '')
+        nome_fantasia = empresa.get('nome_fantasia', '')
+        cnpj = empresa.get('cnpj', '')
+        endereco = empresa.get('endereco', '')
+        telefone1 = empresa.get('telefone1', '')
+        telefone2 = empresa.get('telefone2', '')
+        telefone3 = empresa.get('telefone3', '')
+        email = empresa.get('email', '')
+        capital_social = empresa.get('capital_social', '')
+        socios = empresa.get('socios', '')
+
+        criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios)
+
+    # Remover o arquivo temporário após o processamento
+    os.remove(file_path)
+    session.pop('user_id', None)
+
+    return jsonify({'message': 'Negócios criados com sucesso!'}), 200
 
 @app.route('/salvar_csv', methods=['POST'])
 def salvar_csv():

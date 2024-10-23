@@ -1,15 +1,12 @@
 import requests
 
-# URL da API do Bitrix24 para criar um novo negócio
-
-
-# Função para criar o negócio com os parâmetros recebidos
 def criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios):
+
     # Dados do novo negócio
     bitrix_url = "https://setup.bitrix24.com.br/rest/197/z8mt11u0z5wq34y5/crm.deal.add"
     dados_negocio = {
         "fields": {
-            "TITLE": f"{razao_social} - {nome_fantasia} - CNPJ: {cnpj}",
+            "TITLE": f"Via Automação - {razao_social} - CNPJ: {cnpj}",
             "UF_CRM_1729682188409": razao_social,    # Razão Social
             "UF_CRM_1729682198513": nome_fantasia,   # Nome Fantasia
             "UF_CRM_1729682208297": cnpj,            # CNPJ
@@ -33,17 +30,3 @@ def criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefo
     else:
         print(f"Erro ao criar negócio: {response.status_code}")
         print(response.text)
-
-# Exemplo de chamada da função com placeholders
-criar_negocio(
-    razao_social="Via Automação - Empresa Exemplo Ltda.",
-    nome_fantasia="Via Automação",
-    cnpj="27163364000149",
-    endereco="Rua Exemplo, 123 - São Paulo, SP",
-    telefone1="(11) 1234-5678",       # Telefone 1
-    telefone2="(11) 8765-4321",       # Telefone 2
-    telefone3="(11) 5555-5555",       # Telefone 3
-    email="contato@viaautomacao.com.br",
-    capital_social="1000000",         # Capital Social em valor monetário
-    socios="Nome do Sócio 1 | Qualificação 1, Nome do Sócio 2 | Qualificação 2"
-)

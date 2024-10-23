@@ -341,3 +341,67 @@ document.getElementById('baixarCSV').addEventListener('click', function() {
             spinner.style.display = 'none'; // Esconde o spinner após o download ou erro
         });
 });
+
+document.getElementById('EnviarBitrix').addEventListener('click', function() {
+    const spinner = document.getElementById('loading-spinner');
+    const notificationError = document.getElementById('notification-error');
+    const notificationErrorMessage = document.getElementById('notificationErrorMessage');
+    const notificationSuccess = document.getElementById('notification-success'); // Verifique se esse ID está correto
+    const notificationSuccessMessage = document.getElementById('notificationSuccessMessage');
+
+    // Exibe o spinner para indicar o processamento
+    spinner.style.display = 'block';
+
+    // Faz a requisição para a rota /criar_negocio
+    fetch('/criar_negocio')
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 400) {
+                    throw new Error('Nenhuma empresa disponível para criar negócio.');
+                } else {
+                    throw new Error('Erro ao enviar para o Bitrix.');
+                }
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Exibe notificação de sucesso
+            notificationSuccessMessage.textContent = "Negócios criados com sucesso!";
+            notificationSuccess.classList.remove('hidden');
+
+            // Aplica a transição corretamente
+            setTimeout(() => {
+                notificationSuccess.classList.add('show');
+            }, 10);
+
+            // Esconde a notificação após 3 segundos
+            setTimeout(() => {
+                notificationSuccess.classList.remove('show');
+                setTimeout(() => {
+                    notificationSuccess.classList.add('hidden');
+                }, 500);
+            }, 3000);
+        })
+        .catch(error => {
+            // Exibe a notificação de erro
+            notificationErrorMessage.textContent = error.message;
+            notificationError.classList.remove('hidden');
+
+            // Força o navegador a aplicar a transição corretamente
+            setTimeout(() => {
+                notificationError.classList.add('show');
+            }, 10);
+
+            // Esconde a notificação após 3 segundos
+            setTimeout(() => {
+                notificationError.classList.remove('show');
+                setTimeout(() => {
+                    notificationError.classList.add('hidden');
+                }, 500);
+            }, 3000);
+        })
+        .finally(() => {
+            // Esconde o spinner após o término da requisição
+            spinner.style.display = 'none';
+        });
+});
