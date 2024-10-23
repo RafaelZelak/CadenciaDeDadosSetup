@@ -1,0 +1,4 @@
+[console_scripts]
+termcc = termcc.run:show
+termq = termcc.query:query
+
