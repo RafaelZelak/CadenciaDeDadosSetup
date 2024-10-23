@@ -23,6 +23,7 @@ import sys
 import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 app = Flask(__name__)
@@ -428,24 +429,10 @@ def dismiss_notification():
     else:
         return jsonify({'error': 'ID de notificação inválido ou ação não especificada'}), 400
 
+
 @app.route('/enviar', methods=['POST'])
-def enviar_varias_empresas():
-    empresas = request.get_json()
-
-    for empresa in empresas:
-        socio_details = "\n\n".join([
-            f"Nome: {socio['nome']}\n"
-            f"Qualificação: {socio['qualificacao']}\n"
-            f"Faixa Etária: {socio['faixa_etaria']}\n"
-            f"Data de Entrada: {socio['data_entrada']}"
-            for socio in empresa.get('socios', [])
-        ])
-
-        empresa['socios_formatados'] = socio_details if socio_details else 'Nenhum sócio registrado'
-
-    integration.enviar_dados_bitrix(empresas)
-
-    return jsonify({"success": True, "message": "Empresas enviadas com sucesso"})
+def enviar_bitrix():
+    pass
 
 @app.route('/salvar_csv', methods=['POST'])
 def salvar_csv():
