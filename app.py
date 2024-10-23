@@ -219,6 +219,10 @@ def add_cache_control_headers(resp):
     resp.headers["Expires"] = "0"
     return resp
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if 'logged_in' in session and session['logged_in']:
