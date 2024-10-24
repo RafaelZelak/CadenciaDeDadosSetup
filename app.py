@@ -446,21 +446,30 @@ def criar_negocio_para_empresas():
             empresas = json.load(file)
 
         if not empresas:
-            return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.', 'links': []}), 400
+            return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.', 'links': [], 'razoes_sociais': []}), 400
 
         empresas_para_scrap = []
         links_existentes = []  # Lista para armazenar os links dos negócios existentes
+        razoes_sociais_existentes = []  # Lista para armazenar as razões sociais
 
         # Verifica se cada empresa já tem um negócio no Bitrix, se não tiver, adiciona para scrap
         for empresa in empresas:
             cnpj = empresa.get('cnpj', '')
+            razao_social = empresa.get('razao_social', '')
 
             # Verifica se o negócio já existe com o CNPJ
             negocio_existe, lead_link = verificar_negocio_existente(cnpj)
 
             if negocio_existe:
-                print(f"Negócio já existente. Link: {lead_link}", flush=True)
-                links_existentes.append(lead_link)  # Armazena os links existentes
+                # Verifica se o link é válido
+                if lead_link and lead_link.startswith("http"):
+                    print(f"Negócio já existente. Link: {lead_link}", flush=True)
+                    # Armazena o link e a razão social da empresa
+                    links_existentes.append(lead_link)
+                    razoes_sociais_existentes.append(razao_social)
+                else:
+                    # Se o link for inválido, loga a informação e continua
+                    print(f"Link inválido ignorado para a empresa {razao_social}: {lead_link}", flush=True)
             else:
                 empresas_para_scrap.append(empresa)
 
@@ -471,7 +480,11 @@ def criar_negocio_para_empresas():
             os.remove(file_path)
             session.pop('user_id', None)
 
-            return jsonify({'message': 'Todos os negócios já existem no Bitrix.', 'links': links_existentes}), 200
+            return jsonify({
+                'message': 'Todos os negócios já existem no Bitrix.',
+                'links': links_existentes,
+                'razoes_sociais': razoes_sociais_existentes
+            }), 200
 
         # Faz o scrap de forma assíncrona apenas para as empresas que não possuem negócio
         queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas_para_scrap]
@@ -496,13 +509,23 @@ def criar_negocio_para_empresas():
 
             # Cria o negócio e obtém o link
             link_negocio = criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios, scrap_results[i])
-            links_existentes.append(link_negocio)  # Armazena o link do novo negócio
+
+            # Verifica se o link é válido antes de adicionar
+            if link_negocio and link_negocio.startswith("http"):
+                links_existentes.append(link_negocio)
+                razoes_sociais_existentes.append(razao_social)
+            else:
+                print(f"Link inválido ignorado para a empresa {razao_social}: {link_negocio}", flush=True)
 
         # Remove o arquivo de cache e limpa a sessão após a execução bem-sucedida
         os.remove(file_path)
         session.pop('user_id', None)
 
-        return jsonify({'message': 'Negócios criados com sucesso!', 'links': links_existentes}), 200
+        return jsonify({
+            'message': 'Negócios criados com sucesso!',
+            'links': links_existentes,
+            'razoes_sociais': razoes_sociais_existentes
+        }), 200
 
     except Exception as e:
         # Em caso de erro, o arquivo não será removido, e o erro será retornado

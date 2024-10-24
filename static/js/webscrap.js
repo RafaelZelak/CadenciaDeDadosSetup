@@ -342,7 +342,7 @@ document.getElementById('baixarCSV').addEventListener('click', function() {
         });
 });
 
-document.getElementById('EnviarBitrix').addEventListener('click', function() {
+document.getElementById('EnviarBitrix').addEventListener('click', function () {
     const spinner = document.getElementById('loading-spinner');
     const notificationError = document.getElementById('notification-error');
     const notificationErrorMessage = document.getElementById('notificationErrorMessage');
@@ -371,13 +371,14 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
             // Verifica se os links existem
             if (data.links && data.links.length > 0) {
                 data.links.forEach((link, index) => {
-                    console.log("Criando notificação para link:", link); // Log para checar links
-                    createNotification(link, index);
+                    const razaoSocial = data.razoes_sociais[index]; // Pega a razão social correspondente
+                    console.log("Criando notificação para link:", link, "e razão social:", razaoSocial); // Log para checar links e razões sociais
+                    createNotification(link, razaoSocial, index);
                 });
             } else {
                 // Se não houver links, exibe a mensagem de erro retornada
                 console.log("Nenhum link encontrado. Exibindo mensagem de erro.");
-                createNotification(data.message || "Nenhum negócio foi criado.", 0, true);
+                createNotification(data.message || "Nenhum negócio foi criado.", '', 0, true);
             }
 
             // Exibe notificação de sucesso geral
@@ -388,14 +389,6 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
             setTimeout(() => {
                 notificationSuccess.classList.add('show');
             }, 10);
-
-            // Esconde a notificação de sucesso geral após 3 segundos
-            setTimeout(() => {
-                notificationSuccess.classList.remove('show');
-                setTimeout(() => {
-                    notificationSuccess.classList.add('hidden');
-                }, 500);
-            }, 3000);
         })
         .catch(error => {
             // Exibe a notificação de erro
@@ -409,14 +402,6 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
             setTimeout(() => {
                 notificationError.classList.add('show');
             }, 10);
-
-            // Esconde a notificação após 3 segundos
-            setTimeout(() => {
-                notificationError.classList.remove('show');
-                setTimeout(() => {
-                    notificationError.classList.add('hidden');
-                }, 500);
-            }, 3000);
         })
         .finally(() => {
             // Esconde o spinner após o término da requisição
@@ -425,7 +410,7 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
 });
 
 // Função para criar a notificação flutuante
-function createNotification(link, index, isError = false) {
+function createNotification(link, razaoSocial, index, isError = false) {
     const notification = document.createElement('div');
     notification.classList.add(isError ? 'notification-error' : 'notification-success', 'hidden');
 
@@ -435,9 +420,15 @@ function createNotification(link, index, isError = false) {
         return;
     }
 
-    // Conteúdo da notificação com link
+    // Conteúdo da notificação com link, razão social e botão de fechar
     notification.innerHTML = `
-        <p><strong>${isError ? 'Erro: ' : 'Empresa já cadastrada: '}</strong><a href="${link}" target="_blank">${link}</a></p>
+        <button class="close-btn" aria-label="Fechar notificação">X</button>
+        <p>
+            <strong>${isError ? 'Erro: ' : 'Empresa já cadastrada: '}</strong><br><br>
+            ${razaoSocial ? `Razão Social: <strong>${razaoSocial}</strong><br><br>` : ''}
+            <a href="${link}" target="_blank">${link}</a>
+        </p>
+
     `;
 
     // Adiciona a notificação ao body
@@ -449,12 +440,14 @@ function createNotification(link, index, isError = false) {
         notification.classList.add('show');
     }, 100 * index);
 
-    // Esconde a notificação 3 segundos depois da última, da última para a primeira
-    setTimeout(() => {
+    // Adiciona o evento de fechar para o botão 'X'
+    const closeBtn = notification.querySelector('.close-btn');
+    closeBtn.addEventListener('click', () => {
         notification.classList.remove('show');
         setTimeout(() => {
             notification.classList.add('hidden');
             notification.remove(); // Remove do DOM após ocultar
         }, 500); // Tempo para desaparecer
-    }, 3000 * (3 - index)); // O tempo de sumir é ajustado para começar pela última
+    });
 }
+

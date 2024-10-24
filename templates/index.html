@@ -30,13 +30,14 @@
         <p id="notificationSucessMessage"></p>
     </div>
     <div id="notification-icon" class="fixed top-4 right-4 z-50">
-        <a href="#" id="notification-link" class="relative">
+        <!-- a href="#" id="notification-link" class="relative">
             <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
             🔔 Notificações
         </a>
-        <button id="overlayButton">| 📚 Tutorial</button>
+        -->
+        <button id="overlayButton">📚 Tutorial</button>
         <button id="baixarCSV"> | ⬇️ Baixar CSV </button>
-        <button id="EnviarBitrix"> | Enviar Bitrix </button>
+        <button id="EnviarBitrix"> | 🔄 Enviar Bitrix </button>
         {% if is_admin %}
         <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary"> | 🔧Painel do ADM</a>
         {% endif %}
@@ -88,7 +89,7 @@
                     <datalist id="cidades"></datalist>
                 </div>
 
-                <button id="salvarTodasCsv">Salvar Todas as Empresas na Planilha</button>
+                <button id="salvarTodasCsv">Salvar Todas as Empresas na Memória</button>
             </div>
         </form>
 
