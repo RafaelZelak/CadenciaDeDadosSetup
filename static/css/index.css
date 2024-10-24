@@ -495,3 +495,53 @@ border-radius: 10px;
     transform: translate(-50%, -50%);
     font-size: 15pt;
 }
+/* Notificação de sucesso */
+.notification-success {
+    background-color: rgba(100, 255, 218); /* Cor de fundo verde para sucesso */
+    color: black;
+    padding: 16px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    z-index: 1000;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(-100%); /* Escondido fora da tela, para cima */
+    max-width: 400px;
+    word-wrap: break-word;
+    margin-top: 10px; /* Espaçamento entre notificações */
+}
+
+/* Notificação de erro */
+.notification-error {
+    background-color: #f44336; /* Cor de fundo vermelha para erro */
+    color: white;
+    padding: 16px;
+    position: fixed;
+    top: calc(20px + 100%); /* Posiciona abaixo da notificação de sucesso */
+    right: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    z-index: 1000;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(-100%); /* Escondido fora da tela, para cima */
+    max-width: 300px;
+    word-wrap: break-word;
+    margin-top: 10px; /* Espaçamento entre notificações */
+}
+
+/* Classe para ocultar o elemento (notificação escondida) */
+.hidden {
+    display: none;
+}
+
+/* Classe que aplica a transição para mostrar a notificação */
+.show {
+    opacity: 1;
+    transform: translateY(0); /* Move a notificação para sua posição correta */
+    display: block; /* Garante que ela seja exibida */
+}
+

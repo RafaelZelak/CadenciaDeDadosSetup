@@ -346,7 +346,7 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
     const spinner = document.getElementById('loading-spinner');
     const notificationError = document.getElementById('notification-error');
     const notificationErrorMessage = document.getElementById('notificationErrorMessage');
-    const notificationSuccess = document.getElementById('notification-success'); // Verifique se esse ID está correto
+    const notificationSuccess = document.getElementById('notification-success');
     const notificationSuccessMessage = document.getElementById('notificationSuccessMessage');
 
     // Exibe o spinner para indicar o processamento
@@ -362,10 +362,25 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
                     throw new Error('Erro ao enviar para o Bitrix.');
                 }
             }
-            return response.json();
+            return response.json(); // Converte a resposta para JSON
         })
         .then(data => {
-            // Exibe notificação de sucesso
+            // Loga o retorno do Python para depuração
+            console.log("Retorno do Python:", data);
+
+            // Verifica se os links existem
+            if (data.links && data.links.length > 0) {
+                data.links.forEach((link, index) => {
+                    console.log("Criando notificação para link:", link); // Log para checar links
+                    createNotification(link, index);
+                });
+            } else {
+                // Se não houver links, exibe a mensagem de erro retornada
+                console.log("Nenhum link encontrado. Exibindo mensagem de erro.");
+                createNotification(data.message || "Nenhum negócio foi criado.", 0, true);
+            }
+
+            // Exibe notificação de sucesso geral
             notificationSuccessMessage.textContent = "Negócios criados com sucesso!";
             notificationSuccess.classList.remove('hidden');
 
@@ -374,7 +389,7 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
                 notificationSuccess.classList.add('show');
             }, 10);
 
-            // Esconde a notificação após 3 segundos
+            // Esconde a notificação de sucesso geral após 3 segundos
             setTimeout(() => {
                 notificationSuccess.classList.remove('show');
                 setTimeout(() => {
@@ -386,6 +401,9 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
             // Exibe a notificação de erro
             notificationErrorMessage.textContent = error.message;
             notificationError.classList.remove('hidden');
+
+            // Loga o erro
+            console.error('Erro na requisição:', error);
 
             // Força o navegador a aplicar a transição corretamente
             setTimeout(() => {
@@ -405,3 +423,38 @@ document.getElementById('EnviarBitrix').addEventListener('click', function() {
             spinner.style.display = 'none';
         });
 });
+
+// Função para criar a notificação flutuante
+function createNotification(link, index, isError = false) {
+    const notification = document.createElement('div');
+    notification.classList.add(isError ? 'notification-error' : 'notification-success', 'hidden');
+
+    // Verifica se o link é válido antes de tentar exibi-lo
+    if (!link || typeof link !== 'string') {
+        console.error("Link inválido:", link);
+        return;
+    }
+
+    // Conteúdo da notificação com link
+    notification.innerHTML = `
+        <p><strong>${isError ? 'Erro: ' : 'Empresa já cadastrada: '}</strong><a href="${link}" target="_blank">${link}</a></p>
+    `;
+
+    // Adiciona a notificação ao body
+    document.body.appendChild(notification);
+
+    // Mostra a notificação com atraso para cada item
+    setTimeout(() => {
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+    }, 100 * index);
+
+    // Esconde a notificação 3 segundos depois da última, da última para a primeira
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.classList.add('hidden');
+            notification.remove(); // Remove do DOM após ocultar
+        }, 500); // Tempo para desaparecer
+    }, 3000 * (3 - index)); // O tempo de sumir é ajustado para começar pela última
+}

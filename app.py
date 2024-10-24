@@ -438,60 +438,76 @@ def dismiss_notification():
 
 @app.route('/criar_negocio', methods=['GET'])
 def criar_negocio_para_empresas():
-    file_path = get_user_session_file()
+    try:
+        file_path = get_user_session_file()
 
-    # Lê os dados do arquivo temporário
-    with open(file_path, 'r') as file:
-        empresas = json.load(file)
+        # Lê os dados do arquivo temporário
+        with open(file_path, 'r') as file:
+            empresas = json.load(file)
 
-    if not empresas:
-        return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.'}), 400
+        if not empresas:
+            return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.', 'links': []}), 400
 
-    empresas_para_scrap = []
+        empresas_para_scrap = []
+        links_existentes = []  # Lista para armazenar os links dos negócios existentes
 
-    # Verifica se cada empresa já tem um negócio no Bitrix, se não tiver, adiciona para scrap
-    for empresa in empresas:
-        cnpj = empresa.get('cnpj', '')
+        # Verifica se cada empresa já tem um negócio no Bitrix, se não tiver, adiciona para scrap
+        for empresa in empresas:
+            cnpj = empresa.get('cnpj', '')
 
-        # Verifica se o negócio já existe com o CNPJ
-        negocio_existe, lead_link = verificar_negocio_existente(cnpj)
+            # Verifica se o negócio já existe com o CNPJ
+            negocio_existe, lead_link = verificar_negocio_existente(cnpj)
 
-        if negocio_existe:
-            print(f"Negócio já existente. Link: {lead_link}", flush=True)  # Força a impressão imediata
-        else:
-            empresas_para_scrap.append(empresa)
+            if negocio_existe:
+                print(f"Negócio já existente. Link: {lead_link}", flush=True)
+                links_existentes.append(lead_link)  # Armazena os links existentes
+            else:
+                empresas_para_scrap.append(empresa)
 
-    if not empresas_para_scrap:
-        print("Todos os negócios já existem no Bitrix.", flush=True)
-        return jsonify({'message': 'Todos os negócios já existem no Bitrix.'}), 200
+        if not empresas_para_scrap:
+            print("Todos os negócios já existem no Bitrix.", flush=True)
 
-    # Faz o scrap de forma assíncrona apenas para as empresas que não possuem negócio
-    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas_para_scrap]
+            # Remove o arquivo de cache antes de retornar
+            os.remove(file_path)
+            session.pop('user_id', None)
 
-    # Usa asyncio.run em vez de criar um novo loop
-    scrap_results = asyncio.run(integration.scrap.process_queries(queries))
+            return jsonify({'message': 'Todos os negócios já existem no Bitrix.', 'links': links_existentes}), 200
 
-    print(f"Scrap results obtidos com sucesso: {scrap_results}", flush=True)
+        # Faz o scrap de forma assíncrona apenas para as empresas que não possuem negócio
+        queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas_para_scrap]
 
-    # Para cada empresa, cria um novo negócio no Bitrix24
-    for i, empresa in enumerate(empresas_para_scrap):
-        razao_social = empresa.get('razao_social', '')
-        nome_fantasia = empresa.get('nome_fantasia', '')
-        cnpj = empresa.get('cnpj', '')
-        endereco = empresa.get('endereco', '')
-        telefone1 = empresa.get('telefone1', '')
-        telefone2 = empresa.get('telefone2', '')
-        telefone3 = empresa.get('telefone3', '')
-        email = empresa.get('email', '')
-        capital_social = empresa.get('capital_social', '')
-        socios = empresa.get('socios', '')
+        # Usa asyncio.run em vez de criar um novo loop
+        scrap_results = asyncio.run(integration.scrap.process_queries(queries))
 
-        criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios, scrap_results[i])
+        print(f"Scrap results obtidos com sucesso: {scrap_results}", flush=True)
 
-    os.remove(file_path)
-    session.pop('user_id', None)
+        # Para cada empresa, cria um novo negócio no Bitrix24 e armazena o link
+        for i, empresa in enumerate(empresas_para_scrap):
+            razao_social = empresa.get('razao_social', '')
+            nome_fantasia = empresa.get('nome_fantasia', '')
+            cnpj = empresa.get('cnpj', '')
+            endereco = empresa.get('endereco', '')
+            telefone1 = empresa.get('telefone1', '')
+            telefone2 = empresa.get('telefone2', '')
+            telefone3 = empresa.get('telefone3', '')
+            email = empresa.get('email', '')
+            capital_social = empresa.get('capital_social', '')
+            socios = empresa.get('socios', '')
 
-    return jsonify({'message': 'Negócios criados com sucesso!'}), 200
+            # Cria o negócio e obtém o link
+            link_negocio = criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios, scrap_results[i])
+            links_existentes.append(link_negocio)  # Armazena o link do novo negócio
+
+        # Remove o arquivo de cache e limpa a sessão após a execução bem-sucedida
+        os.remove(file_path)
+        session.pop('user_id', None)
+
+        return jsonify({'message': 'Negócios criados com sucesso!', 'links': links_existentes}), 200
+
+    except Exception as e:
+        # Em caso de erro, o arquivo não será removido, e o erro será retornado
+        print(f"Erro ao processar o negócio: {str(e)}", flush=True)
+        return jsonify({'error': 'Erro ao processar os negócios.', 'message': str(e)}), 500
 
 
 @app.route('/salvar_csv', methods=['POST'])
