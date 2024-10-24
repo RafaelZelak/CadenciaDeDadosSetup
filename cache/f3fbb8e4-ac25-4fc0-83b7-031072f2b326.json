@@ -1,0 +1,377 @@
+[
+    {
+        "razao_social": "ANDRA CONTABILIDADE INTELIGENTE LTDA",
+        "cnpj": "20362189000170",
+        "nome_fantasia": "ANDRA CONTABILIDADE INTELIGENTE",
+        "logradouro": "Mario rapadura, 32 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499581765",
+        "telefone_2": "",
+        "capital_social": "100000",
+        "socios": [
+            {
+                "nome": "RAFAEL ANDRADE DOS SANTOS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "G AUGUSTO QUEIROS DE BRITO LTDA",
+        "cnpj": "45903372000166",
+        "nome_fantasia": "AUGUSTO CONTABIL",
+        "logradouro": "Monsenhor costa, 165 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499486207",
+        "telefone_2": "000000000000",
+        "capital_social": "15000",
+        "socios": [
+            {
+                "nome": "GEORGE AUGUSTO QUEIROS DE BRITO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "JOSE S DE OLIVEIRA",
+        "cnpj": "13440920000172",
+        "nome_fantasia": "JS CONTABILIDADE",
+        "logradouro": "D pedro i, 40 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436612288",
+        "telefone_2": "",
+        "capital_social": "40000",
+        "socios": []
+    },
+    {
+        "razao_social": "VARCON - VARGAS CONTABILIDADE LTDA",
+        "cnpj": "32217660000115",
+        "nome_fantasia": "VARCON - VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "VITOR FALCAO VARGAS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "VARCON-VARGAS CONTABILIDADE LTDA",
+        "cnpj": "06045286000108",
+        "nome_fantasia": "VARCON -VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "ANTONIO VARGAS NETO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "ANDRA CONTABILIDADE INTELIGENTE LTDA",
+        "cnpj": "20362189000170",
+        "nome_fantasia": "ANDRA CONTABILIDADE INTELIGENTE",
+        "logradouro": "Mario rapadura, 32 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499581765",
+        "telefone_2": "",
+        "capital_social": "100000",
+        "socios": [
+            {
+                "nome": "RAFAEL ANDRADE DOS SANTOS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "G AUGUSTO QUEIROS DE BRITO LTDA",
+        "cnpj": "45903372000166",
+        "nome_fantasia": "AUGUSTO CONTABIL",
+        "logradouro": "Monsenhor costa, 165 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499486207",
+        "telefone_2": "000000000000",
+        "capital_social": "15000",
+        "socios": [
+            {
+                "nome": "GEORGE AUGUSTO QUEIROS DE BRITO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "JOSE S DE OLIVEIRA",
+        "cnpj": "13440920000172",
+        "nome_fantasia": "JS CONTABILIDADE",
+        "logradouro": "D pedro i, 40 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436612288",
+        "telefone_2": "",
+        "capital_social": "40000",
+        "socios": []
+    },
+    {
+        "razao_social": "VARCON - VARGAS CONTABILIDADE LTDA",
+        "cnpj": "32217660000115",
+        "nome_fantasia": "VARCON - VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "VITOR FALCAO VARGAS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "VARCON-VARGAS CONTABILIDADE LTDA",
+        "cnpj": "06045286000108",
+        "nome_fantasia": "VARCON -VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "ANTONIO VARGAS NETO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "ANDRA CONTABILIDADE INTELIGENTE LTDA",
+        "cnpj": "20362189000170",
+        "nome_fantasia": "ANDRA CONTABILIDADE INTELIGENTE",
+        "logradouro": "Mario rapadura, 32 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499581765",
+        "telefone_2": "",
+        "capital_social": "100000",
+        "socios": [
+            {
+                "nome": "RAFAEL ANDRADE DOS SANTOS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "G AUGUSTO QUEIROS DE BRITO LTDA",
+        "cnpj": "45903372000166",
+        "nome_fantasia": "AUGUSTO CONTABIL",
+        "logradouro": "Monsenhor costa, 165 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499486207",
+        "telefone_2": "000000000000",
+        "capital_social": "15000",
+        "socios": [
+            {
+                "nome": "GEORGE AUGUSTO QUEIROS DE BRITO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "JOSE S DE OLIVEIRA",
+        "cnpj": "13440920000172",
+        "nome_fantasia": "JS CONTABILIDADE",
+        "logradouro": "D pedro i, 40 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436612288",
+        "telefone_2": "",
+        "capital_social": "40000",
+        "socios": []
+    },
+    {
+        "razao_social": "VARCON - VARGAS CONTABILIDADE LTDA",
+        "cnpj": "32217660000115",
+        "nome_fantasia": "VARCON - VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "VITOR FALCAO VARGAS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "VARCON-VARGAS CONTABILIDADE LTDA",
+        "cnpj": "06045286000108",
+        "nome_fantasia": "VARCON -VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "ANTONIO VARGAS NETO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "ANDRA CONTABILIDADE INTELIGENTE LTDA",
+        "cnpj": "20362189000170",
+        "nome_fantasia": "ANDRA CONTABILIDADE INTELIGENTE",
+        "logradouro": "Mario rapadura, 32 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499581765",
+        "telefone_2": "",
+        "capital_social": "100000",
+        "socios": [
+            {
+                "nome": "RAFAEL ANDRADE DOS SANTOS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "G AUGUSTO QUEIROS DE BRITO LTDA",
+        "cnpj": "45903372000166",
+        "nome_fantasia": "AUGUSTO CONTABIL",
+        "logradouro": "Monsenhor costa, 165 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499486207",
+        "telefone_2": "000000000000",
+        "capital_social": "15000",
+        "socios": [
+            {
+                "nome": "GEORGE AUGUSTO QUEIROS DE BRITO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "JOSE S DE OLIVEIRA",
+        "cnpj": "13440920000172",
+        "nome_fantasia": "JS CONTABILIDADE",
+        "logradouro": "D pedro i, 40 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436612288",
+        "telefone_2": "",
+        "capital_social": "40000",
+        "socios": []
+    },
+    {
+        "razao_social": "VARCON - VARGAS CONTABILIDADE LTDA",
+        "cnpj": "32217660000115",
+        "nome_fantasia": "VARCON - VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "VITOR FALCAO VARGAS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "VARCON-VARGAS CONTABILIDADE LTDA",
+        "cnpj": "06045286000108",
+        "nome_fantasia": "VARCON -VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "ANTONIO VARGAS NETO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "ANDRA CONTABILIDADE INTELIGENTE LTDA",
+        "cnpj": "20362189000170",
+        "nome_fantasia": "ANDRA CONTABILIDADE INTELIGENTE",
+        "logradouro": "Mario rapadura, 32 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499581765",
+        "telefone_2": "",
+        "capital_social": "100000",
+        "socios": [
+            {
+                "nome": "RAFAEL ANDRADE DOS SANTOS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "G AUGUSTO QUEIROS DE BRITO LTDA",
+        "cnpj": "45903372000166",
+        "nome_fantasia": "AUGUSTO CONTABIL",
+        "logradouro": "Monsenhor costa, 165 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7499486207",
+        "telefone_2": "000000000000",
+        "capital_social": "15000",
+        "socios": [
+            {
+                "nome": "GEORGE AUGUSTO QUEIROS DE BRITO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "JOSE S DE OLIVEIRA",
+        "cnpj": "13440920000172",
+        "nome_fantasia": "JS CONTABILIDADE",
+        "logradouro": "D pedro i, 40 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436612288",
+        "telefone_2": "",
+        "capital_social": "40000",
+        "socios": []
+    },
+    {
+        "razao_social": "VARCON - VARGAS CONTABILIDADE LTDA",
+        "cnpj": "32217660000115",
+        "nome_fantasia": "VARCON - VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "VITOR FALCAO VARGAS",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    },
+    {
+        "razao_social": "VARCON-VARGAS CONTABILIDADE LTDA",
+        "cnpj": "06045286000108",
+        "nome_fantasia": "VARCON -VARGAS CONTABILIDADE",
+        "logradouro": "Silva jardim, 14 - Centro - Xique-xique - BA, 47400-000",
+        "email": "None",
+        "telefone_1": "7436611596",
+        "telefone_2": "",
+        "capital_social": "10000",
+        "socios": [
+            {
+                "nome": "ANTONIO VARGAS NETO",
+                "qualificacao": "Socio-Administrador"
+            }
+        ]
+    }
+]

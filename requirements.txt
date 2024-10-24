@@ -13,3 +13,4 @@ nltk
 openpyxl
 paramiko
 python-dotenv
+flask-socketio

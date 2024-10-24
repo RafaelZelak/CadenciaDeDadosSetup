@@ -19,6 +19,7 @@ from unidecode import unidecode
 from server.errorLog import get_error_logs
 from server.loginLog import get_login_logs
 from api.PostApiData import criar_negocio
+from api.CrmDealList import verificar_negocio_existente
 import locale
 import sys
 import io
@@ -446,15 +447,34 @@ def criar_negocio_para_empresas():
     if not empresas:
         return jsonify({'error': 'Nenhuma empresa disponível para criar negócio.'}), 400
 
-    # Faz o scrap dos dados de forma assíncrona
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas]
-    scrap_results = loop.run_until_complete(integration.scrap.process_queries(queries))
-    print(scrap_results)
+    empresas_para_scrap = []
+
+    # Verifica se cada empresa já tem um negócio no Bitrix, se não tiver, adiciona para scrap
+    for empresa in empresas:
+        cnpj = empresa.get('cnpj', '')
+
+        # Verifica se o negócio já existe com o CNPJ
+        negocio_existe, lead_link = verificar_negocio_existente(cnpj)
+
+        if negocio_existe:
+            print(f"Negócio já existente. Link: {lead_link}", flush=True)  # Força a impressão imediata
+        else:
+            empresas_para_scrap.append(empresa)
+
+    if not empresas_para_scrap:
+        print("Todos os negócios já existem no Bitrix.", flush=True)
+        return jsonify({'message': 'Todos os negócios já existem no Bitrix.'}), 200
+
+    # Faz o scrap de forma assíncrona apenas para as empresas que não possuem negócio
+    queries = [f"{empresa.get('nome_fantasia', empresa.get('razao_social', ''))} {empresa.get('municipio', '')}" for empresa in empresas_para_scrap]
+
+    # Usa asyncio.run em vez de criar um novo loop
+    scrap_results = asyncio.run(integration.scrap.process_queries(queries))
+
+    print(f"Scrap results obtidos com sucesso: {scrap_results}", flush=True)
 
     # Para cada empresa, cria um novo negócio no Bitrix24
-    for empresa in empresas:
+    for i, empresa in enumerate(empresas_para_scrap):
         razao_social = empresa.get('razao_social', '')
         nome_fantasia = empresa.get('nome_fantasia', '')
         cnpj = empresa.get('cnpj', '')
@@ -466,13 +486,13 @@ def criar_negocio_para_empresas():
         capital_social = empresa.get('capital_social', '')
         socios = empresa.get('socios', '')
 
-        criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios)
+        criar_negocio(razao_social, nome_fantasia, cnpj, endereco, telefone1, telefone2, telefone3, email, capital_social, socios, scrap_results[i])
 
-    # Remover o arquivo temporário após o processamento
     os.remove(file_path)
     session.pop('user_id', None)
 
     return jsonify({'message': 'Negócios criados com sucesso!'}), 200
+
 
 @app.route('/salvar_csv', methods=['POST'])
 def salvar_csv():
