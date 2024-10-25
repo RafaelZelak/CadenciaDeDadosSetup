@@ -23,6 +23,7 @@ from api.CrmDealList import verificar_negocio_existente
 import locale
 import sys
 import io
+from auth.login import authenticate
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -48,48 +49,6 @@ def get_user_session_file():
             json.dump([], file)
 
     return file_path
-
-def authenticate(username, password):
-    domain = 'digitalup.intranet'
-    server = Server(domain, get_info=ALL_ATTRIBUTES)
-    user = f'{username}@{domain}'
-    conn = Connection(server, user=user, password=password)
-
-    try:
-        if conn.bind():
-            # Pesquisa pelo usuário no LDAP
-            conn.search(search_base='DC=digitalup,DC=intranet',
-                        search_filter=f'(sAMAccountName={username})',
-                        attributes=['cn', 'memberOf', 'homePhone', 'telephoneNumber'])
-
-            if len(conn.entries) > 0:
-                user_info = conn.entries[0]
-                full_name = user_info.cn.value if hasattr(user_info, 'cn') else None
-                is_admin = False
-
-                # Verifica se o usuário pertence ao grupo de Administradores
-                if hasattr(user_info, 'memberOf'):
-                    for group in user_info.memberOf:
-                        if 'CN=Administrators' in group:
-                            is_admin = True
-                            break
-
-                # Armazena as informações na sessão
-                session['logged_in'] = True
-                session['username'] = username
-                session['full_name'] = full_name
-                session['is_admin'] = is_admin  # Salva a informação do grupo Admin
-
-                return True
-            else:
-                return False
-        else:
-            return False
-    except Exception as e:
-        print(f"Erro de autenticação LDAP: {e}")
-        return False
-    finally:
-        conn.unbind()
 
 def gerar_excel(empresas, scrap_results):
     # Criar uma nova pasta de trabalho e uma planilha

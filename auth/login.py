@@ -1,5 +1,4 @@
 import psycopg2
-import bcrypt
 from flask import session
 
 def authenticate(username, password):
@@ -18,16 +17,16 @@ def authenticate_db(username, password):
         )
         cursor = connection.cursor()
 
-        # Consulta para verificar se o usuário existe e obter a senha criptografada
+        # Consulta para verificar se o usuário existe e obter a senha
         query = "SELECT password FROM users WHERE username = %s"
         cursor.execute(query, (username,))
         result = cursor.fetchone()
 
         if result:
-            stored_password = result[0]  # Senha criptografada armazenada no banco
+            stored_password = result[0]  # Senha armazenada no banco
 
-            # Verifica se a senha fornecida corresponde ao hash armazenado
-            if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+            # Verifica se a senha fornecida é igual à senha armazenada
+            if password == stored_password:
                 # Se a senha for válida, armazena as informações na sessão
                 session['logged_in'] = True
                 session['username'] = username
