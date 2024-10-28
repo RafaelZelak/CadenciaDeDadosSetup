@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const toggleState = localStorage.getItem('toggleState');
 
                 // Seleciona a rota com base no estado do toggle
-                const route = toggleState === 'Planilha' ? '/salvar_csv' : '/enviar_empresa';
+                const route = toggleState === 'Planilha' ? '/salvar_csv' : '/salvar_csv';
 
                 fetch(route, {
                     method: 'POST',
