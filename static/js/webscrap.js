@@ -346,8 +346,6 @@ document.getElementById('EnviarBitrix').addEventListener('click', function () {
     const spinner = document.getElementById('loading-spinner');
     const notificationError = document.getElementById('notification-error');
     const notificationErrorMessage = document.getElementById('notificationErrorMessage');
-    const notificationSuccess = document.getElementById('notification-success');
-    const notificationSuccessMessage = document.getElementById('notificationSuccessMessage');
 
     // Exibe o spinner para indicar o processamento
     spinner.style.display = 'block';
@@ -366,29 +364,22 @@ document.getElementById('EnviarBitrix').addEventListener('click', function () {
         })
         .then(data => {
             // Loga o retorno do Python para depuração
-            console.log("Retorno do Python:", data);
 
-            // Verifica se os links existem
+            // Verifica se a resposta geral é de sucesso
+            if (data.message === "Negócios criados com sucesso!") {
+                createSuccessNotification("Negócios criados com sucesso!", "Os negócios foram cadastrados com êxito.");
+            }
+
+            // Verifica se os links específicos existem
             if (data.links && data.links.length > 0) {
                 data.links.forEach((link, index) => {
                     const razaoSocial = data.razoes_sociais[index]; // Pega a razão social correspondente
-                    console.log("Criando notificação para link:", link, "e razão social:", razaoSocial); // Log para checar links e razões sociais
                     createNotification(link, razaoSocial, index);
                 });
             } else {
                 // Se não houver links, exibe a mensagem de erro retornada
-                console.log("Nenhum link encontrado. Exibindo mensagem de erro.");
                 createNotification(data.message || "Nenhum negócio foi criado.", '', 0, true);
             }
-
-            // Exibe notificação de sucesso geral
-            notificationSuccessMessage.textContent = "Negócios criados com sucesso!";
-            notificationSuccess.classList.remove('hidden');
-
-            // Aplica a transição corretamente
-            setTimeout(() => {
-                notificationSuccess.classList.add('show');
-            }, 10);
         })
         .catch(error => {
             // Exibe a notificação de erro
@@ -414,12 +405,6 @@ function createNotification(link, razaoSocial, index, isError = false) {
     const notification = document.createElement('div');
     notification.classList.add(isError ? 'notification-error' : 'notification-success', 'hidden');
 
-    // Verifica se o link é válido antes de tentar exibi-lo
-    if (!link || typeof link !== 'string') {
-        console.error("Link inválido:", link);
-        return;
-    }
-
     // Conteúdo da notificação com link, razão social e botão de fechar
     notification.innerHTML = `
         <button class="close-btn" aria-label="Fechar notificação">X</button>
@@ -428,7 +413,6 @@ function createNotification(link, razaoSocial, index, isError = false) {
             ${razaoSocial ? `Razão Social: <strong>${razaoSocial}</strong><br><br>` : ''}
             <a href="${link}" target="_blank">${link}</a>
         </p>
-
     `;
 
     // Adiciona a notificação ao body
@@ -451,3 +435,36 @@ function createNotification(link, razaoSocial, index, isError = false) {
     });
 }
 
+// Função para notificação de sucesso geral
+function createSuccessNotification(message, details) {
+    const notification = document.createElement('div');
+    notification.classList.add('notification-success', 'hidden');
+
+    // Conteúdo da notificação de sucesso geral
+    notification.innerHTML = `
+        <button class="close-btn" aria-label="Fechar notificação">X</button>
+        <p>
+            <strong>${message}</strong><br><br>
+            ${details ? `<em>${details}</em>` : ''}
+        </p>
+    `;
+
+    // Adiciona a notificação ao body
+    document.body.appendChild(notification);
+
+    // Mostra a notificação imediatamente
+    setTimeout(() => {
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+    }, 10);
+
+    // Adiciona o evento de fechar para o botão 'X'
+    const closeBtn = notification.querySelector('.close-btn');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.classList.add('hidden');
+            notification.remove(); // Remove do DOM após ocultar
+        }, 500); // Tempo para desaparecer
+    });
+}
