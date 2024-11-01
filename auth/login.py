@@ -57,6 +57,8 @@ def authenticate_ad(username, password):
 
 # Função de autenticação pelo banco de dados
 def authenticate_db(username, password):
+    connection = None
+
     try:
         # Conecta ao banco de dados PostgreSQL
         connection = psycopg2.connect(
@@ -96,6 +98,7 @@ def authenticate_db(username, password):
         return False
 
     finally:
+        # Fecha a conexão e o cursor, caso tenham sido abertos
         if connection:
             cursor.close()
             connection.close()
