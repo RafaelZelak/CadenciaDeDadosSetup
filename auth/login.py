@@ -66,12 +66,12 @@ def authenticate_db(username, password):
             password="r1r2r3r4r5",
             host="127.0.0.1",
             port="5432",
-            database="LeadGenerator"
+            database="leadgenerator"  # Nome do banco de dados em minúsculas
         )
         cursor = connection.cursor()
 
         # Consulta para verificar se o usuário existe e obter a senha
-        query = "SELECT password FROM users WHERE username = %s"
+        query = "SELECT password FROM public.users WHERE username = %s;"  # Incluindo 'public.' para garantir que está no esquema correto
         cursor.execute(query, (username,))
         result = cursor.fetchone()
 
