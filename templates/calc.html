@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Responsiva</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+  <!-- Calculadora -->
+  <div class="w-full max-w-xs sm:max-w-sm bg-gray-800 rounded-lg shadow-lg p-5">
+    <!-- Display da Calculadora -->
+    <div class="bg-gray-900 text-right text-white text-3xl sm:text-4xl font-mono p-4 sm:p-5 rounded-t-lg h-16 sm:h-20 flex items-center justify-end">
+      0
+    </div>
+
+    <!-- Botões da Calculadora -->
+    <div class="grid grid-cols-4 gap-2 mt-4">
+      <!-- Linha 1 -->
+      <button class="bg-gray-700 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-600">C</button>
+      <button class="bg-gray-700 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-600">±</button>
+      <button class="bg-gray-700 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-600">%</button>
+      <button class="bg-orange-500 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-orange-400">÷</button>
+
+      <!-- Linha 2 -->
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">7</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">8</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">9</button>
+      <button class="bg-orange-500 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-orange-400">×</button>
+
+      <!-- Linha 3 -->
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">4</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">5</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">6</button>
+      <button class="bg-orange-500 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-orange-400">−</button>
+
+      <!-- Linha 4 -->
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">1</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">2</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">3</button>
+      <button class="bg-orange-500 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-orange-400">+</button>
+
+      <!-- Linha 5 -->
+      <button class="col-span-2 bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">0</button>
+      <button class="bg-gray-600 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-gray-500">.</button>
+      <button class="bg-orange-500 text-white text-lg sm:text-xl p-3 sm:p-4 rounded hover:bg-orange-400">=</button>
+    </div>
+  </div>
+
+</body>
+</html>

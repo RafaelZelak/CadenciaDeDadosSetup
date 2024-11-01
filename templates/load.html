@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading Screen</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-200">
+
+  <div x-data="loadingScreen()" x-init="startLoading()" class="box-load flex flex-col items-center justify-center bg-gray-900 text-white p-6 shadow-lg" dis>
+    <p x-text="currentMessage"
+       class="text-load font-thin text-center transition-opacity duration-500"
+       :class="{'opacity-0': fading, 'opacity-100': !fading}"></p>
+
+    <div class="w-full h-6 bg-blue-800 rounded-full overflow-hidden">
+      <div class="h-full bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 animate-load rounded-full"></div>
+    </div>
+  </div>
+
+  <style>
+
+    body, .text-load {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+    }
+
+    .text-load {
+        font-size: 2.5vw;
+        padding: 4vh;
+        white-space: nowrap;
+    }
+
+    .box-load {
+        border-radius: 2.3vh;
+        height: 30vh;
+        width: 40vw;
+    }
+
+    .animate-load {
+      animation: load 2.5s linear infinite;
+    }
+
+    @keyframes load {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+  </style>
+  <script>
+    function loadingScreen() {
+      return {
+            messages: [
+                "Procurando Informações",
+                "Refinando Informações da Empresa",
+                "Verificando Detalhes Importantes",
+                "Organizando Informações",
+                "Ajustando Formato",
+                "Aplicando Filtros Especiais",
+                "Reunindo Informações",
+                "Buscando Novos Registros",
+                "Avaliando Coletados",
+                "Organizando Resultados",
+                "Refinando Resultados",
+                "Verificando Fontes",
+                "Estruturando Informações",
+                "Atualizando Registros",
+                "Preparando Resultados",
+                "Filtrando Informações Valiosas",
+                "Conferindo Precisão",
+                "Extraindo Informações",
+                "Conectando aos Servidores"
+            ],
+        currentMessage: "Procurando Dados",
+        fading: false,
+        previousIndex: -1,
+        startLoading() {
+          setInterval(() => {
+            this.fading = true;
+            setTimeout(() => {
+              let newIndex;
+              do {
+                newIndex = Math.floor(Math.random() * this.messages.length);
+              } while (newIndex === this.previousIndex);
+
+              this.currentMessage = this.messages[newIndex];
+              this.previousIndex = newIndex;
+              this.fading = false;
+            }, 700);
+          }, 6500);
+        }
+      };
+    }
+  </script>
+</body>
+</html>

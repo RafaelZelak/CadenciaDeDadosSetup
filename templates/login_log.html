@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log de Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
+</head>
+<body>
+    <div class="container mx-auto">
+        <div class="header">Log de Login</div>
+
+        <!-- Botões de Filtro -->
+        <div class="mb-4 flex justify-between items-center">
+            <div>
+                <button id="filter-latest" class="filter-button">Mais Recentes</button>
+            </div>
+            <div>
+                <span id="total-logs">Total de logins: {{ logs|length }}</span>
+            </div>
+        </div>
+
+        <!-- Exibição de Logs -->
+        <div id="log-container">
+            {% for log in logs %}
+                <div class="log-entry">{{ log }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('filter-latest').addEventListener('click', function() {
+            // Ordenar do mais recente para o mais antigo
+            let container = document.getElementById('log-container');
+            let logEntries = Array.from(document.querySelectorAll('.log-entry'));
+            logEntries.reverse().forEach(entry => container.appendChild(entry));
+        });
+
+        document.getElementById('filter-oldest').addEventListener('click', function() {
+            // Ordenar do mais antigo para o mais recente
+            let container = document.getElementById('log-container');
+            let logEntries = Array.from(document.querySelectorAll('.log-entry'));
+            logEntries.forEach(entry => container.appendChild(entry)); // Ordem original
+        });
+    </script>
+</body>
+</html>

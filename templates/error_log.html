@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
+
+    <!-- Highlight.js CSS (Dark Theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <h1>Logs de Erro do Serviço</h1>
+
+    <div>
+        <label for="sortOrder">Ordenar por:</label>
+        <select id="sortOrder" onchange="sortLogs()">
+            <option value="recent">Mais Recente</option>
+            <option value="oldest">Mais Antigo</option>
+        </select>
+    </div>
+
+    <div id="logsContainer">
+        {% if logs %}
+            {% for log in logs %}
+                <div class="error-block">
+                    {% set log_parts = log.split('----------') %}
+                    {% if log_parts | length > 2 %}
+                        <div class="datetime-header">
+                            Erro Data/Hora: {{ log_parts[1].strip() }}
+                        </div>
+                        <pre><code class="language-python">{{ log_parts[2].strip() }}</code></pre>
+                    {% else %}
+                        <div class="datetime-header">
+                            Erro Data/Hora: Informação incompleta
+                        </div>
+                        <pre><code class="language-python">{{ log }}</code></pre>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nenhum log encontrado.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function sortLogs() {
+            const select = document.getElementById('sortOrder');
+            const logsContainer = document.getElementById('logsContainer');
+            const logs = Array.from(logsContainer.children);
+
+            // Função para ordenar logs
+            logs.sort((a, b) => {
+                const dateA = a.querySelector('.datetime-header').textContent;
+                const dateB = b.querySelector('.datetime-header').textContent;
+
+                const dateAObj = new Date(dateA.replace('Erro Data/Hora: ', '').trim());
+                const dateBObj = new Date(dateB.replace('Erro Data/Hora: ', '').trim());
+
+                return select.value === 'recent' ? dateBObj - dateAObj : dateAObj - dateBObj;
+            });
+
+            // Limpa e reanexa os logs em ordem
+            logsContainer.innerHTML = '';
+            logs.forEach(log => logsContainer.appendChild(log));
+        }
+    </script>
+
+    <!-- Highlight.js Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

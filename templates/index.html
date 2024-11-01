@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadGen{{ ' - Buscando Por: ' + termo_busca if termo_busca else '' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+</head>
+<body class="custom-body">
+    <div class="overlay-load" id="overlay-load-id">
+        <div x-data="loadingScreen()" x-init="startLoading()" class="box-load flex flex-col items-center justify-center text-white p-6 shadow-lg">
+            <p x-text="currentMessage"
+            class="text-load font-thin text-center transition-opacity duration-500"
+            :class="{'opacity-0': fading, 'opacity-100': !fading}"></p>
+            <div class="w-full h-6 bg-blue-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 animate-load rounded-full"></div>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    <div id="notification-error" class="notification-error hidden">
+        <p id="notificationErrorMessage"></p>
+    </div>
+    <div id="notification-sucess" class="notification-sucess hidden">
+        <p id="notificationSucessMessage"></p>
+    </div>
+    <div id="notification-icon" class="fixed top-4 right-4 z-50">
+        <!-- a href="#" id="notification-link" class="relative">
+            <span id="notification-counter" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-0 -right-3">0</span>
+            🔔 Notificações
+        </a>
+        -->
+        <button id="overlayButton">📚 Tutorial</button>
+        <button id="baixarCSV"> | ⬇️ Baixar CSV </button>
+        <button id="EnviarBitrix"> | 🔄 Enviar Bitrix </button>
+        {% if is_admin %}
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary"> | 🔧Painel do ADM</a>
+        {% endif %}
+    </div>
+
+    {% if notifications and show_notification %}
+    <div class="fixed inset-0 flex items-start justify-end p-6 space-y-6 z-50 pointer-events-none notification-content">
+        <ul id="notification-list" class="space-y-6">
+            {% for notification in notifications %}
+            <li id="notification-{{ notification.id }}" class="notification p-6 rounded-lg shadow-lg transition-all duration-500 transform translate-y-4 opacity-0 pointer-events-auto max-w-lg w-96 relative">
+                <p class="text-white-600 font-semibold">Lead Enriquecido:</p>
+                <p class="text-white-600 font-semibold">{{ notification.enterprise }}</p>
+                <div class="mt-2 flex justify-start space-x-4">
+                    <a href="#" class="text-blue-400 hover:text-blue-100 underline font-semibold" onclick="dismissNotification('{{ notification.id }}', true, event)">Enviar Para o Bitrix24</a>
+                </div>
+                <!-- Barra de progresso -->
+                <div class="progress-bar"></div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Barra indicando mais notificações -->
+        <div id="more-notifications-bar" class="hidden p-6 rounded-lg shadow-lg bg-blue-600 text-white font-semibold max-w-lg w-96">
+            Mais <span id="more-notifications-count"></span> notificações
+        </div>
+    </div>
+    {% endif %}
+    <div class="custom-container">
+        <div id="loading-spinner" style="display:none;">
+            <div class="spinner"></div>
+        </div>
+        <h1 class="text-3xl font-bold text-center mb-6">Buscar Dados | {{full_name}}</h1>
+
+        <form action="/home" method="GET" class="form-container" id="searchForm">
+            <div class="input-container">
+                <input type="text" name="termo_busca" placeholder="Digite o termo de busca" class="pesquisa" value="{{ termo_busca or '' }}">
+                <button type="submit" class="buscar">
+                    <img src="{{ url_for('static', filename='img/search.svg') }}" alt="Buscar">
+                </button>
+
+            </div>
+
+            <div class="estado-cidade-button-container">
+                <!-- Botão para abrir o dropdown de filtros -->
+                <button id="filtro-btn" class="btn-filtro">Filtros</button>
+
+                <!-- Dropdown de Filtros (estado-cidade-container) -->
+                <div id="filtro-dropdown" class="estado-cidade-container">
+                    <label class="title-filter">Estado: </label>
+                    <input list="estados" id="estado" name="estado" placeholder="Estado" class="estado" value="{{ estado or '' }}">
+                    <datalist id="estados"></datalist>
+                    <label class="title-filter">Cidade: </label>
+                    <input list="cidades" id="cidade" name="cidade" placeholder="Cidade" class="cidade" value="{{ cidade or '' }}">
+                    <datalist id="cidades"></datalist>
+                    <label class="title-filter">Bairro: </label>
+                    <input list="bairros" id="bairro" name="bairro" placeholder="Bairro" class="bairro" value="{{ bairro or '' }}">
+                </div>
+
+                <!-- Botão de ação extra -->
+                <button id="salvarTodasCsv">Salvar Todas as Empresas na Memória</button>
+            </div>
+
+        </form>
+
+        {% if dados_cnpj %}
+        <h2 class="result-title font-bold mb-4 text-center">Resultados</h2>
+        <div class="result-container">
+            <span class="limitado">Limitado a 20 resultados por página</span>
+            <p class="total_results">Total de resultados encontrados: {{ total_results }}</p>
+        </div>
+        <ul>
+            {% for empresa in dados_cnpj %}
+            <li class="mb-4 dadosEmpresa flex justify-between items-center">
+                <div class="empresa-info">
+                    <p class="font-bold">{{ empresa.razao_social }}</p>
+                    <p class="font-semibold">CNPJ: {{ empresa.cnpj|format_cnpj }}</p></p>
+
+                    {% if empresa.blacklist_info %}
+                    <p class="text-red-900">
+                        Dado salvo por <b>"{{ empresa.blacklist_info.user }}"</b> no dia {{ empresa.blacklist_info.datetime|format_datetime }}
+                    </p>
+                    {% endif %}
+
+                    <div class="detalhes-empresa">
+                        <p><strong>Nome Fantasia:</strong> {{ empresa.nome_fantasia }}</p>
+                        <p><strong>Endereço:</strong> {{ empresa.logradouro | capitalize }}, {{ empresa.numero }} - {{ empresa.bairro | capitalize }} - {{ empresa.municipio | capitalize}} - {{ empresa.uf }}, {{ empresa.cep | format_cep }}</p>
+                        <p><strong>Email:</strong> {{ empresa.email }}</p>
+                        <p><strong>Telefone 1:</strong> {{ empresa.telefone_1 | format_phone }}</p>
+                        {% if empresa.telefone_2 %}
+                            <p><strong>Telefone 2:</strong> {{ empresa.telefone_2 | format_phone }}</p>
+                        {% endif %}
+                        <p><strong>Capital Social:</strong> {{ empresa.capital_social | formata_real }}</p>
+                        {% if empresa.socios %}
+                        <p class="socios"><strong>Sócios:</strong></p>
+                        <hr class="linha">
+                        <ul class="ul_socios">
+                            {% for socio in empresa.socios %}
+                                <li class="socio {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                                    <strong>Nome:</strong> {{ socio.nome }} <br>
+                                    <strong>Qualificação:</strong> {{ socio.qualificacao }} <br>
+                                </li>
+                                <hr class="linha {% if loop.index > 3 %}hidden socio-extra{% endif %}">
+                            {% endfor %}
+                        </ul>
+
+                        {% if empresa.socios|length > 3 %}
+                            <button class="mt-2 text-blue-500 ver-mais-socios">Ver mais sócios</button>
+                            <hr class="linha">
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <button class="mt-2 text-blue-500 ver-mais">Ver mais</button>
+                </div>
+
+                <form id="enviarEmpresaForm_{{ loop.index }}" class="enviar-empresa-form flex items-center" method="POST">
+                    <input type="hidden" name="razao_social" value="{{ empresa.razao_social }}">
+                    <input type="hidden" name="nome_fantasia" value="{{ empresa.nome_fantasia }}">
+                    <input type="hidden" name="logradouro" value="{{ empresa.logradouro | capitalize }}, {{ empresa.numero }} - {{ empresa.bairro | capitalize }} - {{ empresa.municipio | capitalize}} - {{ empresa.uf }}, {{ empresa.cep | format_cep }}">
+                    <input type="hidden" name="email" value="{{ empresa.email }}">
+                    <input type="hidden" name="telefone_1" value="{{ empresa.telefone_1 }}">
+                    <input type="hidden" name="telefone_2" value="{{ empresa.telefone_2 }}">
+                    <input type="hidden" name="capital_social" value="{{ empresa.capital_social  }}">
+                    <input type="hidden" name="cnpj" value="{{ empresa.cnpj }}">
+
+                    {% for socio in empresa.socios %}
+                        <input type="hidden" name="socios_nome[]" value="{{ socio.nome }}">
+                        <input type="hidden" name="socios_qualificacao[]" value="{{ socio.qualificacao }}">
+                    {% endfor %}
+
+                    <button id="submitButton_{{ loop.index }}" type="submit" class="checkmark-btn" data-index="{{ loop.index }}">
+                        <span class="button-text">Salvar Empresa</span>
+                        <img src="{{ url_for('static', filename='img/avancar-dark.svg') }}" alt="Ícone de Voltar" class="ml-2 w-5 h-5">
+                    </button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagination-container">
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page - 1) }}" class="pagination-link" {% if page == 1 %}disabled{% endif %}>
+                <img src="{{ url_for('static', filename='img/avancar.svg') }}" alt="Voltar" class="inline-icon">
+            </a>
+
+            <span>Página <span id="numero-pagina">{{ page }}</span></span>
+
+            <a href="{{ url_for('home', termo_busca=termo_busca, page=page + 1) }}" class="pagination-link" {% if not tem_mais_paginas %}disabled{% endif %}>
+                <img src="{{ url_for('static', filename='img/voltar.svg') }}" alt="Avançar" class="inline-icon">
+            </a>
+        </div>
+
+        {% elif error %}
+        <p class="text-red-500">{{ error }}</p>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('logout') }}" method="POST" class="exit">
+        <button type="submit" class="exit-button">Sair</button>
+    </form>
+
+    <div id="overlay" class="overlay">
+        <div id="highlight" class="highlight"></div>
+        <div id="arrow" class="arrow"></div> <!-- Seta adicionada -->
+        <div class="overlay-content">
+            <div class="titleOver">
+                <p class="titleOverTitle">Tutorial</p>
+            </div>
+            <p id="tutorial-text">Clique no botão de toggle no canto inferior para ligar ou desligar a funcionalidade Bitrix.</p>
+            <button id="nextStepButton" class="mt-4 p-2 bg-green-500 text-white">Continuar</button>
+        </div>
+    </div>
+
+    </div>
+    <script src="{{ url_for('static', filename='js/webscrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tutorial.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/error.js') }}"></script>
+</body>
+</html>

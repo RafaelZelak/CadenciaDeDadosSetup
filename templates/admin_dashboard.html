@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/logo_ico.png') }}">
+
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <div class="bg-darkblue p-10 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 class="text-3xl font-bold mb-8 text-center text-white">Admin Dashboard</h1>
+
+        <div class="flex flex-col space-y-6">
+            <a href="{{ url_for('error_log') }}" class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                View Error Log
+            </a>
+            <a href="{{ url_for('login_log') }}" class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                View Login Log
+            </a>
+            <button class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                Button 3
+            </button>
+            <button class="bg-darkbutton text-white py-3 px-6 rounded-lg text-center hover-lightblue transition duration-300 ease-in-out transform hover:scale-105">
+                Button 4
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+body, .text-load {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+
+.text-load {
+    font-size: 2.5vw;
+    padding: 4vh;
+    white-space: nowrap;
+}
+
+.box-load {
+    border-radius: 2.3vh;
+    height: 30vh;
+    width: 40vw;
+}
+
+.animate-load {
+  animation: load 2.5s linear infinite;
+}
+
+@keyframes load {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
