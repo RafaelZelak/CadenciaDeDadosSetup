@@ -8,8 +8,11 @@ import phonenumbers
 import validators
 import time
 import threading
+import psutil
+from tqdm import tqdm
 
-semaforo = threading.Semaphore(5)
+
+semaforo = threading.Semaphore(2)
 
 # Função que configura o navegador e aplica o Selenium Stealth
 def configurar_driver():
@@ -19,9 +22,11 @@ def configurar_driver():
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
     options.add_argument("--headless")
-
+    options.add_argument("--disable-background-networking")
+    options.add_argument("--disable-background-timer-throttling")
+    options.add_argument("--disable-backgrounding-occluded-windows")
+    options.add_argument("--remote-allow-origins=*")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 
     driver = webdriver.Chrome(options=options)
@@ -35,6 +40,12 @@ def configurar_driver():
             fix_hairline=True,
     )
     return driver
+
+# Função para encerrar processos do Chrome e ChromeDriver que possam ter ficado ativos
+def encerrar_processos_restantes():
+    for proc in psutil.process_iter(['pid', 'name']):
+        if proc.info['name'] in ('chrome', 'chromedriver'):
+            proc.kill()
 
 # Função para formatar telefone
 def format_phone(phone):
@@ -70,18 +81,13 @@ def acessar_primeiro_resultado(driver):
 # Função para extrair dados da empresa
 def extrair_dados(driver):
     try:
-        # Espera até que o elemento de nome da empresa esteja visível antes de continuar
-        nome_empresa = WebDriverWait(driver, 10).until(
+        nome_empresa = WebDriverWait(driver, 10, poll_frequency=0.5).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "h1.DUwDvf.lfPIob"))
         ).text
 
-        # Extrai as informações disponíveis
         dados_extracao = driver.find_elements(By.CLASS_NAME, "Io6YTe.fontBodyMedium.kR99db.fdkmkc")
-
-        # Define valores default como None
         address = located_in = website = phone = None
 
-        # Garante que não ocorra "index out of range"
         if len(dados_extracao) > 0:
             address = dados_extracao[0].text
         if len(dados_extracao) > 1:
@@ -93,7 +99,7 @@ def extrair_dados(driver):
 
         page_url = driver.current_url
 
-        # Retorna os dados extraídos como um dicionário
+        print(f"\nnome_empresa:{nome_empresa}\naddress:{address}\nlocated:{located_in}\nwebsite:{website}\nphone:{phone}\npage_url:{page_url}")
         return {
             "title_maps": nome_empresa,
             "address_maps": address,
@@ -105,7 +111,6 @@ def extrair_dados(driver):
 
     except Exception as e:
         print(f"Erro ao extrair dados: {e}")
-        # Retorna dicionário com valores None em caso de erro
         return {
             "title_maps": None,
             "address_maps": None,
@@ -120,42 +125,46 @@ def pesquisa_google_maps(termo_pesquisa):
     driver = configurar_driver()
 
     try:
-        # Abrindo o Google Maps e pesquisando o termo desejado
         driver.get("https://www.google.com/maps")
         driver.find_element(By.ID, "searchboxinput").send_keys(termo_pesquisa + Keys.RETURN)
 
-        # Verifica a presença de múltiplos resultados pela existência da classe específica
-        time.sleep(2)  # Curta pausa para carregamento inicial de elementos
+        time.sleep(2)
         if driver.find_elements(By.CLASS_NAME, "Nv2PK.tH5CWc.THOPZb"):
-            # Caso haja múltiplos resultados, clicamos no primeiro não patrocinado
             if acessar_primeiro_resultado(driver):
                 return extrair_dados(driver)
         else:
-            # Extração direta se há apenas um resultado
             return extrair_dados(driver)
 
     finally:
         driver.quit()
+        encerrar_processos_restantes()  # Garante o fechamento de processos
 
-# Função que gerencia as pesquisas usando threads, recebendo a lista de termos como parâmetro
+# Função que gerencia as pesquisas usando threads
 def realizar_pesquisas(termos_de_pesquisa):
     resultados = []
+    total_pesquisas = len(termos_de_pesquisa)  # Total de pesquisas para a barra de progresso
 
-    # Função auxiliar para adicionar resultados de uma thread
-    def pesquisar_termo(termo):
-        with semaforo:  # Limita a execução a 5 threads por vez
+    # Função interna para realizar a pesquisa
+    def pesquisar_termo(termo, index, pbar):
+        with semaforo:
             resultado = pesquisa_google_maps(termo)
             if resultado:
                 resultados.append(resultado)
+            if index % 10 == 0:
+                encerrar_processos_restantes()  # Reinicia processos a cada 10 pesquisas para otimizar memória
+            time.sleep(1)  # Pausa de 1 segundo para reduzir a carga
+            pbar.update(1)  # Atualiza a barra de progresso
 
-    threads = []
-    for termo in termos_de_pesquisa:
-        thread = threading.Thread(target=pesquisar_termo, args=(termo,))
-        threads.append(thread)
-        thread.start()
+    # Inicia a barra de progresso com o total de termos a serem pesquisados
+    with tqdm(total=total_pesquisas, desc="Progresso das pesquisas", unit="pesquisa") as pbar:
+        threads = []
+        for i, termo in enumerate(termos_de_pesquisa):
+            thread = threading.Thread(target=pesquisar_termo, args=(termo, i, pbar))
+            threads.append(thread)
+            thread.start()
 
-    # Aguarda todas as threads terminarem
-    for thread in threads:
-        thread.join()
+        # Aguarda todas as threads terminarem
+        for thread in threads:
+            thread.join()
 
     return resultados

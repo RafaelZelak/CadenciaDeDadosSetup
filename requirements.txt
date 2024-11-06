@@ -19,3 +19,4 @@ unidecode
 phonenumbers
 selenium_stealth
 validators
+psutil

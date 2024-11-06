@@ -45,7 +45,7 @@ def validate_website(url):
 driver.get("https://www.google.com/maps")
 WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "searchboxinput")))
 search_box = driver.find_element(By.ID, "searchboxinput")
-search_box.send_keys("CLINICA BIAVATTI CURITIBA")
+search_box.send_keys("Contabilidade Falavinha Curitiba Bacacheri")
 search_box.send_keys(Keys.RETURN)
 
 # Verifica se há múltiplos resultados e acessa o primeiro resultado não patrocinado
