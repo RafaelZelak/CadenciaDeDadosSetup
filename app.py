@@ -469,6 +469,36 @@ def criar_negocio_para_empresas():
         print(f"Erro ao processar o negócio: {str(e)}", flush=True)
         return jsonify({'error': 'Erro ao processar os negócios.', 'message': str(e)}), 500
 
+def salvar_empresas_no_csv(empresas, file_path):
+    # Campos padrão para garantir a consistência
+    campos = ['cnpj', 'razao_social', 'nome_fantasia', 'logradouro', 'telefone_1',
+              'telefone_2', 'email', 'capital_social', 'socios']
+
+    try:
+        # Abrindo o CSV em modo append e gerenciando cabeçalhos
+        with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=campos)
+
+            # Escrever cabeçalho apenas se o arquivo estiver vazio
+            if file.tell() == 0:
+                writer.writeheader()
+
+            for empresa in empresas:
+                linha = {
+                    'cnpj': empresa['cnpj'],
+                    'razao_social': empresa['razao_social'],
+                    'nome_fantasia': empresa['nome_fantasia'],
+                    'logradouro': empresa['logradouro'],
+                    'telefone_1': empresa['telefone_1'],
+                    'telefone_2': empresa['telefone_2'],
+                    'email': empresa['email'],
+                    'capital_social': empresa['capital_social'],
+                    # Serializa os sócios como JSON
+                    'socios': json.dumps(empresa['socios'], ensure_ascii=False),
+                }
+                writer.writerow(linha)
+    except Exception as e:
+        raise e
 
 @app.route('/salvar_csv', methods=['POST'])
 def salvar_csv():
@@ -525,10 +555,6 @@ def salvar_todas_csv():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-    # Debug: imprime CNPJs da blacklist
-    print("CNPJs na blacklist:", blacklist_cnpjs)
-
-    # Lê os dados existentes no arquivo JSON
     try:
         with open(file_path, 'r+') as file:
             try:
@@ -546,7 +572,6 @@ def salvar_todas_csv():
                     empresa['nome_fantasia'] = unidecode(empresa['nome_fantasia'])
                     empresa['logradouro'] = unidecode(empresa['logradouro'])
 
-                    # Remover acentos dos sócios
                     for socio in empresa['socios']:
                         socio['nome'] = unidecode(socio['nome'])
                         socio['qualificacao'] = unidecode(socio['qualificacao'])
@@ -555,8 +580,9 @@ def salvar_todas_csv():
                 else:
                     print("Ignorando CNPJ (Já processado):", cnpj_normalizado)
 
+            # Salvar em formato compacto (sem indentação)
             file.seek(0)
-            json.dump(empresas_cache, file, indent=4)
+            json.dump(empresas_cache, file)  # Sem indentação
             file.truncate()
 
     except FileNotFoundError:
@@ -565,6 +591,7 @@ def salvar_todas_csv():
         return jsonify({'success': False, 'message': str(e)}), 500
 
     return jsonify({'success': True, 'message': 'Todas as empresas, novas, foram salvas com sucesso.'})
+
 
 def scrap_results_consolidated(resultados, scraps):
     consolidated_results = []

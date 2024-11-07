@@ -15,7 +15,7 @@ import validators
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 lock = threading.Lock()
 
-semaforo = threading.Semaphore(2)
+semaforo = threading.Semaphore(1)
 
 def configurar_driver():
     with lock:
@@ -29,6 +29,7 @@ def configurar_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-background-timer-throttling")
     options.add_argument("--remote-allow-origins=*")
+    options.add_argument("--disable-software-rasterizer")
     options.add_argument("user-agent=Mozilla/5.0")
 
     driver = webdriver.Chrome(options=options)
@@ -73,7 +74,7 @@ def acessar_primeiro_resultado(driver):
                 continue
             link = resultado.find_element(By.CLASS_NAME, "hfpxzc")
             link.click()
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "Io6YTe")))
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "Io6YTe")))
             return True
         except Exception:
             continue
@@ -81,7 +82,7 @@ def acessar_primeiro_resultado(driver):
 
 def extrair_dados(driver):
     try:
-        nome_empresa = WebDriverWait(driver, 10).until(
+        nome_empresa = WebDriverWait(driver, 30).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "h1.DUwDvf.lfPIob"))
         ).text
         dados_extracao = driver.find_elements(By.CLASS_NAME, "Io6YTe.fontBodyMedium.kR99db.fdkmkc")
@@ -109,7 +110,7 @@ def pesquisa_google_maps(termo_pesquisa):
     driver = configurar_driver()
     try:
         driver.get("https://www.google.com/maps")
-        search_box = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "searchboxinput")))
+        search_box = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.ID, "searchboxinput")))
         search_box.send_keys(termo_pesquisa + Keys.RETURN)
         time.sleep(2)
         if acessar_primeiro_resultado(driver):
