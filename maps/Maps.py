@@ -9,12 +9,14 @@ import validators
 import time
 import threading
 import psutil
+import logging
 from tqdm import tqdm
 
+# Configuração básica de log
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 semaforo = threading.Semaphore(2)
 
-# Função que configura o navegador e aplica o Selenium Stealth
 def configurar_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--incognito")
@@ -30,7 +32,6 @@ def configurar_driver():
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 
     driver = webdriver.Chrome(options=options)
-
     stealth(driver,
             languages=["en-US", "en"],
             vendor="Google Inc.",
@@ -41,47 +42,41 @@ def configurar_driver():
     )
     return driver
 
-# Função para encerrar processos do Chrome e ChromeDriver que possam ter ficado ativos
 def encerrar_processos_restantes():
     for proc in psutil.process_iter(['pid', 'name']):
         if proc.info['name'] in ('chrome', 'chromedriver'):
             proc.kill()
+    logging.info("Todos os processos Chrome e ChromeDriver foram encerrados")
 
-# Função para formatar telefone
 def format_phone(phone):
     try:
         parsed_phone = phonenumbers.parse(phone, "BR")
         if phonenumbers.is_possible_number(parsed_phone):
             return phonenumbers.format_number(parsed_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
     except phonenumbers.NumberParseException:
-        pass
+        logging.warning("Número de telefone inválido")
     return None
 
-# Função para validar website
 def validate_website(url):
     return url if validators.url(url) else "None"
 
-# Função para acessar o primeiro resultado válido (não patrocinado)
 def acessar_primeiro_resultado(driver):
     resultados = driver.find_elements(By.CLASS_NAME, "Nv2PK.tH5CWc.THOPZb")
     for resultado in resultados:
-        if resultado.find_elements(By.XPATH, ".//span[contains(text(), 'Patrocinado')]"):
-            continue
-        link = resultado.find_element(By.CLASS_NAME, "hfpxzc")
-        link.click()
+        try:
+            if resultado.find_elements(By.XPATH, ".//span[contains(text(), 'Patrocinado')]"):
+                continue
+            link = resultado.find_element(By.CLASS_NAME, "hfpxzc")
+            link.click()
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "Io6YTe")))
+            return True
+        except Exception as e:
+            logging.warning(f"Erro ao acessar primeiro resultado: {e}")
+    return False
 
-        # Espera ativa para verificar a presença dos elementos da empresa
-        start_time = time.time()
-        while time.time() - start_time < 10:
-            if driver.find_elements(By.CLASS_NAME, "Io6YTe"):
-                return True
-            time.sleep(0.05)
-        return False
-
-# Função para extrair dados da empresa
 def extrair_dados(driver):
     try:
-        nome_empresa = WebDriverWait(driver, 10, poll_frequency=0.5).until(
+        nome_empresa = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "h1.DUwDvf.lfPIob"))
         ).text
 
@@ -98,8 +93,7 @@ def extrair_dados(driver):
             phone = format_phone(dados_extracao[3].text)
 
         page_url = driver.current_url
-
-        print(f"\nnome_empresa:{nome_empresa}\naddress:{address}\nlocated:{located_in}\nwebsite:{website}\nphone:{phone}\npage_url:{page_url}")
+        logging.info(f"Dados extraídos com sucesso: {nome_empresa}")
         return {
             "title_maps": nome_empresa,
             "address_maps": address,
@@ -110,7 +104,7 @@ def extrair_dados(driver):
         }
 
     except Exception as e:
-        print(f"Erro ao extrair dados: {e}")
+        logging.error(f"Erro ao extrair dados: {e}")
         return {
             "title_maps": None,
             "address_maps": None,
@@ -120,51 +114,38 @@ def extrair_dados(driver):
             "page_url_maps": None
         }
 
-# Função principal para pesquisa
 def pesquisa_google_maps(termo_pesquisa):
     driver = configurar_driver()
-
     try:
         driver.get("https://www.google.com/maps")
         driver.find_element(By.ID, "searchboxinput").send_keys(termo_pesquisa + Keys.RETURN)
-
         time.sleep(2)
         if driver.find_elements(By.CLASS_NAME, "Nv2PK.tH5CWc.THOPZb"):
             if acessar_primeiro_resultado(driver):
                 return extrair_dados(driver)
         else:
             return extrair_dados(driver)
-
     finally:
         driver.quit()
-        encerrar_processos_restantes()  # Garante o fechamento de processos
+        encerrar_processos_restantes()
 
-# Função que gerencia as pesquisas usando threads
 def realizar_pesquisas(termos_de_pesquisa):
     resultados = []
-    total_pesquisas = len(termos_de_pesquisa)  # Total de pesquisas para a barra de progresso
-
-    # Função interna para realizar a pesquisa
-    def pesquisar_termo(termo, index, pbar):
-        with semaforo:
-            resultado = pesquisa_google_maps(termo)
-            if resultado:
-                resultados.append(resultado)
-            if index % 10 == 0:
-                encerrar_processos_restantes()  # Reinicia processos a cada 10 pesquisas para otimizar memória
-            time.sleep(1)  # Pausa de 1 segundo para reduzir a carga
-            pbar.update(1)  # Atualiza a barra de progresso
-
-    # Inicia a barra de progresso com o total de termos a serem pesquisados
+    total_pesquisas = len(termos_de_pesquisa)
     with tqdm(total=total_pesquisas, desc="Progresso das pesquisas", unit="pesquisa") as pbar:
         threads = []
         for i, termo in enumerate(termos_de_pesquisa):
-            thread = threading.Thread(target=pesquisar_termo, args=(termo, i, pbar))
+            thread = threading.Thread(target=pesquisar_termo, args=(termo, i, pbar, resultados))
             threads.append(thread)
             thread.start()
-
-        # Aguarda todas as threads terminarem
         for thread in threads:
             thread.join()
-
     return resultados
+
+def pesquisar_termo(termo, index, pbar, resultados):
+    with semaforo:
+        resultado = pesquisa_google_maps(termo)
+        if resultado:
+            resultados.append(resultado)
+        time.sleep(1)
+        pbar.update(1)
